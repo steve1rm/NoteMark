@@ -4,6 +4,7 @@ import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 
 val ColorScheme.onBackgroundVariant: Color
@@ -38,6 +39,12 @@ val ColorScheme.success: Color
             Color(0xff0DD280)
         }
     }
+
+val ColorScheme.bgGradient : Brush
+    get() = Brush.linearGradient(listOf(
+        Color(0xff58A1F8),
+        Color(0xff5A4CF7)
+    ))
 
 val lightPrimary = Color(0xff238CFF)
 val lightSecondary = Color(0xffAB5CFA)
