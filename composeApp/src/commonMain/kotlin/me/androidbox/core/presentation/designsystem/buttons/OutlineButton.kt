@@ -10,6 +10,7 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import me.androidbox.core.presentation.designsystem.theming.NoteMarkTheme
 import org.jetbrains.compose.ui.tooling.preview.Preview
@@ -27,7 +28,7 @@ fun OutlineButton(
         enabled = enabled,
         shape = RoundedCornerShape(size = 12.dp),
         colors = ButtonDefaults.buttonColors(
-            containerColor = MaterialTheme.colorScheme.onPrimary
+            containerColor = Color.Transparent
         ),
         border = BorderStroke(1.dp, color = MaterialTheme.colorScheme.primary)
     ) {

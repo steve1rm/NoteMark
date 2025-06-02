@@ -25,7 +25,10 @@ fun LandingContent(
 ) {
     Column(
         modifier = modifier
-            .background(color = MaterialTheme.colorScheme.surfaceContainerLowest, shape = RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp))
+            .background(
+                color = MaterialTheme.colorScheme.surfaceContainerLowest,
+                shape = RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp)
+            )
             .padding(horizontal = 16.dp, vertical = 32.dp)
     ) {
 

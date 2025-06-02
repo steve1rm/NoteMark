@@ -7,6 +7,7 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import notemark.composeapp.generated.resources.Res
+import notemark.composeapp.generated.resources.inter
 import notemark.composeapp.generated.resources.space_grotesk
 import org.jetbrains.compose.resources.Font
 
@@ -16,6 +17,13 @@ private val spaceGrotesk: FontFamily
     get() = FontFamily(
         Font(Res.font.space_grotesk, FontWeight.Normal)
     )
+
+private val inter: FontFamily
+    @Composable
+    get() = FontFamily(
+        Font(Res.font.inter, FontWeight.Normal)
+    )
+
 
 val Typography.headLineXSmall: TextStyle
     @Composable
@@ -62,10 +70,10 @@ fun appTypography(): Typography {
             fontSize = 18.sp
         ),
         bodyLarge = TextStyle(
-            fontFamily = spaceGrotesk,
+            fontFamily = inter,
             fontWeight = FontWeight.Normal,
-            lineHeight = 18.sp,
-            fontSize = 14.sp
+            lineHeight = 24.sp,
+            fontSize = 17.sp
         ),
         bodyMedium = TextStyle(
             fontFamily = spaceGrotesk,
@@ -96,6 +104,12 @@ fun appTypography(): Typography {
             fontWeight = FontWeight.SemiBold,
             lineHeight = 18.sp,
             fontSize = 14.sp
+        ),
+        titleLarge = TextStyle(
+            fontFamily = spaceGrotesk,
+            fontWeight = FontWeight.Bold,
+            lineHeight = 36.sp,
+            fontSize = 32.sp
         ),
         titleSmall = TextStyle(
             fontFamily = spaceGrotesk,
