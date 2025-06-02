@@ -1,7 +1,6 @@
 package me.androidbox.authentication.login.presentation
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -19,20 +18,23 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import me.androidbox.authentication.core.presentation.components.NoteMarkButton
 import me.androidbox.authentication.core.presentation.components.NoteMarkPasswordTextField
 import me.androidbox.authentication.core.presentation.components.NoteMarkTextButton
 import me.androidbox.authentication.core.presentation.components.NoteMarkTextField
 import me.androidbox.authentication.core.presentation.utils.isAtLeastMedium
+import me.androidbox.authentication.login.presentation.vm.LoginViewModel
 import me.androidbox.designsystem.NoteMarkLayout
 import me.androidbox.designsystem.theming.bgGradient
 
 @Composable
 fun PortraitLoginScreen(
     modifier: Modifier = Modifier,
-    viewModel: LoginViewModel,
+    viewModel: LoginViewModel = viewModel(),
     isAtLeastMedium: Boolean = isAtLeastMedium()
 ) {
     val state by viewModel.state.collectAsState()
@@ -53,8 +55,8 @@ fun PortraitLoginScreen(
                         .background(Color.White)
                         .padding(vertical = 32.dp, horizontal = 16.dp)
                         .padding(
-                            vertical = if(isAtLeastMedium) 100.dp else 0.dp,
-                            horizontal = if(isAtLeastMedium) 120.dp else 0.dp
+                            vertical = if (isAtLeastMedium) 100.dp else 0.dp,
+                            horizontal = if (isAtLeastMedium) 120.dp else 0.dp
                         ),
                     horizontalAlignment = if (isAtLeastMedium) Alignment.CenterHorizontally else Alignment.Start
                 ) {
@@ -105,6 +107,7 @@ fun PortraitLoginScreen(
                         onClick = {
 
                         },
+                        enabled = state.isLoginEnabled
                     )
 
                     Spacer(Modifier.height(12.dp))
@@ -114,9 +117,16 @@ fun PortraitLoginScreen(
                         onClick = {
 
                         },
+                        enabled = state.isLoginEnabled
                     )
                 }
             }
         },
     )
+}
+
+@Preview
+@Composable
+private fun PortraitLoginScreenPreview() {
+    PortraitLoginScreen()
 }

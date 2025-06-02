@@ -28,7 +28,7 @@ fun NoteMarkTextButton(
             containerColor = Color.Transparent,
             contentColor = Color(0xff5977F7),
             disabledContainerColor = Color.Transparent,
-            disabledContentColor = Color(0x801B1B1C)
+            disabledContentColor = Color(0xff5977F7)
         ),
         enabled = enabled,
         modifier = modifier
