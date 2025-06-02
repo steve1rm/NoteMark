@@ -1,6 +1,7 @@
 package me.androidbox.authentication.login.presentation
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -13,26 +14,26 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import me.androidbox.authentication.core.presentation.components.NoteMarkButton
 import me.androidbox.authentication.core.presentation.components.NoteMarkPasswordTextField
 import me.androidbox.authentication.core.presentation.components.NoteMarkTextButton
 import me.androidbox.authentication.core.presentation.components.NoteMarkTextField
+import me.androidbox.authentication.core.presentation.utils.isAtLeastMedium
 import me.androidbox.designsystem.NoteMarkLayout
-import me.androidbox.designsystem.theming.NoteMarkTheme
 import me.androidbox.designsystem.theming.bgGradient
 
 @Composable
 fun PortraitLoginScreen(
     modifier: Modifier = Modifier,
-    viewModel: LoginViewModel = viewModel()
+    viewModel: LoginViewModel,
+    isAtLeastMedium: Boolean = isAtLeastMedium()
 ) {
     val state by viewModel.state.collectAsState()
     NoteMarkLayout(
@@ -51,6 +52,11 @@ fun PortraitLoginScreen(
                         .clip(RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp))
                         .background(Color.White)
                         .padding(vertical = 32.dp, horizontal = 16.dp)
+                        .padding(
+                            vertical = if(isAtLeastMedium) 100.dp else 0.dp,
+                            horizontal = if(isAtLeastMedium) 120.dp else 0.dp
+                        ),
+                    horizontalAlignment = if (isAtLeastMedium) Alignment.CenterHorizontally else Alignment.Start
                 ) {
                     Text(
                         text = "Log In",
@@ -113,12 +119,4 @@ fun PortraitLoginScreen(
             }
         },
     )
-}
-
-@Preview
-@Composable
-private fun PortraitLoginScreenPreview() {
-    NoteMarkTheme {
-        PortraitLoginScreen()
-    }
 }

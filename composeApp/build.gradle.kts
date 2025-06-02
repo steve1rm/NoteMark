@@ -34,6 +34,8 @@ kotlin {
             implementation(compose.preview)
             implementation(libs.androidx.activity.compose)
             implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.9.0")
+            implementation("androidx.window:window-core:1.4.0")
+            implementation("androidx.window:window:1.4.0")
         }
         commonMain.dependencies {
             implementation(compose.runtime)

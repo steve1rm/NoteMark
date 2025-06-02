@@ -34,6 +34,7 @@ import me.androidbox.authentication.core.presentation.components.NoteMarkButton
 import me.androidbox.authentication.core.presentation.components.NoteMarkPasswordTextField
 import me.androidbox.authentication.core.presentation.components.NoteMarkTextButton
 import me.androidbox.authentication.core.presentation.components.NoteMarkTextField
+import me.androidbox.authentication.core.presentation.utils.isAtLeastMedium
 import me.androidbox.designsystem.NoteMarkLayout
 import me.androidbox.designsystem.theming.bgGradient
 import org.jetbrains.compose.ui.tooling.preview.Preview
@@ -41,10 +42,12 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 @Composable
 fun LandscapeLoginScreen(
     viewModel: LoginViewModel,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    isAtLeastMedium: Boolean = isAtLeastMedium()
 ) {
     val state by viewModel.state.collectAsState()
     NoteMarkLayout(
+        modifier = modifier,
         toolBar = {},
         content = { innerPadding ->
             Box(
@@ -65,7 +68,8 @@ fun LandscapeLoginScreen(
                         .background(Color.White)
                         .padding(
                             innerPadding.calculateTopPadding()
-                        )
+                        ),
+                    verticalAlignment = if(isAtLeastMedium) Alignment.CenterVertically else Alignment.Top
                 ) {
                     Column(
                         modifier = Modifier.weight(1f),
@@ -100,7 +104,7 @@ fun LandscapeLoginScreen(
                             state.password,
                             onValueChange = { viewModel.onAction(LoginActions.OnPasswordChange(it)) },
                             showPassword = state.showPassword,
-                            onToggleShowPassword = {viewModel.onAction(LoginActions.OnToggleShowPassword)}
+                            onToggleShowPassword = { viewModel.onAction(LoginActions.OnToggleShowPassword) }
                         )
 
                         Spacer(Modifier.height(24.dp))
