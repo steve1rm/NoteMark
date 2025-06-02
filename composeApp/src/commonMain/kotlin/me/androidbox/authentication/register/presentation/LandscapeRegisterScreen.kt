@@ -29,13 +29,11 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import me.androidbox.authentication.core.presentation.components.NoteMarkPasswordTextField
 import me.androidbox.authentication.core.presentation.components.NoteMarkTextField
-import me.androidbox.authentication.core.presentation.utils.isAtLeastMedium
-import me.androidbox.authentication.login.presentation.LoginActions
 import me.androidbox.authentication.register.presentation.vm.RegisterViewModel
+import me.androidbox.core.presentation.designsystem.NoteMarkLayout
 import me.androidbox.core.presentation.designsystem.buttons.OutlineButton
 import me.androidbox.core.presentation.designsystem.buttons.SolidButton
-import me.androidbox.designsystem.NoteMarkLayout
-import me.androidbox.designsystem.theming.bgGradient
+import me.androidbox.core.presentation.designsystem.theming.bgGradient
 
 @Composable
 fun LandscapeRegisterScreen(

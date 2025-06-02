@@ -54,10 +54,10 @@ val lightOnPrimary = Color(0xffffffff)
 val lightBackground = Color(0xffFEFAF6)
 val lightOnBackground = Color(0xff514437)
 
-val lightOnSurface = Color(0xffA5978A)
-val lightOnSurfaceVariant = Color(0xffF6F1EC)
+val lightOnSurface = Color(0xff1B1B1C)
+val lightOnSurfaceVariant = Color(0xff535364)
 val lightSurfaceLow = Color(0xffEEE7E0)
-val lightSurfaceLowest = Color(0xffE1D5CA)
+val lightSurfaceLowest = Color(0xffFFFFFF)
 val lightSurfaceHigh = Color(0xffffffff)
 
 internal val lightColorScheme = lightColorScheme(

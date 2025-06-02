@@ -17,7 +17,7 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 fun SolidButton(
     modifier: Modifier = Modifier,
     text: String,
-    enabled: Boolean,
+    enabled: Boolean = true,
     onClick: () -> Unit
 ) {
     Button(

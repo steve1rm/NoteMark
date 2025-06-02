@@ -1,4 +1,4 @@
-package me.androidbox.startup
+package me.androidbox.startup.presentation
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier

@@ -18,7 +18,7 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 fun OutlineButton(
     modifier: Modifier = Modifier,
     text: String,
-    enabled: Boolean,
+    enabled: Boolean = false,
     onClick: () -> Unit
 ) {
     OutlinedButton(
