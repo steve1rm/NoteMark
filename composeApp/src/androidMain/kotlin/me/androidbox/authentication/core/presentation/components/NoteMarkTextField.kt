@@ -1,10 +1,13 @@
 package me.androidbox.authentication.core.presentation.components
 
+import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
@@ -33,12 +36,16 @@ fun NoteMarkTextField(
     hint: String,
     value: String,
     onValueChange: (String) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    supportText: String? = null,
+    errorText: String? = null,
 ) {
     var isFocused by remember { mutableStateOf(false) }
+    val inputBorderColor = if (errorText == null) Color(0xff535364) else Color(0xffE1294B)
     Column(
         modifier = modifier
-            .fillMaxWidth(),
+            .fillMaxWidth()
+            .animateContentSize(),
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         Text(
@@ -54,16 +61,15 @@ fun NoteMarkTextField(
                 .fillMaxWidth()
                 .clip(RoundedCornerShape(12.dp))
                 .then(
-                    if (isFocused) Modifier.border(
-                        1.dp,
-                        Color(0xff535364),
-                        RoundedCornerShape(12.dp)
-                    )
+                    if (isFocused)
+                        Modifier.border(
+                            1.dp, inputBorderColor,
+                            RoundedCornerShape(12.dp)
+                        )
                     else Modifier
                 )
                 .background(
-                    if (isFocused)
-                        Color.White
+                    if (isFocused) Color.White
                     else Color(0xffEFEFF2)
                 )
                 .padding(
@@ -91,5 +97,15 @@ fun NoteMarkTextField(
                 input.invoke()
             }
         )
+
+        if (isFocused) {
+            supportText?.let { text ->
+                Text(
+                    text = text,
+                    fontSize = 15.sp,
+                    color = Color(0xff535364)
+                )
+            }
+        }
     }
 }

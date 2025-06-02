@@ -1,22 +1,18 @@
-package me.androidbox.authentication.login.presentation
+package me.androidbox.authentication.register.presentation
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.calculateEndPadding
-import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.safeContent
-import androidx.compose.foundation.layout.safeContentPadding
-import androidx.compose.foundation.layout.safeDrawing
-import androidx.compose.foundation.layout.windowInsetsPadding
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -26,29 +22,25 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import me.androidbox.authentication.core.presentation.components.NoteMarkButton
 import me.androidbox.authentication.core.presentation.components.NoteMarkPasswordTextField
-import me.androidbox.authentication.core.presentation.components.NoteMarkTextButton
 import me.androidbox.authentication.core.presentation.components.NoteMarkTextField
 import me.androidbox.authentication.core.presentation.utils.isAtLeastMedium
-import me.androidbox.authentication.login.presentation.vm.LoginViewModel
+import me.androidbox.authentication.login.presentation.LoginActions
+import me.androidbox.authentication.register.presentation.vm.RegisterViewModel
 import me.androidbox.core.presentation.designsystem.buttons.OutlineButton
 import me.androidbox.core.presentation.designsystem.buttons.SolidButton
 import me.androidbox.designsystem.NoteMarkLayout
 import me.androidbox.designsystem.theming.bgGradient
-import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
-fun LandscapeLoginScreen(
+fun LandscapeRegisterScreen(
     modifier: Modifier = Modifier,
-    viewModel: LoginViewModel = viewModel(),
-    isAtLeastMedium: Boolean = isAtLeastMedium()
+    viewModel: RegisterViewModel = viewModel(),
 ) {
     val state by viewModel.state.collectAsState()
     NoteMarkLayout(
@@ -79,9 +71,10 @@ fun LandscapeLoginScreen(
                         modifier = Modifier.weight(1f),
                     ) {
                         Text(
-                            text = "Log In",
+                            text = "Create account",
+                            fontWeight = FontWeight.Bold,
                             fontSize = 32.sp,
-                            fontWeight = FontWeight.Bold
+                            color = Color(0xff1B1B1C)
                         )
                         Spacer(Modifier.height(6.dp))
                         Text(
@@ -92,44 +85,76 @@ fun LandscapeLoginScreen(
                         )
                     }
                     Column(
-                        modifier = Modifier.weight(1f),
+                        modifier = Modifier
+                            .weight(1f)
+                            .verticalScroll(rememberScrollState()),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         NoteMarkTextField(
-                            "Email",
-                            "john.doe@example.com",
-                            state.email,
-                            onValueChange = { viewModel.onAction(LoginActions.OnEmailChange(it)) }
+                            label = "Username",
+                            hint = "John.doe",
+                            value = state.username,
+                            onValueChange = {
+                                viewModel.onAction(RegisterActions.OnUsernameChange(it))
+                            },
+                            supportText = "Use between 3 and 20 characters for your username."
+                        )
+                        Spacer(Modifier.height(16.dp))
+                        NoteMarkTextField(
+                            label = "Email",
+                            hint = "john.doe@example.com",
+                            value = state.email,
+                            onValueChange = {
+                                viewModel.onAction(RegisterActions.OnEmailChange(it))
+                            }
                         )
                         Spacer(Modifier.height(16.dp))
                         NoteMarkPasswordTextField(
-                            "Password",
-                            "Password",
-                            state.password,
-                            onValueChange = { viewModel.onAction(LoginActions.OnPasswordChange(it)) },
+                            label = "Password",
+                            hint = "Password",
+                            value = state.password,
+                            onValueChange = {
+                                viewModel.onAction(RegisterActions.OnPasswordChange(it))
+                            },
                             showPassword = state.showPassword,
-                            onToggleShowPassword = { viewModel.onAction(LoginActions.OnToggleShowPassword) }
+                            onToggleShowPassword = {
+                                viewModel.onAction(RegisterActions.OnToggleShowPassword)
+                            },
+                            supportText = "Use 8+ characters with a number or symbol for better security."
+                        )
+                        Spacer(Modifier.height(16.dp))
+                        NoteMarkPasswordTextField(
+                            label = "Repeat Password",
+                            hint = "Password",
+                            value = state.confirmPassword,
+                            onValueChange = {
+                                viewModel.onAction(RegisterActions.OnConfirmPasswordChange(it))
+                            },
+                            showPassword = state.showConfirmPassword,
+                            onToggleShowPassword = {
+                                viewModel.onAction(RegisterActions.OnToggleShowConfirmPassword)
+                            }
                         )
 
                         Spacer(Modifier.height(24.dp))
 
                         SolidButton(
-                            text = "Log in",
+                            text = "Create account",
                             onClick = {
 
                             },
-                            enabled = state.isLoginEnabled,
+                            enabled = state.isRegisterEnabled,
                             modifier = Modifier.fillMaxWidth()
                         )
 
                         Spacer(Modifier.height(12.dp))
 
                         OutlineButton(
-                            text = "Don’t have an account?",
+                            text = "Already have an account?",
                             onClick = {
 
                             },
-                            enabled = state.isLoginEnabled,
+                            enabled = state.isRegisterEnabled,
                             modifier = Modifier.fillMaxWidth()
                         )
                     }
@@ -137,10 +162,4 @@ fun LandscapeLoginScreen(
             }
         }
     )
-}
-
-@Preview
-@Composable
-private fun LandscapeLoginScreenPreview() {
-
 }
