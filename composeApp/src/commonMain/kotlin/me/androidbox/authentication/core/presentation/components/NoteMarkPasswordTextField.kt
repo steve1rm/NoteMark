@@ -8,15 +8,12 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
-import androidx.compose.material.icons.Icons
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -34,8 +31,8 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import me.androidbox.designsystem.theming.eye
-import me.androidbox.designsystem.theming.eyeOff
+import me.androidbox.core.presentation.designsystem.theming.eye
+import me.androidbox.core.presentation.designsystem.theming.eyeOff
 
 @Composable
 fun NoteMarkPasswordTextField(
@@ -102,8 +99,8 @@ fun NoteMarkPasswordTextField(
             decorationBox = { input ->
                 Row {
                     val icon = if (showPassword) {
-                        Icons.Outlined.eyeOff
-                    } else Icons.Outlined.eye
+                        eye
+                    } else eyeOff
                     Box(
                         modifier = Modifier
                             .weight(1f)

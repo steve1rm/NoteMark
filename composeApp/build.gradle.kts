@@ -1,4 +1,4 @@
-import org.jetbrains.compose.desktop.application.dsl.TargetFormat
+
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
@@ -36,6 +36,9 @@ kotlin {
             implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.9.0")
             implementation("androidx.window:window-core:1.4.0")
             implementation("androidx.window:window:1.4.0")
+            implementation(libs.koin.android)
+            implementation(libs.koin.compose)
+
         }
         commonMain.dependencies {
             implementation(compose.runtime)
@@ -46,6 +49,8 @@ kotlin {
             implementation(compose.components.uiToolingPreview)
             implementation(libs.androidx.lifecycle.runtimeCompose)
             implementation(libs.androidx.lifecycle.viewmodel)
+            implementation(libs.koin.compose)
+            implementation(libs.koin.compose.viewmodel)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
