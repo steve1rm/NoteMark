@@ -96,6 +96,12 @@ fun appTypography(): Typography {
             fontWeight = FontWeight.SemiBold,
             lineHeight = 18.sp,
             fontSize = 14.sp
+        ),
+        titleSmall = TextStyle(
+            fontFamily = spaceGrotesk,
+            fontWeight = FontWeight.Medium,
+            lineHeight = 24.sp,
+            fontSize = 17.sp
         )
     )
 }
