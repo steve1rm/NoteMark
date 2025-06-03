@@ -6,9 +6,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.lifecycle.viewmodel.compose.viewModel
 import me.androidbox.authentication.core.presentation.models.Orientation
-import me.androidbox.authentication.core.presentation.utils.getOrientation
 import me.androidbox.authentication.register.presentation.vm.RegisterViewModel
 import me.androidbox.authentication.register.presentation.vm.RegisterViewModelFactory
+import me.androidbox.getOrientation
 
 @Composable
 fun RegisterScreen() {

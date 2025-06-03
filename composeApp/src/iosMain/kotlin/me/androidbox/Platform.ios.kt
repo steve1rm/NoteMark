@@ -1,5 +1,7 @@
 package me.androidbox
 
+import androidx.compose.runtime.Composable
+import me.androidbox.authentication.core.presentation.models.Orientation
 import platform.UIKit.UIDevice
 
 class IOSPlatform: Platform {
@@ -7,6 +9,13 @@ class IOSPlatform: Platform {
 }
 
 actual fun getPlatform(): Platform = IOSPlatform()
-actual fun getOrientation(): Platform {
+
+@Composable
+actual fun getOrientation(): Orientation {
+    TODO("Not yet implemented")
+}
+
+@Composable
+actual fun isAtLeastMedium(): Boolean {
     TODO("Not yet implemented")
 }

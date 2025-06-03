@@ -24,11 +24,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import me.androidbox.authentication.core.presentation.components.NoteMarkPasswordTextField
 import me.androidbox.authentication.core.presentation.components.NoteMarkTextField
-import me.androidbox.authentication.core.presentation.utils.isAtLeastMedium
 import me.androidbox.core.presentation.designsystem.NoteMarkLayout
 import me.androidbox.core.presentation.designsystem.buttons.OutlineButton
 import me.androidbox.core.presentation.designsystem.buttons.SolidButton
 import me.androidbox.core.presentation.designsystem.theming.bgGradient
+import me.androidbox.isAtLeastMedium
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
