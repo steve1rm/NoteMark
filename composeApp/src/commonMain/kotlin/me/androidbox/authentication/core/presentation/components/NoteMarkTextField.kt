@@ -5,13 +5,11 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
-import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -20,11 +18,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.focus.FocusRequester
-import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -41,7 +37,17 @@ fun NoteMarkTextField(
     errorText: String? = null,
 ) {
     var isFocused by remember { mutableStateOf(false) }
-    val inputBorderColor = if (errorText == null) Color(0xff535364) else Color(0xffE1294B)
+    val errorSupportColor = if (errorText == null) Color(0xff535364) else Color(0xffE1294B)
+    val inputBorder = if (isFocused || errorText != null && !isFocused) {
+        Modifier.border(
+            1.dp, errorSupportColor,
+            RoundedCornerShape(12.dp)
+        )
+    } else Modifier
+    val inputBackground = if (isFocused || (!isFocused && errorText != null))
+        Color.White
+    else Color(0xffEFEFF2)
+
     Column(
         modifier = modifier
             .fillMaxWidth()
@@ -60,18 +66,8 @@ fun NoteMarkTextField(
             modifier = Modifier
                 .fillMaxWidth()
                 .clip(RoundedCornerShape(12.dp))
-                .then(
-                    if (isFocused)
-                        Modifier.border(
-                            1.dp, inputBorderColor,
-                            RoundedCornerShape(12.dp)
-                        )
-                    else Modifier
-                )
-                .background(
-                    if (isFocused) Color.White
-                    else Color(0xffEFEFF2)
-                )
+                .then(inputBorder)
+                .background(inputBackground)
                 .padding(
                     vertical = 12.dp,
                     horizontal = 16.dp
@@ -79,6 +75,7 @@ fun NoteMarkTextField(
                 .onFocusChanged { focusState ->
                     isFocused = focusState.isFocused
                 },
+            cursorBrush = SolidColor(errorSupportColor),
             singleLine = true,
             textStyle = TextStyle(
                 color = Color(0xff1B1B1C),
@@ -98,14 +95,20 @@ fun NoteMarkTextField(
             }
         )
 
-        if (isFocused) {
-            supportText?.let { text ->
-                Text(
-                    text = text,
-                    fontSize = 15.sp,
-                    color = Color(0xff535364)
-                )
-            }
+        if (isFocused && supportText != null && errorText == null) {
+            Text(
+                text = supportText,
+                fontSize = 15.sp,
+                color = Color(0xff535364)
+            )
+        }
+
+        if (errorText != null) {
+            Text(
+                text = errorText,
+                fontSize = 15.sp,
+                color = Color(0xffE1294B)
+            )
         }
     }
 }

@@ -87,7 +87,8 @@ fun PortraitRegisterScreen(
                         onValueChange = {
                             onAction(RegisterActions.OnUsernameChange(it))
                         },
-                        supportText = "Use between 3 and 20 characters for your username."
+                        supportText = "Use between 3 and 20 characters for your username.",
+                        errorText = state.usernameError
                     )
 
                     Spacer(Modifier.height(16.dp))
@@ -99,6 +100,7 @@ fun PortraitRegisterScreen(
                         onValueChange = {
                             onAction(RegisterActions.OnEmailChange(it))
                         },
+                        errorText = state.emailError
                     )
 
                     Spacer(Modifier.height(16.dp))
@@ -114,7 +116,8 @@ fun PortraitRegisterScreen(
                         onToggleShowPassword = {
                             onAction(RegisterActions.OnToggleShowPassword)
                         },
-                        supportText = "Use 8+ characters with a number or symbol for better security."
+                        supportText = "Use 8+ characters with a number or symbol for better security.",
+                        errorText = state.passwordError
                     )
 
                     Spacer(Modifier.height(16.dp))
@@ -122,14 +125,15 @@ fun PortraitRegisterScreen(
                     NoteMarkPasswordTextField(
                         label = "Repeat Password",
                         hint = "Password",
-                        value = state.confirmPassword,
+                        value = state.repeatPassword,
                         onValueChange = {
-                            onAction(RegisterActions.OnConfirmPasswordChange(it))
+                            onAction(RegisterActions.OnRepeatPasswordChange(it))
                         },
                         showPassword = state.showConfirmPassword,
                         onToggleShowPassword = {
                             onAction(RegisterActions.OnToggleShowConfirmPassword)
-                        }
+                        },
+                        errorText = state.repeatPasswordError
                     )
 
                     Spacer(Modifier.height(24.dp))

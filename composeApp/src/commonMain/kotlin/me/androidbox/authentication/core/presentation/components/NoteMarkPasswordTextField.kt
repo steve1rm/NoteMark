@@ -47,6 +47,16 @@ fun NoteMarkPasswordTextField(
     errorText: String? = null,
 ) {
     var isFocused by remember { mutableStateOf(false) }
+    val errorSupportColor = if (errorText == null) Color(0xff535364) else Color(0xffE1294B)
+    val inputBorder = if (isFocused || errorText != null && !isFocused) {
+        Modifier.border(
+            1.dp, errorSupportColor,
+            RoundedCornerShape(12.dp)
+        )
+    } else Modifier
+    val inputBackground = if (isFocused || (!isFocused && errorText != null))
+        Color.White
+    else Color(0xffEFEFF2)
     Column(
         modifier = modifier
             .fillMaxWidth()
@@ -70,19 +80,8 @@ fun NoteMarkPasswordTextField(
             modifier = Modifier
                 .fillMaxWidth()
                 .clip(RoundedCornerShape(12.dp))
-                .then(
-                    if (isFocused) Modifier.border(
-                        1.dp,
-                        Color(0xff535364),
-                        RoundedCornerShape(12.dp)
-                    )
-                    else Modifier
-                )
-                .background(
-                    if (isFocused)
-                        Color.White
-                    else Color(0xffEFEFF2)
-                )
+                .then(inputBorder)
+                .background(inputBackground)
                 .padding(
                     vertical = 12.dp,
                     horizontal = 16.dp
@@ -128,17 +127,20 @@ fun NoteMarkPasswordTextField(
             }
         )
 
-        if (isFocused) {
-            supportText?.let { text ->
-                Text(
-                    text = text,
-                    fontSize = 15.sp,
-                    color = Color(0xff535364)
-                )
-            }
+        if (isFocused && supportText != null && errorText == null) {
+            Text(
+                text = supportText,
+                fontSize = 15.sp,
+                color = Color(0xff535364)
+            )
         }
-//        if (hasErrorText) {
-//
-//        }
+
+        if (errorText != null) {
+            Text(
+                text = errorText,
+                fontSize = 15.sp,
+                color = Color(0xffE1294B)
+            )
+        }
     }
 }

@@ -1,6 +1,8 @@
 package me.androidbox.authentication.register.presentation
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.lifecycle.viewmodel.compose.viewModel
 import me.androidbox.authentication.core.presentation.models.Orientation
@@ -13,7 +15,7 @@ fun RegisterScreen() {
     val factory = remember { RegisterViewModelFactory() }
     val viewModel: RegisterViewModel = viewModel(factory = factory)
 
-    val state = viewModel.state.value
+    val state by viewModel.state.collectAsState()
 
     if (getOrientation() == Orientation.PORTRAIT) {
         PortraitRegisterScreen(
@@ -21,6 +23,9 @@ fun RegisterScreen() {
             onAction = viewModel::onAction
         )
     } else {
-        LandscapeRegisterScreen(viewModel = viewModel)
+        LandscapeRegisterScreen(
+            state = state,
+            onAction = viewModel::onAction
+        )
     }
 }
