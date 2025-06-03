@@ -1,12 +1,13 @@
 package me.androidbox
 
 import androidx.compose.runtime.Composable
-import me.androidbox.authentication.register.presentation.RegisterScreen
 import me.androidbox.core.presentation.designsystem.theming.NoteMarkTheme
+import me.androidbox.startup.presentation.LandingScreen
 
 @Composable
 fun App() {
     NoteMarkTheme {
-        RegisterScreen()
+ //       RegisterScreen()
+        LandingScreen()
     }
 }
