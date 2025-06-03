@@ -9,6 +9,7 @@ import me.androidbox.startup.presentation.LandingPortraitScreen
 @Composable
 fun App() {
     NoteMarkTheme {
+        // Testing
         when(getOrientation()) {
             Orientation.PORTRAIT -> {
                 LandingPortraitScreen()
