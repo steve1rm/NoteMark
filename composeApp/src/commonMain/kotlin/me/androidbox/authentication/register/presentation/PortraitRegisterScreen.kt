@@ -33,8 +33,9 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 fun PortraitRegisterScreen(
     modifier: Modifier = Modifier,
     onAction: (RegisterActions) -> Unit,
+    state: RegisterUiState,
+    onNavigateToLogin: () -> Unit,
     isAtLeastMedium: Boolean = isAtLeastMedium(),
-    state: RegisterUiState
 ) {
     // TODO do not pass in the viewmodel into the screen
     // Only state should be passed in, and lambda actions
@@ -151,10 +152,7 @@ fun PortraitRegisterScreen(
 
                     OutlineButton(
                         text = "Already have an account?",
-                        onClick = {
-
-                        },
-                        enabled = state.isRegisterEnabled,
+                        onClick = onNavigateToLogin,
                         modifier = Modifier.fillMaxWidth()
                     )
                 }
@@ -168,8 +166,9 @@ fun PortraitRegisterScreen(
 private fun PortraitRegisterScreenPreview() {
     NoteMarkTheme {
         PortraitRegisterScreen(
+            onAction = {},
             state = RegisterUiState(),
-            onAction = {}
+            onNavigateToLogin = {}
         )
     }
 }

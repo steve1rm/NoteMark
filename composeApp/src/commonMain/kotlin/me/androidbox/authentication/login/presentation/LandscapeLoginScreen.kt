@@ -36,6 +36,7 @@ fun LandscapeLoginScreen(
     modifier: Modifier = Modifier,
     onAction: (LoginActions) -> Unit,
     state: LoginUiState,
+    onNavigateToRegister : () -> Unit,
     isAtLeastMedium: Boolean = isAtLeastMedium()
 ) {
 
@@ -114,10 +115,7 @@ fun LandscapeLoginScreen(
 
                         OutlineButton(
                             text = "Don’t have an account?",
-                            onClick = {
-
-                            },
-                            enabled = state.isLoginEnabled,
+                            onClick = onNavigateToRegister,
                             modifier = Modifier.fillMaxWidth()
                         )
                     }

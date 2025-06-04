@@ -11,7 +11,9 @@ import me.androidbox.authentication.login.presentation.vm.LoginViewModelFactory
 import me.androidbox.getOrientation
 
 @Composable
-fun LoginScreen() {
+fun LoginScreen(
+    onNavigateToRegister : () -> Unit
+) {
     val factory = remember { LoginViewModelFactory() }
     val viewModel: LoginViewModel = viewModel(factory = factory)
     val state by viewModel.state.collectAsState()
@@ -19,12 +21,14 @@ fun LoginScreen() {
     if (getOrientation() == Orientation.PORTRAIT) {
         PortraitLoginScreen(
             onAction = viewModel::onAction,
-            state = state
+            state = state,
+            onNavigateToRegister = onNavigateToRegister
         )
     } else {
         LandscapeLoginScreen(
             onAction = viewModel::onAction,
-            state = state
+            state = state,
+            onNavigateToRegister = onNavigateToRegister
         )
     }
 }

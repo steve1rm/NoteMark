@@ -1,4 +1,5 @@
 
+import org.gradle.kotlin.dsl.implementation
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
@@ -7,6 +8,7 @@ plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
+    alias(libs.plugins.kotlin.serialization)
 }
 
 kotlin {
@@ -33,9 +35,9 @@ kotlin {
         androidMain.dependencies {
             implementation(compose.preview)
             implementation(libs.androidx.activity.compose)
-            implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.9.0")
-            implementation("androidx.window:window-core:1.4.0")
-            implementation("androidx.window:window:1.4.0")
+            implementation(libs.androidx.lifecycle.viewmodel.compose)
+            implementation(libs.androidx.window.core)
+            implementation(libs.androidx.window)
             implementation(libs.koin.android)
             implementation(libs.koin.compose)
 
@@ -51,6 +53,9 @@ kotlin {
             implementation(libs.androidx.lifecycle.viewmodel)
             implementation(libs.koin.compose)
             implementation(libs.koin.compose.viewmodel)
+            implementation(libs.navigation.compose)
+            implementation(libs.kotlinx.serialization.json)
+
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)

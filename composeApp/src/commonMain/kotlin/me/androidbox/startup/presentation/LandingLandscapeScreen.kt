@@ -22,7 +22,9 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
 fun LandingLandscapeScreen(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onGettingStartedClick: () -> Unit,
+    onLoginClick: () -> Unit,
 ) {
     Box(
         modifier = modifier
@@ -49,8 +51,8 @@ fun LandingLandscapeScreen(
                         color = MaterialTheme.colorScheme.surfaceContainerLowest,
                         shape = RoundedCornerShape(topStart = 20.dp, bottomStart = 20.dp)
                     ),
-                onLoginClicked = {},
-                onGettingStartedClicked = {}
+                onGettingStartedClicked = onGettingStartedClick,
+                onLoginClicked = onLoginClick
             )
         }
     }
@@ -60,6 +62,10 @@ fun LandingLandscapeScreen(
 @Composable
 fun LandingLandscapeScreenPreview() {
     NoteMarkTheme {
-        LandingLandscapeScreen()
+        LandingLandscapeScreen(
+            Modifier,
+            {},
+            {}
+        )
     }
 }

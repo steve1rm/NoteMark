@@ -33,6 +33,7 @@ fun PortraitLoginScreen(
     modifier: Modifier = Modifier,
     onAction: (LoginActions) -> Unit,
     state: LoginUiState,
+    onNavigateToRegister : () -> Unit,
     isAtLeastMedium: Boolean = isAtLeastMedium()
 ) {
     NoteMarkLayout(
@@ -115,7 +116,6 @@ fun PortraitLoginScreen(
                         onClick = {
 
                         },
-                        enabled = state.isLoginEnabled,
                         modifier = Modifier.fillMaxWidth()
                     )
                 }
