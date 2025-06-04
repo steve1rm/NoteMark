@@ -8,6 +8,7 @@ plugins {
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
     alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.gmazzo.buildconfig)
 }
 
 kotlin {
@@ -39,12 +40,6 @@ kotlin {
             implementation(libs.androidx.window)
             implementation(libs.koin.android)
             implementation(libs.koin.compose)
-            implementation(libs.ktorClientCio)
-            implementation(libs.ktorClientAuth)
-            implementation(libs.ktorClientCore)
-            implementation(libs.ktorClientLogging)
-            implementation(libs.ktorClientSerialization)
-            implementation(libs.ktorSerializationJson)
         }
 
         commonMain.dependencies {
@@ -60,6 +55,13 @@ kotlin {
             implementation(libs.koin.compose.viewmodel)
             implementation(libs.navigation.compose)
             implementation(libs.kotlinx.serialization.json)
+            implementation(libs.ktorClientCio)
+            implementation(libs.ktorClientAuth)
+            implementation(libs.ktorClientCore)
+            implementation(libs.ktorClientLogging)
+            implementation(libs.ktorClientSerialization)
+            implementation(libs.ktorSerializationJson)
+            implementation(libs.ktorClientContentNegotiation)
         }
 
         iosMain.dependencies {
