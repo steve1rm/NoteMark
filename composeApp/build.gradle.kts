@@ -1,5 +1,4 @@
 
-import org.gradle.kotlin.dsl.implementation
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
@@ -40,8 +39,14 @@ kotlin {
             implementation(libs.androidx.window)
             implementation(libs.koin.android)
             implementation(libs.koin.compose)
-
+            implementation(libs.ktorClientCio)
+            implementation(libs.ktorClientAuth)
+            implementation(libs.ktorClientCore)
+            implementation(libs.ktorClientLogging)
+            implementation(libs.ktorClientSerialization)
+            implementation(libs.ktorSerializationJson)
         }
+
         commonMain.dependencies {
             implementation(compose.runtime)
             implementation(compose.foundation)
@@ -55,8 +60,12 @@ kotlin {
             implementation(libs.koin.compose.viewmodel)
             implementation(libs.navigation.compose)
             implementation(libs.kotlinx.serialization.json)
-
         }
+
+        iosMain.dependencies {
+            implementation(libs.ktor.client.darwin)
+        }
+
         commonTest.dependencies {
             implementation(libs.kotlin.test)
         }

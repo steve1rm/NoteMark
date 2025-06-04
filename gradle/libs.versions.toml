@@ -20,6 +20,8 @@ navigationCompose = "2.8.0-alpha13"
 window = "1.4.0"
 windowCore = "1.4.0"
 kotlinxSerializationJson = "1.8.0"
+ktorVersion = "2.3.3"
+logbackClassicVersion = "1.2.3"
 
 [libraries]
 androidx-lifecycle-viewmodel-compose = { module = "androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "lifecycleViewmodelCompose" }
@@ -44,6 +46,18 @@ koin-compose-viewmodel = { module = "io.insert-koin:koin-compose-viewmodel", ver
 
 navigation-compose = { module = "org.jetbrains.androidx.navigation:navigation-compose", version.ref = "navigationCompose" }
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinxSerializationJson" }
+
+# ktor client
+ktorClientCore = { module = "io.ktor:ktor-client-core", version.ref = "ktorVersion" }
+ktorClientAndroid = { module = "io.ktor:ktor-client-android", version.ref = "ktorVersion" }
+ktorClientCio = { module = "io.ktor:ktor-client-cio", version.ref = "ktorVersion" }
+ktorClientSerialization = { module = "io.ktor:ktor-client-serialization", version.ref = "ktorVersion" }
+ktorClientLogging = { module = "io.ktor:ktor-client-logging", version.ref = "ktorVersion" }
+ktroClientContentNegotiation = { module = "io.ktor:ktor-client-content-negotiation", version.ref = "ktorVersion" }
+ktorClientAuth = { module = "io.ktor:ktor-client-auth", version.ref = "ktorVersion" }
+logbackClassic = { module = "ch.qos.logback:logback-classic", version.ref = "logbackClassicVersion" }
+ktorSerializationJson = { module = "io.ktor:ktor-serialization-kotlinx-json", version.ref = "ktorVersion" }
+ktor-client-darwin = { module = "io.ktor:ktor-client-darwin", version.ref = "ktorVersion" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
