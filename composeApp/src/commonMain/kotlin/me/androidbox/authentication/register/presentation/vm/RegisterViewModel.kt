@@ -1,11 +1,15 @@
 package me.androidbox.authentication.register.presentation.vm
 
+import androidx.compose.runtime.snapshotFlow
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import me.androidbox.authentication.register.domain.use_case.ValidateEmailUseCase
 import me.androidbox.authentication.register.domain.model.ValidationResult
+import me.androidbox.authentication.register.domain.use_case.RegisterUseCase
 import me.androidbox.authentication.register.domain.use_case.ValidatePasswordUseCase
 import me.androidbox.authentication.register.domain.use_case.ValidateRepeatPasswordUseCase
 import me.androidbox.authentication.register.domain.use_case.ValidateUsernameUseCase
@@ -13,10 +17,7 @@ import me.androidbox.authentication.register.presentation.RegisterActions
 import me.androidbox.authentication.register.presentation.RegisterUiState
 
 class RegisterViewModel(
-    private val validateUsernameUseCase: ValidateUsernameUseCase,
-    private val validateEmailUseCase: ValidateEmailUseCase,
-    private val validatePasswordUseCase: ValidatePasswordUseCase,
-    private val validateRepeatPasswordUseCase: ValidateRepeatPasswordUseCase,
+    private val registerUseCase: RegisterUseCase
 ) : ViewModel() {
     private val _state = MutableStateFlow(RegisterUiState())
     val state = _state.asStateFlow()
@@ -54,10 +55,30 @@ class RegisterViewModel(
                 _state.update { it.copy(showConfirmPassword = !it.showConfirmPassword) }
             }
         }
+
+        viewModelScope.launch {
+            snapshotFlow { _state.value }
+                .collect {
+                    if (
+                        it.usernameError == null &&
+                        it.emailError == null &&
+                        it.passwordError == null &&
+                        it.repeatPasswordError == null &&
+                        it.username.isNotEmpty() &&
+                        it.email.isNotEmpty() &&
+                        it.password.isNotEmpty() &&
+                        it.repeatPassword.isNotEmpty()
+                    ) {
+                        _state.update { state -> state.copy(isRegisterEnabled = true) }
+                    } else {
+                        _state.update { state -> state.copy(isRegisterEnabled = false) }
+                    }
+                }
+        }
     }
 
     private fun validateUsername(username: String) {
-        val validatedUsernameResult = validateUsernameUseCase(username)
+        val validatedUsernameResult = registerUseCase.validateUsernameUseCase(username)
 
         when (val state = validatedUsernameResult) {
             is ValidationResult.Error -> {
@@ -71,7 +92,7 @@ class RegisterViewModel(
     }
 
     private fun validateEmail(email: String) {
-        val validatedEmailResult = validateEmailUseCase(email)
+        val validatedEmailResult = registerUseCase.validateEmailUseCase(email)
 
         when (val state = validatedEmailResult) {
             is ValidationResult.Error -> {
@@ -85,7 +106,7 @@ class RegisterViewModel(
     }
 
     private fun validatePassword(password: String) {
-        val validatedPasswordResult = validatePasswordUseCase(password)
+        val validatedPasswordResult = registerUseCase.validatePasswordUseCase(password)
 
         when (val state = validatedPasswordResult) {
             is ValidationResult.Error -> {
@@ -99,7 +120,7 @@ class RegisterViewModel(
     }
 
     private fun validateRepeatPassword(password: String, repeatPassword: String) {
-        val validatedRepeatPasswordResult = validateRepeatPasswordUseCase(
+        val validatedRepeatPasswordResult = registerUseCase.validateRepeatPasswordUseCase(
             password = password,
             repeatedPassword = repeatPassword
         )

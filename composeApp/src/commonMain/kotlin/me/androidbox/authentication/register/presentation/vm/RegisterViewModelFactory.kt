@@ -2,6 +2,7 @@ package me.androidbox.authentication.register.presentation.vm
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import me.androidbox.authentication.register.domain.use_case.RegisterUseCase
 import me.androidbox.authentication.register.domain.use_case.ValidateEmailUseCase
 import me.androidbox.authentication.register.domain.use_case.ValidatePasswordUseCase
 import me.androidbox.authentication.register.domain.use_case.ValidateRepeatPasswordUseCase
@@ -14,12 +15,14 @@ class RegisterViewModelFactory : ViewModelProvider.Factory {
             val emailValidationUseCase = ValidateEmailUseCase()
             val passwordValidationUseCase = ValidatePasswordUseCase()
             val repeatPasswordValidationUseCase = ValidateRepeatPasswordUseCase()
-
-            return RegisterViewModel(
+            val registerUseCase = RegisterUseCase(
                 validateUsernameUseCase = usernameValidationUseCase,
                 validateEmailUseCase = emailValidationUseCase,
                 validatePasswordUseCase = passwordValidationUseCase,
                 validateRepeatPasswordUseCase = repeatPasswordValidationUseCase
+            )
+            return RegisterViewModel(
+                registerUseCase
             ) as T
         }
         throw IllegalStateException("Viewmodel not found")
