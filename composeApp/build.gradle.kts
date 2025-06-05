@@ -63,6 +63,7 @@ kotlin {
             implementation(libs.ktorClientSerialization)
             implementation(libs.ktorSerializationJson)
             implementation(libs.ktorClientContentNegotiation)
+            implementation(libs.kvault)
         }
 
         iosMain.dependencies {
