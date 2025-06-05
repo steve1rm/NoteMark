@@ -14,7 +14,8 @@ class NoteMarkApplication : Application() {
             config = {
                 androidContext(this@NoteMarkApplication)
                 androidLogger(Level.DEBUG)
-            }
+            },
+            androidSpecificModule
         )
     }
 }

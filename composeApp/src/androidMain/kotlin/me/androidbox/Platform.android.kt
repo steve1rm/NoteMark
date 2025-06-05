@@ -1,5 +1,6 @@
 package me.androidbox
 
+import android.content.Context
 import android.content.res.Configuration
 import android.os.Build
 import androidx.compose.runtime.Composable
@@ -46,4 +47,22 @@ fun calculateWindowSizeClass(): WindowSizeClass {
     val currentWindowMetrics =
         WindowMetricsCalculator.getOrCreate().computeCurrentWindowMetrics(LocalContext.current)
     return WindowSizeClass.BREAKPOINTS_V1.computeWindowSizeClass(currentWindowMetrics)
+}
+
+actual class NoteMarkPreferencesImp(context: Context) : NoteMarkPreferences {
+    actual override fun setRefreshToken(value: String) {
+        TODO("Not yet implemented")
+    }
+
+    actual override fun getRefreshToken(): String {
+        TODO("Not yet implemented")
+    }
+
+    actual override fun setAccessToken(value: String) {
+        TODO("Not yet implemented")
+    }
+
+    actual override fun getAccessToken(): String {
+        TODO("Not yet implemented")
+    }
 }

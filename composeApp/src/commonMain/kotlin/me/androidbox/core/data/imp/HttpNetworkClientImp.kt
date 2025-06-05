@@ -17,10 +17,15 @@ import io.ktor.http.ContentType
 import io.ktor.http.contentType
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
+import me.androidbox.NoteMarkPreferences
+import me.androidbox.authentication.login.data.TokenDto
+import me.androidbox.authentication.login.data.TokenRefresh
 import me.androidbox.core.data.HttpNetworkClient
 import me.androidbox.core.data.Routes
 
-class HttpNetworkClientImp : HttpNetworkClient {
+class HttpNetworkClientImp(
+    private val noteMarkPreferences: NoteMarkPreferences
+) : HttpNetworkClient {
     override fun build(): HttpClient {
         val httpClient = HttpClient(CIO) {
             install(ContentNegotiation) {
@@ -65,32 +70,25 @@ class HttpNetworkClientImp : HttpNetworkClient {
                     this.loadTokens {
                         /** Load tokens from shared preferences */
                         BearerTokens(
-                            accessToken = "",
-                            refreshToken = ""
+                            accessToken = noteMarkPreferences.getAccessToken(),
+                            refreshToken = noteMarkPreferences.getRefreshToken()
                         )
                     }
 
                     this.refreshTokens {
                         val requestBearerTokens = this.client.post(Routes.TOKEN_REFRESH) {
                             this.setBody(
-                                RequestRefreshTokens(
-                                    grantType = "refresh_token",
-                                    refreshToken = "",
-                                    clientId = "",
-                                    clientSecret = ""
+                                TokenRefresh(
+                                    refreshToken = noteMarkPreferences.getRefreshToken(),
                                 )
                             )
-                        }.body<LoginResponseDto?>()
-
+                        }.body<TokenDto?>()
 
                         /** Save updated token to the cache */
                         if(requestBearerTokens != null) {
-                            val authorization = AuthorizationInfo(
-                                accessToken = requestBearerTokens.accessToken,
-                                refreshToken = requestBearerTokens.refreshToken
-                            )
-
                             /** Save updated tokens to cache */
+                            noteMarkPreferences.setAccessToken(requestBearerTokens.accessToken)
+                            noteMarkPreferences.setRefreshToken(requestBearerTokens.refreshToken)
 
                             /** Update tokens */
                             BearerTokens(
@@ -113,20 +111,3 @@ class HttpNetworkClientImp : HttpNetworkClient {
         return httpClient
     }
 }
-
-data class LoginResponseDto(
-    val accessToken: String,
-    val refreshToken: String
-)
-
-data class RequestRefreshTokens(
-    val grantType: String,
-    val refreshToken: String,
-    val clientId: String,
-    val clientSecret: String
-)
-
-data class AuthorizationInfo(
-    val accessToken: String,
-    val refreshToken: String
-)

@@ -14,3 +14,18 @@ expect fun getOrientation(): Orientation
 
 @Composable
 expect fun isAtLeastMedium(): Boolean
+
+interface NoteMarkPreferences {
+    fun setRefreshToken(value: String)
+    fun getRefreshToken(): String
+
+    fun setAccessToken(value: String)
+    fun getAccessToken(): String
+}
+
+expect class NoteMarkPreferencesImp : NoteMarkPreferences {
+    override fun setRefreshToken(value: String)
+    override fun getRefreshToken(): String
+    override fun setAccessToken(value: String)
+    override fun getAccessToken(): String
+}
