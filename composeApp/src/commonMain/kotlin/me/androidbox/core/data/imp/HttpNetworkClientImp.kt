@@ -11,6 +11,7 @@ import io.ktor.client.plugins.defaultRequest
 import io.ktor.client.plugins.logging.Logger
 import io.ktor.client.plugins.logging.Logging
 import io.ktor.client.request.accept
+import io.ktor.client.request.header
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
 import io.ktor.http.ContentType
@@ -82,6 +83,11 @@ class HttpNetworkClientImp(
                                     refreshToken = noteMarkPreferences.getRefreshToken(),
                                 )
                             )
+
+                            // Fixme
+                         //   if(isDebug()) {
+                                this.header("Debug", true)
+                          //  }
                         }.body<TokenDto?>()
 
                         /** Save updated token to the cache */
