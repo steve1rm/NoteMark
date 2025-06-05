@@ -18,6 +18,7 @@ import io.ktor.http.contentType
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
 import me.androidbox.core.data.HttpNetworkClient
+import me.androidbox.core.data.Routes
 
 class HttpNetworkClientImp : HttpNetworkClient {
     override fun build(): HttpClient {
@@ -29,7 +30,6 @@ class HttpNetworkClientImp : HttpNetworkClient {
 
                         /** Specifies whether encounters of unknown properties in the input JSON should be ignored instead of throwing SerializationException */
                         ignoreUnknownKeys = true
-
 
                         /** JSON value is null but the property type is non-nullable.
                         Property type is an enum type, but JSON value contains an unknown enum member. */
@@ -71,7 +71,7 @@ class HttpNetworkClientImp : HttpNetworkClient {
                     }
 
                     this.refreshTokens {
-                        val requestBearerTokens = this.client.post("") {
+                        val requestBearerTokens = this.client.post(Routes.TOKEN_REFRESH) {
                             this.setBody(
                                 RequestRefreshTokens(
                                     grantType = "refresh_token",
