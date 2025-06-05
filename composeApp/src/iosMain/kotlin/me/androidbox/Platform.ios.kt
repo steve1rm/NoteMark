@@ -1,7 +1,7 @@
 package me.androidbox
 
 import androidx.compose.runtime.Composable
-import me.androidbox.authentication.core.presentation.models.Orientation
+import me.androidbox.core.models.Orientation
 import platform.UIKit.UIDevice
 
 class IOSPlatform: Platform {

@@ -1,7 +1,6 @@
 package me.androidbox.di
 
 import io.ktor.client.HttpClient
-import io.ktor.client.engine.HttpClientEngine
 import me.androidbox.authentication.login.domain.use_case.LoginUseCase
 import me.androidbox.authentication.login.presentation.LoginViewModel
 import me.androidbox.authentication.register.domain.use_case.RegisterUseCase
@@ -21,7 +20,7 @@ val noteMarkModule = module {
     viewModelOf(::LoginViewModel)
 
     single<HttpClient> {
-        HttpNetworkClientImp(get<HttpClientEngine>())
+        HttpNetworkClientImp()
             .build()
     }
 }

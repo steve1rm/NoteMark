@@ -2,7 +2,7 @@ package me.androidbox.core.data.imp
 
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
-import io.ktor.client.engine.HttpClientEngine
+import io.ktor.client.engine.cio.CIO
 import io.ktor.client.plugins.auth.Auth
 import io.ktor.client.plugins.auth.providers.BearerTokens
 import io.ktor.client.plugins.auth.providers.bearer
@@ -19,11 +19,9 @@ import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
 import me.androidbox.core.data.HttpNetworkClient
 
-class HttpNetworkClientImp(
-    private val httpClientEngine: HttpClientEngine
-) : HttpNetworkClient {
+class HttpNetworkClientImp : HttpNetworkClient {
     override fun build(): HttpClient {
-        val httpClient = HttpClient(httpClientEngine) {
+        val httpClient = HttpClient(CIO) {
             install(ContentNegotiation) {
                 json(
                     json = Json {

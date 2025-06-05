@@ -8,7 +8,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.window.core.layout.WindowSizeClass
 import androidx.window.layout.WindowMetricsCalculator
 import androidx.window.layout.adapter.computeWindowSizeClass
-import me.androidbox.authentication.core.presentation.models.Orientation
+import me.androidbox.core.models.Orientation
 
 class AndroidPlatform : Platform {
     override val name: String = "Android ${Build.VERSION.SDK_INT}"

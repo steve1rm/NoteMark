@@ -3,8 +3,7 @@ package me.androidbox.authentication.register.presentation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import me.androidbox.authentication.core.presentation.models.Orientation
-import me.androidbox.authentication.register.presentation.RegisterViewModel
+import me.androidbox.core.models.Orientation
 import me.androidbox.getOrientation
 import org.koin.compose.viewmodel.koinViewModel
 

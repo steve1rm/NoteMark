@@ -1,4 +1,4 @@
-package me.androidbox.authentication.core.presentation.components
+package me.androidbox.core.presentation.designsystem.textfields
 
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
