@@ -1,15 +1,14 @@
-package me.androidbox.authentication.login.presentation.vm
+package me.androidbox.authentication.login.presentation
 
 import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
-import me.androidbox.authentication.login.domain.use_case.ValidateLoginUseCase
-import me.androidbox.authentication.login.presentation.LoginActions
-import me.androidbox.authentication.login.presentation.LoginUiState
+import me.androidbox.authentication.login.domain.use_case.LoginUseCase
+import android.util.Patterns
 
-class LoginViewModel (
-    private val validateLoginUseCase: ValidateLoginUseCase
+class LoginViewModel(
+    private val loginUseCase: LoginUseCase
 ) : ViewModel() {
     private val _state = MutableStateFlow(LoginUiState())
     val state = _state.asStateFlow()
@@ -33,7 +32,17 @@ class LoginViewModel (
     }
 
     private fun validateLogin(email: String, password: String) {
-        val isLoginValid = validateLoginUseCase(email, password)
+        val isLoginValid = validateEmailAndPassword(email, password)
         _state.update { it.copy(isLoginEnabled = isLoginValid) }
+    }
+
+    private fun validateEmailAndPassword(email: String, password: String): Boolean {
+        val isEmailValid = email.isNotEmpty() && isEmailValid(email)
+        val isPasswordValid = password.isNotEmpty()
+        return isEmailValid && isPasswordValid
+    }
+
+    private fun isEmailValid(email: String): Boolean {
+        return Patterns.EMAIL_ADDRESS.matcher(email).matches()
     }
 }

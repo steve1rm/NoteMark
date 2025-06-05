@@ -1,4 +1,4 @@
-package me.androidbox.authentication.register.presentation.vm
+package me.androidbox.authentication.register.presentation
 
 import androidx.compose.runtime.snapshotFlow
 import androidx.lifecycle.ViewModel
@@ -7,14 +7,9 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import me.androidbox.authentication.register.domain.use_case.ValidateEmailUseCase
 import me.androidbox.authentication.register.domain.model.ValidationResult
 import me.androidbox.authentication.register.domain.use_case.RegisterUseCase
-import me.androidbox.authentication.register.domain.use_case.ValidatePasswordUseCase
-import me.androidbox.authentication.register.domain.use_case.ValidateRepeatPasswordUseCase
-import me.androidbox.authentication.register.domain.use_case.ValidateUsernameUseCase
-import me.androidbox.authentication.register.presentation.RegisterActions
-import me.androidbox.authentication.register.presentation.RegisterUiState
+import android.util.Patterns
 
 class RegisterViewModel(
     private val registerUseCase: RegisterUseCase
@@ -26,22 +21,22 @@ class RegisterViewModel(
         when (action) {
             is RegisterActions.OnUsernameChange -> {
                 _state.update { it.copy(username = action.username) }
-                validateUsername(username = action.username)
+                checkUsername(username = action.username)
             }
 
             is RegisterActions.OnEmailChange -> {
                 _state.update { it.copy(email = action.email) }
-                validateEmail(email = action.email)
+                checkEmail(email = action.email)
             }
 
             is RegisterActions.OnPasswordChange -> {
                 _state.update { it.copy(password = action.password) }
-                validatePassword(password = action.password)
+                checkPassword(password = action.password)
             }
 
             is RegisterActions.OnRepeatPasswordChange -> {
                 _state.update { it.copy(repeatPassword = action.confirmPassword) }
-                validateRepeatPassword(
+                checkRepeatPassword(
                     password = _state.value.password,
                     repeatPassword = action.confirmPassword
                 )
@@ -77,8 +72,8 @@ class RegisterViewModel(
         }
     }
 
-    private fun validateUsername(username: String) {
-        val validatedUsernameResult = registerUseCase.validateUsernameUseCase(username)
+    private fun checkUsername(username: String) {
+        val validatedUsernameResult = validateUsername(username)
 
         when (val state = validatedUsernameResult) {
             is ValidationResult.Error -> {
@@ -91,8 +86,8 @@ class RegisterViewModel(
         }
     }
 
-    private fun validateEmail(email: String) {
-        val validatedEmailResult = registerUseCase.validateEmailUseCase(email)
+    private fun checkEmail(email: String) {
+        val validatedEmailResult = validateEmail(email)
 
         when (val state = validatedEmailResult) {
             is ValidationResult.Error -> {
@@ -105,8 +100,8 @@ class RegisterViewModel(
         }
     }
 
-    private fun validatePassword(password: String) {
-        val validatedPasswordResult = registerUseCase.validatePasswordUseCase(password)
+    private fun checkPassword(password: String) {
+        val validatedPasswordResult = validatePassword(password)
 
         when (val state = validatedPasswordResult) {
             is ValidationResult.Error -> {
@@ -119,8 +114,8 @@ class RegisterViewModel(
         }
     }
 
-    private fun validateRepeatPassword(password: String, repeatPassword: String) {
-        val validatedRepeatPasswordResult = registerUseCase.validateRepeatPasswordUseCase(
+    private fun checkRepeatPassword(password: String, repeatPassword: String) {
+        val validatedRepeatPasswordResult = validateRepeatPassword(
             password = password,
             repeatedPassword = repeatPassword
         )
@@ -134,5 +129,37 @@ class RegisterViewModel(
                 _state.update { it.copy(repeatPasswordError = null) }
             }
         }
+    }
+
+    private fun validateEmail(email: String) : ValidationResult {
+        val isEmailValid = Patterns.EMAIL_ADDRESS.matcher(email).matches()
+        return if (isEmailValid)
+            ValidationResult.Valid
+        else ValidationResult.Error("Invalid email provided")
+    }
+
+    private fun validateRepeatPassword(password: String, repeatedPassword: String): ValidationResult {
+        return if (password == repeatedPassword)
+            ValidationResult.Valid
+        else ValidationResult.Error("Passwords do not match")
+    }
+
+    private fun validatePassword(password: String): ValidationResult {
+        val hasValidLength = password.length >= 8
+        val hasDigit = password.any { it.isDigit() }
+
+        return if (hasValidLength && hasDigit)
+            ValidationResult.Valid
+        else ValidationResult.Error("Password must be at least 8 characters and include a number or symbol.")
+    }
+
+    private fun validateUsername(username: String) : ValidationResult {
+        if (username.length < 3) {
+            return ValidationResult.Error("Username must be at least 3 characters long.")
+        }
+        if (username.length > 20) {
+            return ValidationResult.Error("Username must be less than 20 characters.")
+        }
+        return ValidationResult.Valid
     }
 }
