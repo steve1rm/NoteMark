@@ -1,21 +1,27 @@
 package me.androidbox.di
 
+import io.ktor.client.HttpClient
+import io.ktor.client.engine.HttpClientEngine
 import me.androidbox.authentication.login.domain.use_case.LoginUseCase
 import me.androidbox.authentication.login.presentation.LoginViewModel
 import me.androidbox.authentication.register.domain.use_case.RegisterUseCase
 import me.androidbox.authentication.register.presentation.RegisterViewModel
+import me.androidbox.core.data.imp.HttpNetworkClientImp
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
 
 val noteMarkModule = module {
 
-    single { LoginUseCase() }
+    factory { LoginUseCase() }
 
-    single { RegisterUseCase() }
+    factory { RegisterUseCase() }
 
     viewModelOf(::RegisterViewModel)
 
     viewModelOf(::LoginViewModel)
 
-
+    single<HttpClient> {
+        HttpNetworkClientImp(get<HttpClientEngine>())
+            .build()
+    }
 }
