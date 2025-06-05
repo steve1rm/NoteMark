@@ -1,32 +1,31 @@
-package me.androidbox.authentication.register.presentation
+package me.androidbox.authentication.login.presentation
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import me.androidbox.authentication.core.presentation.models.Orientation
-import me.androidbox.authentication.register.presentation.vm.RegisterViewModel
+import me.androidbox.authentication.login.presentation.vm.LoginViewModel
 import me.androidbox.getOrientation
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
-fun RegisterScreen(
-    onNavigateToLogin: () -> Unit
+fun LoginScreenRoot(
+    onNavigateToRegister : () -> Unit
 ) {
-    val viewModel: RegisterViewModel = koinViewModel()
-
+    val viewModel: LoginViewModel = koinViewModel()
     val state by viewModel.state.collectAsState()
 
     if (getOrientation() == Orientation.PORTRAIT) {
-        PortraitRegisterScreen(
-            state = state,
+        PortraitLoginScreen(
             onAction = viewModel::onAction,
-            onNavigateToLogin = onNavigateToLogin
+            state = state,
+            onNavigateToRegister = onNavigateToRegister
         )
     } else {
-        LandscapeRegisterScreen(
+        LandscapeLoginScreen(
             onAction = viewModel::onAction,
             state = state,
-            onNavigateToLogin = onNavigateToLogin
+            onNavigateToRegister = onNavigateToRegister
         )
     }
 }

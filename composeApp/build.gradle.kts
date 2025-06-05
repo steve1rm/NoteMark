@@ -40,6 +40,7 @@ kotlin {
             implementation(libs.androidx.window)
             implementation(libs.koin.android)
             implementation(libs.koin.compose)
+            implementation(libs.androidx.core.splashscreen)
         }
 
         commonMain.dependencies {

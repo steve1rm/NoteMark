@@ -1,29 +1,37 @@
 package me.androidbox
 
 import android.os.Bundle
-import android.util.Patterns
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.viewModels
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
-import me.androidbox.authentication.login.presentation.LoginScreen
-import me.androidbox.authentication.register.presentation.RegisterScreen
-import me.androidbox.core.presentation.designsystem.theming.NoteMarkTheme
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
-        enableEdgeToEdge()
         super.onCreate(savedInstanceState)
+
+        val viewModel: MainViewModel by viewModels()
+
+        installSplashScreen().apply {
+            setKeepOnScreenCondition {
+                viewModel.state.value.showSplash
+            }
+        }
+
+        enableEdgeToEdge()
 
         setContent {
             App()
         }
-    }
-}
 
-@Preview
-@Composable
-fun AppAndroidPreview() {
-    App()
+    }
+
+    @Preview
+    @Composable
+    fun AppAndroidPreview() {
+        App()
+    }
 }
