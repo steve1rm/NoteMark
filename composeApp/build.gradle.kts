@@ -31,17 +31,6 @@ kotlin {
     }
     
     sourceSets {
-        
-        androidMain.dependencies {
-            implementation(compose.preview)
-            implementation(libs.androidx.activity.compose)
-            implementation(libs.androidx.lifecycle.viewmodel.compose)
-            implementation(libs.androidx.window.core)
-            implementation(libs.androidx.window)
-            implementation(libs.koin.android)
-            implementation(libs.koin.compose)
-            implementation(libs.androidx.core.splashscreen)
-        }
 
         commonMain.dependencies {
             implementation(compose.runtime)
@@ -64,6 +53,18 @@ kotlin {
             implementation(libs.ktorSerializationJson)
             implementation(libs.ktorClientContentNegotiation)
             implementation(libs.kvault)
+            implementation(libs.either)
+        }
+
+        androidMain.dependencies {
+            implementation(compose.preview)
+            implementation(libs.androidx.activity.compose)
+            implementation(libs.androidx.lifecycle.viewmodel.compose)
+            implementation(libs.androidx.window.core)
+            implementation(libs.androidx.window)
+            implementation(libs.koin.android)
+            implementation(libs.koin.compose)
+            implementation(libs.androidx.core.splashscreen)
         }
 
         iosMain.dependencies {

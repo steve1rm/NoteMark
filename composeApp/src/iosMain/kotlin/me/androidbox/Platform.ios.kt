@@ -1,6 +1,7 @@
 package me.androidbox
 
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.platform.LocalDensity
 import me.androidbox.core.models.Orientation
 import platform.UIKit.UIDevice
 
