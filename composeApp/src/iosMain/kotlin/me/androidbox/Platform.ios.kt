@@ -12,14 +12,26 @@ actual fun getPlatform(): Platform = IOSPlatform()
 
 @Composable
 actual fun getOrientation(): Orientation {
-    TODO("Not yet implemented")
+    // UIDevice.currentDevice.orientation is not reliable in Compose context
+    // Using screen dimensions is more reliable
+    val screenWidth = LocalDensity.current.run { LocalConfiguration.current.screenWidthDp.dp.toPx() }
+    val screenHeight = LocalDensity.current.run { LocalConfiguration.current.screenHeightDp.dp.toPx() }
+
+    return if (screenWidth < screenHeight) {
+        Orientation.PORTRAIT
+    } else {
+        Orientation.LANDSCAPE
+    }
 }
 
 @Composable
 actual fun isAtLeastMedium(): Boolean {
-    TODO("Not yet implemented")
-}
+    // Medium width threshold (similar to Android's WIDTH_DP_MEDIUM_LOWER_BOUND)
+    val mediumWidthThreshold = 600
+    val screenWidthDp = LocalConfiguration.current.screenWidthDp
 
+    return screenWidthDp >= mediumWidthThreshold
+}
 
 actual class NoteMarkPreferencesImp : NoteMarkPreferences {
     override fun setRefreshToken(value: String) {
