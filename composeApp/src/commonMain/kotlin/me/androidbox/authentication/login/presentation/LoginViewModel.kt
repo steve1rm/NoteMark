@@ -1,16 +1,19 @@
 package me.androidbox.authentication.login.presentation
 
+import android.util.Patterns
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import me.androidbox.authentication.login.domain.use_case.LoginUseCase
-import android.util.Patterns
-import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.receiveAsFlow
+import me.androidbox.core.models.DataError
+import net.orandja.either.Left
+import net.orandja.either.Right
 
 class LoginViewModel(
     private val loginUseCase: LoginUseCase
@@ -41,14 +44,21 @@ class LoginViewModel(
                 viewModelScope.launch {
                     try {
                         _state.update { it.copy(isLoading = true) }
-                        loginUseCase.execute(
+                        val result = loginUseCase.execute(
                             email = state.value.email,
                             password = state.value.password
-                        ).onSuccess {
-                            _state.update { it.copy(isLoading = false) }
-                            _events.send(LoginEvents.OnLoginSuccess)
-                        }.onFailure {
-                            _events.send(LoginEvents.OnLoginFail)
+                        )
+
+                        when(result) {
+                            is Left -> {
+                                _state.update { loginUiState ->
+                                    loginUiState.copy(isLoading = false)
+                                }
+                                _events.send(LoginEvents.OnLoginSuccess)
+                            }
+                            is Right<DataError> -> {
+                                _events.send(LoginEvents.OnLoginFail(result.value))
+                            }
                         }
                     }
                     catch (exception: Exception) {

@@ -15,9 +15,10 @@ fun LoginScreenRoot(
 ) {
     val viewModel: LoginViewModel = koinViewModel()
     val state by viewModel.state.collectAsState()
+
     ObserveAsEvents(viewModel.events) { event ->
         when (event) {
-            LoginEvents.OnLoginFail -> {
+            is LoginEvents.OnLoginFail -> {
                 viewModel.onAction(LoginActions.OnSendMessage("Invalid login credentials"))
             }
 

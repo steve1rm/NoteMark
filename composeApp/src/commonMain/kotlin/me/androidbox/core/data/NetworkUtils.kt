@@ -2,6 +2,7 @@ package me.androidbox.core.data
 
 import io.ktor.client.call.body
 import io.ktor.client.statement.HttpResponse
+import io.ktor.serialization.JsonConvertException
 import io.ktor.util.network.UnresolvedAddressException
 import kotlinx.coroutines.CancellationException
 import kotlinx.serialization.SerializationException
@@ -23,6 +24,11 @@ suspend inline fun <reified D> safeApiRequest(block: () -> HttpResponse) : Eithe
         exception.printStackTrace()
 
         return Right(DataError.Network.SERIALIZATION)
+    }
+    catch (exception: JsonConvertException) {
+        exception.printStackTrace()
+
+        return Right(DataError.Network.JSONCONVERT)
     }
     catch (exception: Exception) {
         if(exception is CancellationException) {

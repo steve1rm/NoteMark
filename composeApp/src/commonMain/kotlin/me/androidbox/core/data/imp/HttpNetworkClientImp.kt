@@ -89,6 +89,7 @@ class HttpNetworkClientImp(
                                     refreshToken = noteMarkPreferences.getRefreshToken() ?: "",
                                 )
                             )
+                            this.markAsRefreshTokenRequest()
 
                             // Fixme
                          //   if(isDebug()) {

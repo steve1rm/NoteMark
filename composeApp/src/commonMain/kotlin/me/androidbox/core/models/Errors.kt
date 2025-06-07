@@ -12,9 +12,9 @@ sealed interface DataError : Error {
         PAYLOAD_TOO_LARGE,
         SERVER_ERROR,
         SERIALIZATION,
+        JSONCONVERT,
         CONFLICT,
-        UNKNOWN,
-        NOTHING
+        UNKNOWN
     }
 
     enum class Local : DataError {
