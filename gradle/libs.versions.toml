@@ -12,6 +12,7 @@ androidx-lifecycle = "2.9.0"
 androidx-testExt = "1.2.1"
 composeMultiplatform = "1.8.1"
 coreSplashscreen = "1.0.1"
+either = "1.2.1"
 junit = "4.13.2"
 kotlin = "2.1.21"
 kvault = "1.12.0"
@@ -32,6 +33,7 @@ androidx-core-splashscreen = { module = "androidx.core:core-splashscreen", versi
 androidx-lifecycle-viewmodel-compose = { module = "androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "lifecycleViewmodelCompose" }
 androidx-window-core = { module = "androidx.window:window-core", version.ref = "windowCore" }
 androidx-window = { module = "androidx.window:window", version.ref = "window" }
+either = { module = "net.orandja.kt:either", version.ref = "either" }
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
 kotlin-testJunit = { module = "org.jetbrains.kotlin:kotlin-test-junit", version.ref = "kotlin" }
 junit = { module = "junit:junit", version.ref = "junit" }

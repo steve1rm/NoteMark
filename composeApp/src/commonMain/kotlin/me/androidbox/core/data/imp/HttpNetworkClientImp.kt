@@ -8,10 +8,8 @@ import io.ktor.client.plugins.auth.providers.BearerTokens
 import io.ktor.client.plugins.auth.providers.bearer
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.defaultRequest
-import io.ktor.client.plugins.logging.DEFAULT
 import io.ktor.client.plugins.logging.Logger
 import io.ktor.client.plugins.logging.Logging
-import io.ktor.client.plugins.logging.SIMPLE
 import io.ktor.client.request.accept
 import io.ktor.client.request.header
 import io.ktor.client.request.post
@@ -47,11 +45,14 @@ class HttpNetworkClientImp(
             }
 
             install(Logging) {
-                logger = object : Logger {
+                this.logger = object : Logger {
                     override fun log(message: String) {
-                        Logger.SIMPLE.log(message)
+                        co.touchlab.kermit.Logger.d {
+                            message
+                        }
                     }
                 }
+                this.level = LogLevel.ALL
 
                 /** Fixme
                 if(isDebug()) {
@@ -66,6 +67,7 @@ class HttpNetworkClientImp(
             defaultRequest {
                 this.contentType(ContentType.Application.Json)
                 this.accept(ContentType.Application.Json)
+                this.header("X-User-Email", "stevekitkat@gmail.com")
             }
 
             install(Auth) {
@@ -73,8 +75,8 @@ class HttpNetworkClientImp(
                     this.loadTokens {
                         /** Load tokens from shared preferences */
                         BearerTokens(
-                            accessToken = noteMarkPreferences.getAccessToken(),
-                            refreshToken = noteMarkPreferences.getRefreshToken()
+                            accessToken = noteMarkPreferences.getAccessToken() ?: "",
+                            refreshToken = noteMarkPreferences.getRefreshToken() ?: ""
                         )
                     }
 
@@ -82,7 +84,7 @@ class HttpNetworkClientImp(
                         val requestBearerTokens = this.client.post(Routes.TOKEN_REFRESH) {
                             this.setBody(
                                 TokenRefresh(
-                                    refreshToken = noteMarkPreferences.getRefreshToken(),
+                                    refreshToken = noteMarkPreferences.getRefreshToken() ?: "",
                                 )
                             )
 

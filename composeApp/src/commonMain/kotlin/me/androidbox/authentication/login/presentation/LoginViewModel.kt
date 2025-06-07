@@ -1,16 +1,14 @@
 package me.androidbox.authentication.login.presentation
 
+import android.util.Patterns
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import me.androidbox.authentication.login.domain.use_case.LoginUseCase
 import android.util.Patterns
-import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.receiveAsFlow
-import kotlinx.coroutines.launch
 
 class LoginViewModel(
     private val loginUseCase: LoginUseCase
@@ -24,12 +22,12 @@ class LoginViewModel(
     fun onAction(loginActions: LoginActions) {
         when (loginActions) {
             is LoginActions.OnEmailChange -> {
-                _state.update { it.copy(email = loginActions.email) }
+                _state.update { it.copy(email = loginActions.value) }
                 validateLogin(_state.value.email, _state.value.password)
             }
 
             is LoginActions.OnPasswordChange -> {
-                _state.update { it.copy(password = loginActions.password) }
+                _state.update { it.copy(password = loginActions.value) }
                 validateLogin(_state.value.email, _state.value.password)
             }
 
@@ -37,26 +35,23 @@ class LoginViewModel(
                 _state.update { it.copy(showPassword = !it.showPassword) }
             }
 
-            is LoginActions.OnLoginClick -> {
-                startLogin(loginActions.email, loginActions.password)
+            LoginActions.OnLogin -> {
+                viewModelScope.launch {
+                    try {
+                        loginUseCase.execute(
+                            email = state.value.email,
+                            password = state.value.password
+                        )
+                    }
+                    catch (exception: Exception) {
+                        exception.printStackTrace()
+                    }
+                }
             }
 
             is LoginActions.OnSendMessage -> {
                 sendMessage(loginActions.message)
             }
-        }
-    }
-
-    private fun startLogin(email: String, password: String) {
-        viewModelScope.launch {
-            _state.update { it.copy(isLoading = true) }
-
-            loginUseCase(email, password).onSuccess {
-                _events.send(LoginEvents.OnLoginSuccess)
-            }.onFailure {
-                _events.send(LoginEvents.OnLoginFail)
-            }
-
         }
     }
 

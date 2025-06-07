@@ -9,6 +9,9 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.window.core.layout.WindowSizeClass
 import androidx.window.layout.WindowMetricsCalculator
 import androidx.window.layout.adapter.computeWindowSizeClass
+import com.liftric.kvault.KVault
+import me.androidbox.core.models.LocalPreferences.ACCESS_TOKEN_KEY
+import me.androidbox.core.models.LocalPreferences.REFRESH_TOKEN_KEY
 import me.androidbox.core.models.Orientation
 
 class AndroidPlatform : Platform {
@@ -50,21 +53,21 @@ fun calculateWindowSizeClass(): WindowSizeClass {
 }
 
 actual class NoteMarkPreferencesImp(context: Context) : NoteMarkPreferences {
+    private val store = KVault(context, "noteMark")
+
     actual override fun setRefreshToken(value: String) {
-//        TODO("Not yet implemented")
+        store.set(REFRESH_TOKEN_KEY, value)
     }
 
-    actual override fun getRefreshToken(): String {
-//        TODO("Not yet implemented")
-        return ""
+    actual override fun getRefreshToken(): String? {
+        return store.string(forKey = REFRESH_TOKEN_KEY)
     }
 
     actual override fun setAccessToken(value: String) {
-//        TODO("Not yet implemented")
+        store.set(ACCESS_TOKEN_KEY, value)
     }
 
-    actual override fun getAccessToken(): String {
-//        TODO("Not yet implemented")
-        return ""
+    actual override fun getAccessToken(): String? {
+        return store.string(forKey = ACCESS_TOKEN_KEY)
     }
 }
