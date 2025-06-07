@@ -7,7 +7,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import me.androidbox.authentication.register.domain.model.ValidationResult
+import me.androidbox.authentication.register.presentation.model.ValidationResult
 import me.androidbox.authentication.register.domain.use_case.RegisterUseCase
 import android.util.Patterns
 
@@ -50,7 +50,10 @@ class RegisterViewModel(
                 _state.update { it.copy(showConfirmPassword = !it.showConfirmPassword) }
             }
         }
+        checkRegisterButtonEnabled()
+    }
 
+    private fun checkRegisterButtonEnabled() {
         viewModelScope.launch {
             snapshotFlow { _state.value }
                 .collect {

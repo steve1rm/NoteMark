@@ -1,4 +1,4 @@
-package me.androidbox.authentication.login.data
+package me.androidbox.authentication.login.domain.model
 
 import kotlinx.serialization.Serializable
 

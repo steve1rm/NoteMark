@@ -48,43 +48,46 @@ fun LandscapeRegisterScreen(
                     .background(brush = MaterialTheme.colorScheme.bgGradient)
                     .padding(
                         top = innerPadding.calculateTopPadding(),
-                        end = innerPadding.calculateEndPadding(
-                            LayoutDirection.Ltr
-                        )
+                        end = innerPadding.calculateEndPadding(LayoutDirection.Ltr)
                     )
             ) {
+
                 Row(
                     modifier = Modifier
                         .fillMaxSize()
                         .clip(RoundedCornerShape(topStart = 20.dp))
                         .background(Color.White)
-                        .padding(
-                            innerPadding.calculateTopPadding()
-                        ),
+                        .padding(innerPadding.calculateTopPadding())
                 ) {
+
                     Column(
                         modifier = Modifier.weight(1f),
                     ) {
+
                         Text(
                             text = "Create account",
                             fontWeight = FontWeight.Bold,
                             fontSize = 32.sp,
-                            color = Color(0xff1B1B1C)
+                            color = MaterialTheme.colorScheme.onSurface
                         )
+
                         Spacer(Modifier.height(6.dp))
+
                         Text(
                             text = "Capture your thoughts and ideas.",
                             fontWeight = FontWeight.Normal,
                             fontSize = 17.sp,
-                            color = Color(0xff535364),
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                     }
+
                     Column(
                         modifier = Modifier
                             .weight(1f)
                             .verticalScroll(rememberScrollState()),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
+
                         NoteMarkTextField(
                             label = "Username",
                             hint = "John.doe",
@@ -94,7 +97,9 @@ fun LandscapeRegisterScreen(
                             },
                             supportText = "Use between 3 and 20 characters for your username."
                         )
+
                         Spacer(Modifier.height(16.dp))
+
                         NoteMarkTextField(
                             label = "Email",
                             hint = "john.doe@example.com",
@@ -104,6 +109,7 @@ fun LandscapeRegisterScreen(
                             }
                         )
                         Spacer(Modifier.height(16.dp))
+
                         NoteMarkPasswordTextField(
                             label = "Password",
                             hint = "Password",
@@ -117,7 +123,9 @@ fun LandscapeRegisterScreen(
                             },
                             supportText = "Use 8+ characters with a number or symbol for better security."
                         )
+
                         Spacer(Modifier.height(16.dp))
+
                         NoteMarkPasswordTextField(
                             label = "Repeat Password",
                             hint = "Password",

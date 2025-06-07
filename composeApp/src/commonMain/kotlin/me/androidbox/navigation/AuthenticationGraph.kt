@@ -6,6 +6,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import me.androidbox.authentication.login.presentation.LoginScreenRoot
 import me.androidbox.authentication.register.presentation.RegisterScreenRoot
+import me.androidbox.blank.BlankScreen
 
 fun NavGraphBuilder.authenticationGraph(navController: NavController) {
     this.navigation<NavGraph.AuthenticationGraph>(
@@ -15,6 +16,13 @@ fun NavGraphBuilder.authenticationGraph(navController: NavController) {
             LoginScreenRoot(
                 onNavigateToRegister = {
                     navController.navigate(NavGraph.AuthenticationGraph.RegisterScreen)
+                },
+                onNavigateToBlankScreen = {
+                    navController.navigate(NavGraph.BlankScreen, {
+                        popUpTo(0) { // Pop everything from back stack, e.g (Startup, login, register)
+                            inclusive = true
+                        }
+                    })
                 }
             )
         }

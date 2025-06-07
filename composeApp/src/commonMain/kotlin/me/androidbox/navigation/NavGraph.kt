@@ -5,7 +5,7 @@ import kotlinx.serialization.Serializable
 sealed interface NavGraph {
 
     @Serializable
-    object LandingScreen : NavGraph
+    data object LandingScreen : NavGraph
 
     @Serializable
     data object AuthenticationGraph : NavGraph {
@@ -14,5 +14,8 @@ sealed interface NavGraph {
         @Serializable
         object RegisterScreen : NavGraph
     }
+
+    @Serializable
+    data object BlankScreen : NavGraph
 
 }

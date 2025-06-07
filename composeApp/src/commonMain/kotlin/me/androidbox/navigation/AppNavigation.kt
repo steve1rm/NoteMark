@@ -6,6 +6,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import me.androidbox.blank.BlankScreen
 import me.androidbox.startup.presentation.LandingScreen
 
 @Composable
@@ -28,5 +29,10 @@ fun AppNavigation(
         }
 
         this.authenticationGraph(navController = navHostController)
+
+
+        composable<NavGraph.BlankScreen> {
+            BlankScreen()
+        }
     }
 }

@@ -51,18 +51,20 @@ fun calculateWindowSizeClass(): WindowSizeClass {
 
 actual class NoteMarkPreferencesImp(context: Context) : NoteMarkPreferences {
     actual override fun setRefreshToken(value: String) {
-        TODO("Not yet implemented")
+//        TODO("Not yet implemented")
     }
 
     actual override fun getRefreshToken(): String {
-        TODO("Not yet implemented")
+//        TODO("Not yet implemented")
+        return ""
     }
 
     actual override fun setAccessToken(value: String) {
-        TODO("Not yet implemented")
+//        TODO("Not yet implemented")
     }
 
     actual override fun getAccessToken(): String {
-        TODO("Not yet implemented")
+//        TODO("Not yet implemented")
+        return ""
     }
 }

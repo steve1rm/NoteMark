@@ -30,16 +30,16 @@ import me.androidbox.core.presentation.designsystem.buttons.SolidButton
 import me.androidbox.core.presentation.designsystem.theming.bgGradient
 import me.androidbox.isAtLeastMedium
 import org.jetbrains.compose.ui.tooling.preview.Preview
+import org.jetbrains.compose.ui.tooling.preview.PreviewParameter
+import org.jetbrains.compose.ui.tooling.preview.PreviewParameterProvider
 
 @Composable
 fun LandscapeLoginScreen(
     modifier: Modifier = Modifier,
     onAction: (LoginActions) -> Unit,
     state: LoginUiState,
-    onNavigateToRegister : () -> Unit,
-    isAtLeastMedium: Boolean = isAtLeastMedium()
+    onNavigateToRegister: () -> Unit,
 ) {
-
     NoteMarkLayout(
         modifier = modifier,
         toolBar = {},
@@ -70,14 +70,15 @@ fun LandscapeLoginScreen(
                         Text(
                             text = "Log In",
                             fontSize = 32.sp,
-                            fontWeight = FontWeight.Bold
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.onSurface
                         )
                         Spacer(Modifier.height(6.dp))
                         Text(
                             text = "Capture your thoughts and ideas.",
                             fontWeight = FontWeight.Normal,
-                            fontSize = 17.sp,
-                            color = Color(0xff535364),
+                            fontSize = 18.sp,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
                         )
                     }
                     Column(
@@ -128,5 +129,9 @@ fun LandscapeLoginScreen(
 @Preview
 @Composable
 private fun LandscapeLoginScreenPreview() {
-
+    LandscapeLoginScreen(
+        onAction = {},
+        state = LoginUiState(),
+        onNavigateToRegister = {}
+    )
 }

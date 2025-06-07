@@ -37,9 +37,6 @@ fun PortraitRegisterScreen(
     onNavigateToLogin: () -> Unit,
     isAtLeastMedium: Boolean = isAtLeastMedium(),
 ) {
-    // TODO do not pass in the viewmodel into the screen
-    // Only state should be passed in, and lambda actions
-    // val state by viewModel.state.collectAsState()
 
     NoteMarkLayout(
         modifier = modifier,
@@ -51,6 +48,7 @@ fun PortraitRegisterScreen(
                     .background(brush = MaterialTheme.colorScheme.bgGradient)
                     .padding(top = innerPadding.calculateTopPadding())
             ) {
+
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
@@ -63,11 +61,12 @@ fun PortraitRegisterScreen(
                         ),
                     horizontalAlignment = if (isAtLeastMedium) Alignment.CenterHorizontally else Alignment.Start
                 ) {
+
                     Text(
                         text = "Create account",
                         fontWeight = FontWeight.Bold,
                         fontSize = 32.sp,
-                        color = Color(0xff1B1B1C)
+                        color = MaterialTheme.colorScheme.onSurface
                     )
 
                     Spacer(Modifier.height(6.dp))
@@ -76,7 +75,7 @@ fun PortraitRegisterScreen(
                         text = "Capture your thoughts and ideas.",
                         fontWeight = FontWeight.Normal,
                         fontSize = 17.sp,
-                        color = Color(0xff535364),
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
 
                     Spacer(Modifier.height(40.dp))

@@ -4,15 +4,29 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import me.androidbox.core.models.Orientation
+import me.androidbox.core.presentation.utils.ObserveAsEvents
 import me.androidbox.getOrientation
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun LoginScreenRoot(
-    onNavigateToRegister : () -> Unit
+    onNavigateToRegister: () -> Unit,
+    onNavigateToBlankScreen : () -> Unit
 ) {
     val viewModel: LoginViewModel = koinViewModel()
     val state by viewModel.state.collectAsState()
+    ObserveAsEvents(viewModel.events) { event ->
+        when (event) {
+            LoginEvents.OnLoginFail -> {
+                viewModel.onAction(LoginActions.OnSendMessage("Invalid login credentials"))
+            }
+
+            LoginEvents.OnLoginSuccess -> {
+                viewModel.onAction(LoginActions.OnSendMessage("You successfully logged in"))
+                onNavigateToBlankScreen()
+            }
+        }
+    }
 
     if (getOrientation() == Orientation.PORTRAIT) {
         PortraitLoginScreen(

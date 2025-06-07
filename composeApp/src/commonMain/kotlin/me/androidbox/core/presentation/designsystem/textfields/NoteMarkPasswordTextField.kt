@@ -15,6 +15,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -31,6 +32,7 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import me.androidbox.core.models.Constants.starChar
 import me.androidbox.core.presentation.designsystem.theming.eye
 import me.androidbox.core.presentation.designsystem.theming.eyeOff
 
@@ -47,16 +49,21 @@ fun NoteMarkPasswordTextField(
     errorText: String? = null,
 ) {
     var isFocused by remember { mutableStateOf(false) }
-    val errorSupportColor = if (errorText == null) Color(0xff535364) else Color(0xffE1294B)
+
+    val errorSupportColor = if (errorText == null) MaterialTheme.colorScheme.onSurfaceVariant
+    else MaterialTheme.colorScheme.error
+
     val inputBorder = if (isFocused || errorText != null && !isFocused) {
         Modifier.border(
             1.dp, errorSupportColor,
             RoundedCornerShape(12.dp)
         )
     } else Modifier
+
     val inputBackground = if (isFocused || (!isFocused && errorText != null))
         Color.White
-    else Color(0xffEFEFF2)
+    else MaterialTheme.colorScheme.surface
+
     Column(
         modifier = modifier
             .fillMaxWidth()
@@ -66,7 +73,7 @@ fun NoteMarkPasswordTextField(
         Text(
             text = label,
             fontSize = 15.sp,
-            color = Color(0xff1B1B1C),
+            color = MaterialTheme.colorScheme.onSurface,
             fontWeight = FontWeight.Bold
         )
         BasicTextField(
@@ -74,9 +81,8 @@ fun NoteMarkPasswordTextField(
             onValueChange = {
                 onValueChange(it)
             },
-            visualTransformation = if (showPassword) VisualTransformation.None else PasswordVisualTransformation(
-                '\u002A'
-            ),
+            visualTransformation = if (showPassword) VisualTransformation.None
+            else PasswordVisualTransformation(starChar),
             modifier = Modifier
                 .fillMaxWidth()
                 .clip(RoundedCornerShape(12.dp))
@@ -91,15 +97,12 @@ fun NoteMarkPasswordTextField(
                 },
             singleLine = true,
             textStyle = TextStyle(
-                color = Color(0xff1B1B1C),
+                color = MaterialTheme.colorScheme.onSurface,
                 fontSize = 18.sp,
                 fontWeight = FontWeight.Normal
             ),
             decorationBox = { input ->
                 Row {
-                    val icon = if (showPassword) {
-                        eye
-                    } else eyeOff
                     Box(
                         modifier = Modifier
                             .weight(1f)
@@ -107,16 +110,16 @@ fun NoteMarkPasswordTextField(
                         if (value.isEmpty()) {
                             Text(
                                 text = hint,
-                                color = Color(0xff535364),
-                                fontSize = 17.sp,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                fontSize = 18.sp,
                                 fontWeight = FontWeight.Normal
                             )
                         }
                         input.invoke()
                     }
                     Icon(
-                        imageVector = icon,
-                        contentDescription = "",
+                        imageVector = if (showPassword) eye else eyeOff,
+                        contentDescription = if (showPassword) "Hide password" else "Show password",
                         modifier = Modifier
                             .size(20.dp)
                             .clip(CircleShape)
@@ -131,7 +134,7 @@ fun NoteMarkPasswordTextField(
             Text(
                 text = supportText,
                 fontSize = 15.sp,
-                color = Color(0xff535364)
+                color = MaterialTheme.colorScheme.onSurfaceVariant
             )
         }
 
@@ -139,7 +142,7 @@ fun NoteMarkPasswordTextField(
             Text(
                 text = errorText,
                 fontSize = 15.sp,
-                color = Color(0xffE1294B)
+                color = MaterialTheme.colorScheme.error
             )
         }
     }

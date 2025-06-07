@@ -8,8 +8,10 @@ import io.ktor.client.plugins.auth.providers.BearerTokens
 import io.ktor.client.plugins.auth.providers.bearer
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.defaultRequest
+import io.ktor.client.plugins.logging.DEFAULT
 import io.ktor.client.plugins.logging.Logger
 import io.ktor.client.plugins.logging.Logging
+import io.ktor.client.plugins.logging.SIMPLE
 import io.ktor.client.request.accept
 import io.ktor.client.request.header
 import io.ktor.client.request.post
@@ -19,8 +21,8 @@ import io.ktor.http.contentType
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
 import me.androidbox.NoteMarkPreferences
-import me.androidbox.authentication.login.data.TokenDto
-import me.androidbox.authentication.login.data.TokenRefresh
+import me.androidbox.authentication.login.domain.model.TokenDto
+import me.androidbox.authentication.login.domain.model.TokenRefresh
 import me.androidbox.core.data.HttpNetworkClient
 import me.androidbox.core.data.Routes
 
@@ -47,7 +49,7 @@ class HttpNetworkClientImp(
             install(Logging) {
                 logger = object : Logger {
                     override fun log(message: String) {
-                        log(message)
+                        Logger.SIMPLE.log(message)
                     }
                 }
 
