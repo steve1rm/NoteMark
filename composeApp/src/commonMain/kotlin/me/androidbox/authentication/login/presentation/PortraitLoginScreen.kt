@@ -14,6 +14,7 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -38,7 +39,7 @@ fun PortraitLoginScreen(
     onNavigateToRegister: () -> Unit,
     isAtLeastMedium: Boolean = isAtLeastMedium()
 ) {
-    val snackState = SnackbarHostState()
+    val snackState = remember { SnackbarHostState() }
     NoteMarkLayout(
         modifier = modifier,
         snackState = snackState,

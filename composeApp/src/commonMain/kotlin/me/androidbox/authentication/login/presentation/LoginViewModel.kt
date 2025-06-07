@@ -40,10 +40,16 @@ class LoginViewModel(
             LoginActions.OnLogin -> {
                 viewModelScope.launch {
                     try {
+                        _state.update { it.copy(isLoading = true) }
                         loginUseCase.execute(
                             email = state.value.email,
                             password = state.value.password
-                        )
+                        ).onSuccess {
+                            _state.update { it.copy(isLoading = false) }
+                            _events.send(LoginEvents.OnLoginSuccess)
+                        }.onFailure {
+                            _events.send(LoginEvents.OnLoginFail)
+                        }
                     }
                     catch (exception: Exception) {
                         exception.printStackTrace()
