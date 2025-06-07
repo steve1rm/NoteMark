@@ -53,7 +53,7 @@ class RegisterViewModel(
             RegisterActions.OnRegister -> {
                 viewModelScope.launch {
                     try {
-                        registerUseCase.register(
+                        registerUseCase.execute(
                             username = state.value.username,
                             password = state.value.password,
                             email = state.value.email

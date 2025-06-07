@@ -7,7 +7,7 @@ class RegisterUseCase(
     private val authorizationRepository: AuthorizationRepository
 ) {
 
-    suspend fun register(
+    suspend fun execute(
         username: String,
         email: String,
         password: String

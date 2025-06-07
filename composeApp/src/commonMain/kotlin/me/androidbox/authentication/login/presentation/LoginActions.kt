@@ -4,4 +4,5 @@ sealed interface LoginActions {
     data class OnEmailChange(val value: String) : LoginActions
     data class OnPasswordChange(val value: String) : LoginActions
     data object OnToggleShowPassword : LoginActions
+    data object OnLogin : LoginActions
 }

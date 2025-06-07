@@ -39,12 +39,11 @@ class HttpNetworkClientImp(
                         ignoreUnknownKeys = true
 
                         /** JSON value is null but the property type is non-nullable.
-                        Property type is an enum type, but JSON value contains an unknown enum member. */
+                            Property type is an enum type, but JSON value contains an unknown enum member. */
                         coerceInputValues = true
                     }
                 )
             }
-
 
             install(Logging) {
                 this.logger = object : Logger {
@@ -56,33 +55,14 @@ class HttpNetworkClientImp(
                 }
                 this.level = LogLevel.ALL
 
- /*               if(isDebug()) {
+                /** Fixme
+                if(isDebug()) {
                     this.level = LogLevel.ALL
                 }
                 else {
                     this.level = LogLevel.NONE
                 }*/
             }
-
-           /* install(Logging) {
-                object : Logger {
-                    override fun log(message: String) {
-                        co.touchlab.kermit.Logger.d {
-                            message
-                        }
-                    }
-                }
-
-                *//** Fixme
-                if(isDebug()) {
-                    this.level = LogLevel.ALL
-                }
-                else {
-                    this.level = LogLevel.NONE
-                }
-                **//*
-                this.level = LogLevel.ALL
-            }*/
 
             defaultRequest {
                 this.contentType(ContentType.Application.Json)

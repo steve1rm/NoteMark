@@ -16,7 +16,9 @@ import org.koin.dsl.module
 
 val noteMarkModule = module {
 
-    factory { LoginUseCase() }
+    factory { LoginUseCase(
+        get<AuthorizationRepository>()
+    ) }
 
     factory { RegisterUseCase(
         get<AuthorizationRepository>())

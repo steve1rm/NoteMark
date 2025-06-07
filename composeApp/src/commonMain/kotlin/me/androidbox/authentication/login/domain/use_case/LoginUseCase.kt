@@ -1,9 +1,16 @@
 package me.androidbox.authentication.login.domain.use_case
 
-class LoginUseCase {
+import me.androidbox.authentication.login.data.Login
+import me.androidbox.authentication.register.domain.AuthorizationRepository
 
-    operator fun invoke(email: String, password: String) {
-        // TODO DO LOGIN
+class LoginUseCase(private val authorizationRepository: AuthorizationRepository) {
+
+    suspend fun execute(email: String, password: String) {
+        authorizationRepository.login(
+            Login(
+                email = email,
+                password = password
+            )
+        )
     }
-
 }
