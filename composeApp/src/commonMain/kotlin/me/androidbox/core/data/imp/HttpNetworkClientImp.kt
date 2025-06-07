@@ -24,6 +24,7 @@ import me.androidbox.authentication.login.domain.model.TokenDto
 import me.androidbox.authentication.login.domain.model.TokenRefresh
 import me.androidbox.core.data.HttpNetworkClient
 import me.androidbox.core.data.Routes
+import me.androidbox.core.models.Constants.EMAIL_STEVE
 
 class HttpNetworkClientImp(
     private val noteMarkPreferences: NoteMarkPreferences
@@ -68,7 +69,7 @@ class HttpNetworkClientImp(
             defaultRequest {
                 this.contentType(ContentType.Application.Json)
                 this.accept(ContentType.Application.Json)
-                this.header("X-User-Email", "stevekitkat@gmail.com")
+                this.header("X-User-Email", EMAIL_STEVE)
             }
 
             install(Auth) {
