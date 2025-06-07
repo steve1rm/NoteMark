@@ -1,5 +1,6 @@
 package me.androidbox.authentication.register.presentation
 
+import android.util.Patterns
 import androidx.compose.runtime.snapshotFlow
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -9,7 +10,6 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import me.androidbox.authentication.register.domain.model.ValidationResult
 import me.androidbox.authentication.register.domain.use_case.RegisterUseCase
-import android.util.Patterns
 
 class RegisterViewModel(
     private val registerUseCase: RegisterUseCase
@@ -48,6 +48,21 @@ class RegisterViewModel(
 
             RegisterActions.OnToggleShowConfirmPassword -> {
                 _state.update { it.copy(showConfirmPassword = !it.showConfirmPassword) }
+            }
+
+            RegisterActions.OnRegister -> {
+                viewModelScope.launch {
+                    try {
+                        registerUseCase.register(
+                            username = state.value.username,
+                            password = state.value.password,
+                            email = state.value.email
+                        )
+                    }
+                    catch (exception: Exception) {
+                        exception.printStackTrace()
+                    }
+                }
             }
         }
 

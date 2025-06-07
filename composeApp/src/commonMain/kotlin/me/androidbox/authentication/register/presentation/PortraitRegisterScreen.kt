@@ -142,7 +142,7 @@ fun PortraitRegisterScreen(
                     SolidButton(
                         text = "Create account",
                         onClick = {
-
+                            onAction(RegisterActions.OnRegister)
                         },
                         enabled = state.isRegisterEnabled,
                         modifier = Modifier.fillMaxWidth()

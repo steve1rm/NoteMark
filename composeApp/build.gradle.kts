@@ -54,6 +54,7 @@ kotlin {
             implementation(libs.ktorClientContentNegotiation)
             implementation(libs.kvault)
             implementation(libs.either)
+            implementation("co.touchlab:kermit:2.0.5")
         }
 
         androidMain.dependencies {

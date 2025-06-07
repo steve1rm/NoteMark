@@ -46,9 +46,11 @@ class HttpNetworkClientImp(
             }
 
             install(Logging) {
-                logger = object : Logger {
+                object : Logger {
                     override fun log(message: String) {
-                        log(message)
+                        co.touchlab.kermit.Logger.d {
+                            message
+                        }
                     }
                 }
 
@@ -73,8 +75,8 @@ class HttpNetworkClientImp(
                     this.loadTokens {
                         /** Load tokens from shared preferences */
                         BearerTokens(
-                            accessToken = noteMarkPreferences.getAccessToken(),
-                            refreshToken = noteMarkPreferences.getRefreshToken()
+                            accessToken = noteMarkPreferences.getAccessToken() ?: "",
+                            refreshToken = noteMarkPreferences.getRefreshToken() ?: ""
                         )
                     }
 
@@ -82,7 +84,7 @@ class HttpNetworkClientImp(
                         val requestBearerTokens = this.client.post(Routes.TOKEN_REFRESH) {
                             this.setBody(
                                 TokenRefresh(
-                                    refreshToken = noteMarkPreferences.getRefreshToken(),
+                                    refreshToken = noteMarkPreferences.getRefreshToken() ?: "",
                                 )
                             )
 

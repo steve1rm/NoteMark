@@ -7,4 +7,5 @@ sealed interface RegisterActions {
     data class OnRepeatPasswordChange(val confirmPassword: String) : RegisterActions
     data object OnToggleShowPassword : RegisterActions
     data object OnToggleShowConfirmPassword : RegisterActions
+    data object OnRegister : RegisterActions
 }
