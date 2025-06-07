@@ -107,7 +107,7 @@ fun PortraitLoginScreen(
                     SolidButton(
                         text = "Log in",
                         onClick = {
-                            onAction(LoginActions.OnLoginClick(state.email, state.password))
+                            onAction(LoginActions.OnLogin)
                         },
                         enabled = state.isLoginEnabled,
                         modifier = Modifier.fillMaxWidth()

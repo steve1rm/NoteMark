@@ -1,7 +1,7 @@
 package me.androidbox.authentication.register.data
 
 import me.androidbox.authentication.login.data.Login
-import me.androidbox.authentication.login.data.TokenDto
+import me.androidbox.authentication.login.domain.model.TokenDto
 import me.androidbox.core.models.DataError
 import net.orandja.either.Either
 

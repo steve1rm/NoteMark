@@ -4,7 +4,7 @@ import io.ktor.client.HttpClient
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
 import me.androidbox.authentication.login.data.Login
-import me.androidbox.authentication.login.data.TokenDto
+import me.androidbox.authentication.login.domain.model.TokenDto
 import me.androidbox.authentication.register.data.AuthorizationRemoteDataSource
 import me.androidbox.authentication.register.data.Register
 import me.androidbox.core.data.Routes

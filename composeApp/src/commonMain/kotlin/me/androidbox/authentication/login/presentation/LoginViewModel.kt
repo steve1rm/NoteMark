@@ -1,6 +1,5 @@
 package me.androidbox.authentication.login.presentation
 
-import android.util.Patterns
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -9,6 +8,9 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import me.androidbox.authentication.login.domain.use_case.LoginUseCase
 import android.util.Patterns
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.receiveAsFlow
 
 class LoginViewModel(
     private val loginUseCase: LoginUseCase
