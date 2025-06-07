@@ -5,6 +5,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -50,7 +51,8 @@ fun LandingLandscapeScreen(
                     .background(
                         color = MaterialTheme.colorScheme.surfaceContainerLowest,
                         shape = RoundedCornerShape(topStart = 20.dp, bottomStart = 20.dp)
-                    ),
+                    )
+                    .padding(start = 60.dp, end = 40.dp, top = 40.dp, bottom = 40.dp),
                 onGettingStartedClicked = onGettingStartedClick,
                 onLoginClicked = onLoginClick
             )
