@@ -37,14 +37,16 @@ fun NoteMarkTextField(
     errorText: String? = null,
 ) {
     var isFocused by remember { mutableStateOf(false) }
-    val errorSupportColor = if (errorText == null) MaterialTheme.colorScheme.onSurfaceVariant
+    val errorSupportColor = if (errorText == null) MaterialTheme.colorScheme.primary
     else MaterialTheme.colorScheme.error
+
     val inputBorder = if (isFocused || errorText != null && !isFocused) {
         Modifier.border(
             1.dp, errorSupportColor,
             RoundedCornerShape(12.dp)
         )
     } else Modifier
+
     val inputBackground = if (isFocused || (!isFocused && errorText != null))
         Color.White
     else MaterialTheme.colorScheme.surface
