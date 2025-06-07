@@ -14,8 +14,11 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -29,6 +32,7 @@ import me.androidbox.core.presentation.designsystem.textfields.NoteMarkTextField
 import me.androidbox.core.presentation.designsystem.NoteMarkLayout
 import me.androidbox.core.presentation.designsystem.buttons.OutlineButton
 import me.androidbox.core.presentation.designsystem.buttons.SolidButton
+import me.androidbox.core.presentation.designsystem.buttons.TextButton
 import me.androidbox.core.presentation.designsystem.theming.bgGradient
 
 @Composable
@@ -38,8 +42,11 @@ fun LandscapeRegisterScreen(
     state: RegisterUiState,
     onNavigateToLogin: () -> Unit,
 ) {
+    val snackbarState = remember { SnackbarHostState() }
+
     NoteMarkLayout(
         modifier = modifier,
+        snackState = snackbarState,
         toolBar = {},
         content = { innerPadding ->
             Box(
@@ -95,7 +102,8 @@ fun LandscapeRegisterScreen(
                             onValueChange = {
                                 onAction(RegisterActions.OnUsernameChange(it))
                             },
-                            supportText = "Use between 3 and 20 characters for your username."
+                            supportText = "Use between 3 and 20 characters for your username.",
+                            errorText = state.usernameError
                         )
 
                         Spacer(Modifier.height(16.dp))
@@ -106,7 +114,8 @@ fun LandscapeRegisterScreen(
                             value = state.email,
                             onValueChange = {
                                 onAction(RegisterActions.OnEmailChange(it))
-                            }
+                            },
+                            errorText = state.emailError
                         )
                         Spacer(Modifier.height(16.dp))
 
@@ -121,7 +130,8 @@ fun LandscapeRegisterScreen(
                             onToggleShowPassword = {
                                 onAction(RegisterActions.OnToggleShowPassword)
                             },
-                            supportText = "Use 8+ characters with a number or symbol for better security."
+                            supportText = "Use 8+ characters with a number or symbol for better security.",
+                            errorText = state.passwordError
                         )
 
                         Spacer(Modifier.height(16.dp))
@@ -136,7 +146,8 @@ fun LandscapeRegisterScreen(
                             showPassword = state.showConfirmPassword,
                             onToggleShowPassword = {
                                 onAction(RegisterActions.OnToggleShowConfirmPassword)
-                            }
+                            },
+                            errorText = state.repeatPasswordError
                         )
 
                         Spacer(Modifier.height(24.dp))
@@ -144,7 +155,7 @@ fun LandscapeRegisterScreen(
                         SolidButton(
                             text = "Create account",
                             onClick = {
-
+                                onAction(RegisterActions.OnRegister)
                             },
                             enabled = state.isRegisterEnabled,
                             modifier = Modifier.fillMaxWidth()
@@ -152,7 +163,7 @@ fun LandscapeRegisterScreen(
 
                         Spacer(Modifier.height(12.dp))
 
-                        OutlineButton(
+                        TextButton(
                             text = "Already have an account?",
                             onClick = onNavigateToLogin,
                             modifier = Modifier.fillMaxWidth()
@@ -162,4 +173,10 @@ fun LandscapeRegisterScreen(
             }
         }
     )
+
+    LaunchedEffect(state.message) {
+        state.message?.let { message ->
+            snackbarState.showSnackbar(message)
+        }
+    }
 }

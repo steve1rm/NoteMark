@@ -8,4 +8,6 @@ sealed interface RegisterActions {
     data object OnToggleShowPassword : RegisterActions
     data object OnToggleShowConfirmPassword : RegisterActions
     data object OnRegister : RegisterActions
+
+    data class OnSendMessage(val message: String) : RegisterActions
 }

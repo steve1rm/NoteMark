@@ -1,21 +1,31 @@
 package me.androidbox.authentication.register.presentation
 
-import android.util.Patterns
 import androidx.compose.runtime.snapshotFlow
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import me.androidbox.authentication.register.presentation.model.ValidationResult
+import me.androidbox.authentication.core.AuthenticationEvents
 import me.androidbox.authentication.register.domain.use_case.RegisterUseCase
+import me.androidbox.authentication.register.presentation.model.ValidationResult
+import me.androidbox.core.models.DataError
+import me.androidbox.emailValid
+import net.orandja.either.Left
+import net.orandja.either.Right
 
 class RegisterViewModel(
     private val registerUseCase: RegisterUseCase
 ) : ViewModel() {
     private val _state = MutableStateFlow(RegisterUiState())
     val state = _state.asStateFlow()
+
+    private val _events = Channel<AuthenticationEvents>()
+    val events = _events.receiveAsFlow()
 
     fun onAction(action: RegisterActions) {
         when (action) {
@@ -51,21 +61,54 @@ class RegisterViewModel(
             }
 
             RegisterActions.OnRegister -> {
-                viewModelScope.launch {
-                    try {
-                        registerUseCase.execute(
-                            username = state.value.username,
-                            password = state.value.password,
-                            email = state.value.email
-                        )
-                    }
-                    catch (exception: Exception) {
-                        exception.printStackTrace()
-                    }
-                }
+                startRegisterProcess()
+            }
+
+            is RegisterActions.OnSendMessage -> {
+                sendMessage(action.message)
             }
         }
         checkRegisterButtonEnabled()
+    }
+
+    private fun startRegisterProcess() {
+        viewModelScope.launch {
+            try {
+                _state.update { it.copy(isLoading = true) }
+                val result = registerUseCase.execute(
+                    username = state.value.username,
+                    email = state.value.email,
+                    password = state.value.password
+                )
+
+                when (result) {
+                    is Left -> {
+                        _state.update { registerUiState ->
+                            registerUiState.copy(isLoading = false)
+                        }
+                        _events.send(AuthenticationEvents.OnAuthenticationSuccess)
+                    }
+
+                    is Right<DataError> -> {
+                        _state.update { registerUiState ->
+                            registerUiState.copy(isLoading = false)
+                        }
+                        val message = if (result.right is DataError.Network) {
+                            "Error occurred"
+                        } else {
+                            "Invalid"
+                        }
+                        _events.send(AuthenticationEvents.OnAuthenticationFail(message))
+                    }
+                }
+            } catch (exception: Exception) {
+                _state.update { registerUiState ->
+                    registerUiState.copy(isLoading = false)
+                }
+                _events.send(AuthenticationEvents.OnAuthenticationFail("Error occurred"))
+                exception.printStackTrace()
+            }
+        }
     }
 
     private fun checkRegisterButtonEnabled() {
@@ -149,14 +192,17 @@ class RegisterViewModel(
         }
     }
 
-    private fun validateEmail(email: String) : ValidationResult {
-        val isEmailValid = Patterns.EMAIL_ADDRESS.matcher(email).matches()
+    private fun validateEmail(email: String): ValidationResult {
+        val isEmailValid = emailValid(email)
         return if (isEmailValid)
             ValidationResult.Valid
         else ValidationResult.Error("Invalid email provided")
     }
 
-    private fun validateRepeatPassword(password: String, repeatedPassword: String): ValidationResult {
+    private fun validateRepeatPassword(
+        password: String,
+        repeatedPassword: String
+    ): ValidationResult {
         return if (password == repeatedPassword)
             ValidationResult.Valid
         else ValidationResult.Error("Passwords do not match")
@@ -171,7 +217,7 @@ class RegisterViewModel(
         else ValidationResult.Error("Password must be at least 8 characters and include a number or symbol.")
     }
 
-    private fun validateUsername(username: String) : ValidationResult {
+    private fun validateUsername(username: String): ValidationResult {
         if (username.length < 3) {
             return ValidationResult.Error("Username must be at least 3 characters long.")
         }
@@ -179,5 +225,13 @@ class RegisterViewModel(
             return ValidationResult.Error("Username must be less than 20 characters.")
         }
         return ValidationResult.Valid
+    }
+
+    private fun sendMessage(message: String) {
+        viewModelScope.launch {
+            _state.update { it.copy(message = message) }
+            delay(3000)
+            _state.update { it.copy(message = null) }
+        }
     }
 }

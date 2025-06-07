@@ -10,8 +10,11 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -22,6 +25,7 @@ import androidx.compose.ui.unit.sp
 import me.androidbox.core.presentation.designsystem.NoteMarkLayout
 import me.androidbox.core.presentation.designsystem.buttons.OutlineButton
 import me.androidbox.core.presentation.designsystem.buttons.SolidButton
+import me.androidbox.core.presentation.designsystem.buttons.TextButton
 import me.androidbox.core.presentation.designsystem.textfields.NoteMarkPasswordTextField
 import me.androidbox.core.presentation.designsystem.textfields.NoteMarkTextField
 import me.androidbox.core.presentation.designsystem.theming.NoteMarkTheme
@@ -37,8 +41,9 @@ fun PortraitRegisterScreen(
     onNavigateToLogin: () -> Unit,
     isAtLeastMedium: Boolean = isAtLeastMedium(),
 ) {
-
+    val snackbarState = remember { SnackbarHostState() }
     NoteMarkLayout(
+        snackState = snackbarState,
         modifier = modifier,
         toolBar = {},
         content = { innerPadding ->
@@ -149,7 +154,7 @@ fun PortraitRegisterScreen(
 
                     Spacer(Modifier.height(12.dp))
 
-                    OutlineButton(
+                    TextButton(
                         text = "Already have an account?",
                         onClick = onNavigateToLogin,
                         modifier = Modifier.fillMaxWidth()
@@ -158,6 +163,11 @@ fun PortraitRegisterScreen(
             }
         }
     )
+    LaunchedEffect(state.message) {
+        state.message?.let { message ->
+            snackbarState.showSnackbar(message)
+        }
+    }
 }
 
 @Preview

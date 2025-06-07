@@ -3,6 +3,7 @@ package me.androidbox
 import android.content.Context
 import android.content.res.Configuration
 import android.os.Build
+import android.util.Patterns
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
@@ -39,6 +40,9 @@ actual fun getOrientation(): Orientation {
     }
 }
 
+actual fun emailValid(email: String): Boolean {
+    return Patterns.EMAIL_ADDRESS.matcher(email).matches()
+}
 @Composable
 actual fun isAtLeastMedium(): Boolean {
     val sizeClass = calculateWindowSizeClass()
