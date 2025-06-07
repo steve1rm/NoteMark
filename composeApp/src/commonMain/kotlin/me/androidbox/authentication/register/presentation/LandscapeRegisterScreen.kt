@@ -102,7 +102,8 @@ fun LandscapeRegisterScreen(
                             onValueChange = {
                                 onAction(RegisterActions.OnUsernameChange(it))
                             },
-                            supportText = "Use between 3 and 20 characters for your username."
+                            supportText = "Use between 3 and 20 characters for your username.",
+                            errorText = state.usernameError
                         )
 
                         Spacer(Modifier.height(16.dp))
@@ -113,7 +114,8 @@ fun LandscapeRegisterScreen(
                             value = state.email,
                             onValueChange = {
                                 onAction(RegisterActions.OnEmailChange(it))
-                            }
+                            },
+                            errorText = state.emailError
                         )
                         Spacer(Modifier.height(16.dp))
 
@@ -128,7 +130,8 @@ fun LandscapeRegisterScreen(
                             onToggleShowPassword = {
                                 onAction(RegisterActions.OnToggleShowPassword)
                             },
-                            supportText = "Use 8+ characters with a number or symbol for better security."
+                            supportText = "Use 8+ characters with a number or symbol for better security.",
+                            errorText = state.passwordError
                         )
 
                         Spacer(Modifier.height(16.dp))
@@ -143,7 +146,8 @@ fun LandscapeRegisterScreen(
                             showPassword = state.showConfirmPassword,
                             onToggleShowPassword = {
                                 onAction(RegisterActions.OnToggleShowConfirmPassword)
-                            }
+                            },
+                            errorText = state.repeatPasswordError
                         )
 
                         Spacer(Modifier.height(24.dp))
@@ -151,7 +155,7 @@ fun LandscapeRegisterScreen(
                         SolidButton(
                             text = "Create account",
                             onClick = {
-
+                                onAction(RegisterActions.OnRegister)
                             },
                             enabled = state.isRegisterEnabled,
                             modifier = Modifier.fillMaxWidth()

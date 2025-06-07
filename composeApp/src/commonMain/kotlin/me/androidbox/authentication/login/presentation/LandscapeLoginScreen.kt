@@ -110,9 +110,7 @@ fun LandscapeLoginScreen(
 
                         SolidButton(
                             text = "Log in",
-                            onClick = {
-
-                            },
+                            onClick = { onAction(LoginActions.OnLogin) },
                             enabled = state.isLoginEnabled,
                             modifier = Modifier.fillMaxWidth()
                         )
