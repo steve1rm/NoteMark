@@ -11,5 +11,7 @@ data class RegisterUiState(
     val repeatPasswordError: String? = null,
     val showPassword: Boolean = false,
     val showConfirmPassword: Boolean = false,
-    val isRegisterEnabled: Boolean = false
+    val isRegisterEnabled: Boolean = false,
+    val isLoading: Boolean = false,
+    val message: String? = null
 )

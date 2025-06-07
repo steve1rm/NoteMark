@@ -29,6 +29,7 @@ import me.androidbox.core.presentation.designsystem.textfields.NoteMarkTextField
 import me.androidbox.core.presentation.designsystem.NoteMarkLayout
 import me.androidbox.core.presentation.designsystem.buttons.OutlineButton
 import me.androidbox.core.presentation.designsystem.buttons.SolidButton
+import me.androidbox.core.presentation.designsystem.buttons.TextButton
 import me.androidbox.core.presentation.designsystem.theming.bgGradient
 import me.androidbox.isAtLeastMedium
 import org.jetbrains.compose.ui.tooling.preview.Preview
@@ -118,7 +119,7 @@ fun LandscapeLoginScreen(
 
                         Spacer(Modifier.height(12.dp))
 
-                        OutlineButton(
+                        TextButton(
                             text = "Don’t have an account?",
                             onClick = onNavigateToRegister,
                             modifier = Modifier.fillMaxWidth()

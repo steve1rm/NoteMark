@@ -1,6 +1,9 @@
 package me.androidbox.di
 
 import io.ktor.client.HttpClient
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.IO
 import me.androidbox.NoteMarkPreferences
 import me.androidbox.authentication.login.domain.use_case.LoginUseCase
 import me.androidbox.authentication.login.presentation.LoginViewModel
@@ -35,6 +38,8 @@ val noteMarkModule = module {
             get<HttpClient>()
         )
     }
+
+    single<CoroutineDispatcher> { Dispatchers.IO }
 
     viewModelOf(::RegisterViewModel)
 

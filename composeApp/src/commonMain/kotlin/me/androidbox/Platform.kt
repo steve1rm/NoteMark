@@ -15,6 +15,8 @@ expect fun getOrientation(): Orientation
 @Composable
 expect fun isAtLeastMedium(): Boolean
 
+expect fun emailValid(email: String) : Boolean
+
 interface NoteMarkPreferences {
     fun setRefreshToken(value: String)
     fun getRefreshToken(): String?

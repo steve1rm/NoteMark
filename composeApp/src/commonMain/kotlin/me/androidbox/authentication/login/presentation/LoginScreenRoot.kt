@@ -1,8 +1,14 @@
 package me.androidbox.authentication.login.presentation
 
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import me.androidbox.authentication.core.AuthenticationEvents
 import me.androidbox.core.models.Orientation
 import me.androidbox.core.presentation.utils.ObserveAsEvents
 import me.androidbox.getOrientation
@@ -18,12 +24,11 @@ fun LoginScreenRoot(
 
     ObserveAsEvents(viewModel.events) { event ->
         when (event) {
-            is LoginEvents.OnLoginFail -> {
+            is AuthenticationEvents.OnAuthenticationFail -> {
                 viewModel.onAction(LoginActions.OnSendMessage("Invalid login credentials"))
             }
 
-            LoginEvents.OnLoginSuccess -> {
-                viewModel.onAction(LoginActions.OnSendMessage("You successfully logged in"))
+            AuthenticationEvents.OnAuthenticationSuccess -> {
                 onNavigateToBlankScreen()
             }
         }
@@ -41,5 +46,14 @@ fun LoginScreenRoot(
             state = state,
             onNavigateToRegister = onNavigateToRegister
         )
+    }
+
+    if (state.isLoading) {
+        Box(
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center
+        ) {
+            CircularProgressIndicator()
+        }
     }
 }

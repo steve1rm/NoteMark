@@ -1,8 +1,10 @@
 package me.androidbox.authentication.login.presentation
 
-import android.util.Patterns
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.IO
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -10,18 +12,21 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import me.androidbox.authentication.core.AuthenticationEvents
 import me.androidbox.authentication.login.domain.use_case.LoginUseCase
 import me.androidbox.core.models.DataError
+import me.androidbox.emailValid
 import net.orandja.either.Left
 import net.orandja.either.Right
 
 class LoginViewModel(
-    private val loginUseCase: LoginUseCase
+    private val loginUseCase: LoginUseCase,
+    private val dispatcher: CoroutineDispatcher = Dispatchers.IO
 ) : ViewModel() {
     private val _state = MutableStateFlow(LoginUiState())
     val state = _state.asStateFlow()
 
-    private val _events = Channel<LoginEvents>()
+    private val _events = Channel<AuthenticationEvents>()
     val events = _events.receiveAsFlow()
 
     fun onAction(loginActions: LoginActions) {
@@ -41,7 +46,7 @@ class LoginViewModel(
             }
 
             LoginActions.OnLogin -> {
-                viewModelScope.launch {
+                viewModelScope.launch(dispatcher) {
                     try {
                         _state.update { it.copy(isLoading = true) }
                         val result = loginUseCase.execute(
@@ -54,14 +59,26 @@ class LoginViewModel(
                                 _state.update { loginUiState ->
                                     loginUiState.copy(isLoading = false)
                                 }
-                                _events.send(LoginEvents.OnLoginSuccess)
+                                _events.send(AuthenticationEvents.OnAuthenticationSuccess)
                             }
                             is Right<DataError> -> {
-                                _events.send(LoginEvents.OnLoginFail(result.value))
+                                _state.update { loginUiState ->
+                                    loginUiState.copy(isLoading = false)
+                                }
+                                val message = if(result.right is DataError.Network) {
+                                    "Invalid login credentials"
+                                } else {
+                                    "Invalid"
+                                }
+                                _events.send(AuthenticationEvents.OnAuthenticationFail(message))
                             }
                         }
                     }
                     catch (exception: Exception) {
+                        _state.update { loginUiState ->
+                            loginUiState.copy(isLoading = false)
+                        }
+                        _events.send(AuthenticationEvents.OnAuthenticationFail("Invalid login credentials"))
                         exception.printStackTrace()
                     }
                 }
@@ -85,7 +102,7 @@ class LoginViewModel(
     }
 
     private fun isEmailValid(email: String): Boolean {
-        return Patterns.EMAIL_ADDRESS.matcher(email).matches()
+        return emailValid(email)
     }
 
     private fun sendMessage(message: String) {
