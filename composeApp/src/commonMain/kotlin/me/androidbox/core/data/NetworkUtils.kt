@@ -40,6 +40,9 @@ suspend inline fun <reified D> responseToResult(response: HttpResponse): Either<
         in 200..299 -> {
             Left(response.body<D>())
         }
+        400 -> {
+            Right(DataError.Network.BAD_REQUEST)
+        }
         401 -> {
             Right(DataError.Network.UNAUTHORIZED)
         }

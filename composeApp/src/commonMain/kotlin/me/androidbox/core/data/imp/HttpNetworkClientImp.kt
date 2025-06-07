@@ -45,7 +45,26 @@ class HttpNetworkClientImp(
                 )
             }
 
+
             install(Logging) {
+                this.logger = object : Logger {
+                    override fun log(message: String) {
+                        co.touchlab.kermit.Logger.d {
+                            message
+                        }
+                    }
+                }
+                this.level = LogLevel.ALL
+
+ /*               if(isDebug()) {
+                    this.level = LogLevel.ALL
+                }
+                else {
+                    this.level = LogLevel.NONE
+                }*/
+            }
+
+           /* install(Logging) {
                 object : Logger {
                     override fun log(message: String) {
                         co.touchlab.kermit.Logger.d {
@@ -54,20 +73,21 @@ class HttpNetworkClientImp(
                     }
                 }
 
-                /** Fixme
+                *//** Fixme
                 if(isDebug()) {
                     this.level = LogLevel.ALL
                 }
                 else {
                     this.level = LogLevel.NONE
                 }
-                **/
+                **//*
                 this.level = LogLevel.ALL
-            }
+            }*/
 
             defaultRequest {
                 this.contentType(ContentType.Application.Json)
                 this.accept(ContentType.Application.Json)
+                this.header("X-User-Email", "stevekitkat@gmail.com")
             }
 
             install(Auth) {
