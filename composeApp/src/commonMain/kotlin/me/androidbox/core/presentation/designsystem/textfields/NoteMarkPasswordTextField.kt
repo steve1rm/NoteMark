@@ -132,7 +132,7 @@ fun NoteMarkPasswordTextField(
             }
         )
 
-        if (isFocused && supportText != null && errorText == null) {
+        if (isFocused && supportText != null) {
             Text(
                 text = supportText,
                 fontSize = 15.sp,
@@ -140,7 +140,7 @@ fun NoteMarkPasswordTextField(
             )
         }
 
-        if (errorText != null) {
+        if (!isFocused && errorText != null) {
             Text(
                 text = errorText,
                 fontSize = 15.sp,
