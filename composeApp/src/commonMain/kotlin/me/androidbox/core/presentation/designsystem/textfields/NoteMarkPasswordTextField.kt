@@ -50,12 +50,14 @@ fun NoteMarkPasswordTextField(
 ) {
     var isFocused by remember { mutableStateOf(false) }
 
-    val errorSupportColor = if (errorText == null) MaterialTheme.colorScheme.primary
-    else MaterialTheme.colorScheme.error
-
-    val inputBorder = if (isFocused || errorText != null && !isFocused) {
+    val inputBorder = if (!isFocused && errorText != null) {
         Modifier.border(
-            1.dp, errorSupportColor,
+            1.dp, MaterialTheme.colorScheme.error,
+            RoundedCornerShape(12.dp)
+        )
+    } else if (isFocused) {
+        Modifier.border(
+            1.dp, MaterialTheme.colorScheme.primary,
             RoundedCornerShape(12.dp)
         )
     } else Modifier
