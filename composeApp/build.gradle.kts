@@ -1,4 +1,4 @@
-import org.jetbrains.compose.desktop.application.dsl.TargetFormat
+
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
@@ -7,6 +7,8 @@ plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
+    alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.gmazzo.buildconfig)
 }
 
 kotlin {
@@ -29,11 +31,7 @@ kotlin {
     }
     
     sourceSets {
-        
-        androidMain.dependencies {
-            implementation(compose.preview)
-            implementation(libs.androidx.activity.compose)
-        }
+
         commonMain.dependencies {
             implementation(compose.runtime)
             implementation(compose.foundation)
@@ -41,9 +39,39 @@ kotlin {
             implementation(compose.ui)
             implementation(compose.components.resources)
             implementation(compose.components.uiToolingPreview)
-            implementation(libs.androidx.lifecycle.viewmodel)
             implementation(libs.androidx.lifecycle.runtimeCompose)
+            implementation(libs.androidx.lifecycle.viewmodel)
+            implementation(libs.koin.compose)
+            implementation(libs.koin.compose.viewmodel)
+            implementation(libs.navigation.compose)
+            implementation(libs.kotlinx.serialization.json)
+            implementation(libs.ktorClientCio)
+            implementation(libs.ktorClientAuth)
+            implementation(libs.ktorClientCore)
+            implementation(libs.ktorClientLogging)
+            implementation(libs.ktorClientSerialization)
+            implementation(libs.ktorSerializationJson)
+            implementation(libs.ktorClientContentNegotiation)
+            implementation(libs.kvault)
+            implementation(libs.either)
+            implementation("co.touchlab:kermit:2.0.5")
         }
+
+        androidMain.dependencies {
+            implementation(compose.preview)
+            implementation(libs.androidx.activity.compose)
+            implementation(libs.androidx.lifecycle.viewmodel.compose)
+            implementation(libs.androidx.window.core)
+            implementation(libs.androidx.window)
+            implementation(libs.koin.android)
+            implementation(libs.koin.compose)
+            implementation(libs.androidx.core.splashscreen)
+        }
+
+        iosMain.dependencies {
+            implementation(libs.ktor.client.darwin)
+        }
+
         commonTest.dependencies {
             implementation(libs.kotlin.test)
         }
