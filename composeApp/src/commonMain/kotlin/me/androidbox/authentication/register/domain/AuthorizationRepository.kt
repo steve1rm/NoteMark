@@ -7,5 +7,5 @@ import net.orandja.either.Either
 
 interface AuthorizationRepository {
     suspend fun register(register: Register) : Either<Unit, DataError>
-    suspend fun login(login: Login) : Either<Unit, DataError>
+    suspend fun login(login: Login) : Either<Unit, DataError.Network>
 }

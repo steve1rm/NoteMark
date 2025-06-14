@@ -7,7 +7,7 @@ import net.orandja.either.Either
 
 class LoginUseCase(private val authorizationRepository: AuthorizationRepository) {
 
-    suspend fun execute(email: String, password: String): Either<Unit, DataError> {
+    suspend fun execute(email: String, password: String): Either<Unit, DataError.Network> {
         val response = authorizationRepository.login(
             Login(
                 email = email,

@@ -9,6 +9,9 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -29,16 +32,26 @@ class LoginViewModel(
     private val _events = Channel<AuthenticationEvents>()
     val events = _events.receiveAsFlow()
 
+    init {
+        /** observe changes to the email and password */
+        state
+            .distinctUntilChanged { old, new ->
+                old.email == new.email && old.password == new.password
+            }
+            .onEach { loginUiStateSuccess ->
+                validateLogin(loginUiStateSuccess.email, loginUiStateSuccess.password)
+            }
+            .launchIn(viewModelScope)
+    }
+
     fun onAction(loginActions: LoginActions) {
         when (loginActions) {
             is LoginActions.OnEmailChange -> {
                 _state.update { it.copy(email = loginActions.value) }
-                validateLogin(_state.value.email, _state.value.password)
             }
 
             is LoginActions.OnPasswordChange -> {
                 _state.update { it.copy(password = loginActions.value) }
-                validateLogin(_state.value.email, _state.value.password)
             }
 
             LoginActions.OnToggleShowPassword -> {

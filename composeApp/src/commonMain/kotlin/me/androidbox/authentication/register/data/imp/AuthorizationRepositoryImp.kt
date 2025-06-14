@@ -14,7 +14,7 @@ class AuthorizationRepositoryImp(
         return authorizationRemoteDataSource.registerUser(register)
     }
 
-    override suspend fun login(login: Login): Either<Unit, DataError> {
+    override suspend fun login(login: Login): Either<Unit, DataError.Network> {
         return authorizationRemoteDataSource.loginUser(login)
     }
 }

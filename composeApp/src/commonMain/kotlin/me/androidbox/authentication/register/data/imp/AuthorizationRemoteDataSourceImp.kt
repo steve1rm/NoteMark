@@ -26,7 +26,7 @@ class AuthorizationRemoteDataSourceImp(
         return safeResult
     }
 
-    override suspend fun loginUser(login: Login): Either<Unit, DataError> {
+    override suspend fun loginUser(login: Login): Either<Unit, DataError.Network> {
         val safeResult = safeApiRequest<Unit> {
             val response = httpClient
                 .post(Routes.LOGIN) {

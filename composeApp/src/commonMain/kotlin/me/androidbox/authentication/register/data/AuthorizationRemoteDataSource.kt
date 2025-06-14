@@ -6,5 +6,5 @@ import net.orandja.either.Either
 
 interface AuthorizationRemoteDataSource {
     suspend fun registerUser(register: Register) : Either<Unit, DataError>
-    suspend fun loginUser(login: Login) : Either<Unit, DataError>
+    suspend fun loginUser(login: Login) : Either<Unit, DataError.Network>
 }

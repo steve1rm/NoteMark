@@ -23,7 +23,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import me.androidbox.core.presentation.designsystem.NoteMarkLayout
-import me.androidbox.core.presentation.designsystem.buttons.OutlineButton
 import me.androidbox.core.presentation.designsystem.buttons.SolidButton
 import me.androidbox.core.presentation.designsystem.buttons.TextButton
 import me.androidbox.core.presentation.designsystem.textfields.NoteMarkPasswordTextField
