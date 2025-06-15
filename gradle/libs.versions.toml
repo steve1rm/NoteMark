@@ -18,15 +18,16 @@ kotlin = "2.1.21"
 kvault = "1.12.0"
 lifecycleViewmodelCompose = "2.9.1"
 material3WindowSizeClassAndroid = "1.3.2"
-koin = "4.0.4"
+koin = "4.1.0"
 navigationCompose = "2.8.0-alpha13"
 window = "1.4.0"
 windowCore = "1.4.0"
 kotlinxSerializationJson = "1.8.1"
-ktorVersion = "3.1.3"
+ktorVersion = "3.2.0"
 logbackClassicVersion = "1.5.18"
 statelyCommon = "2.0.6"
-gmazzo-buildconfig-version = "5.6.5"
+gmazzo-buildconfig-version = "5.6.6"
+kotlinx-datetime = "0.6.2"
 
 [libraries]
 androidx-core-splashscreen = { module = "androidx.core:core-splashscreen", version.ref = "coreSplashscreen" }
@@ -54,6 +55,7 @@ koin-compose-viewmodel = { module = "io.insert-koin:koin-compose-viewmodel", ver
 kvault = { module = "com.liftric:kvault", version.ref = "kvault" }
 navigation-compose = { module = "org.jetbrains.androidx.navigation:navigation-compose", version.ref = "navigationCompose" }
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinxSerializationJson" }
+kotlinx-datetime = { group = "org.jetbrains.kotlinx", name = "kotlinx-datetime", version.ref = "kotlinx-datetime" }
 
 # ktor client
 ktorClientCore = { module = "io.ktor:ktor-client-core", version.ref = "ktorVersion" }
