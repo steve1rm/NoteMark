@@ -14,3 +14,5 @@ Note take app, with a twist
 - [x] MVI
 - [x] Material design 3
 - [X] kermit for logging
+- [x] Reactive and responsive screen design
+- [x] Portrait, Landscape, and Tablet
