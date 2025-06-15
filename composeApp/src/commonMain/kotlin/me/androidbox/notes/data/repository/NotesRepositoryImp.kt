@@ -10,12 +10,12 @@ import net.orandja.either.Either
 class NotesRepositoryImp(
     private val notesRemoteDataSource: NotesRemoteDataSource
 ) : NotesRepository {
-    override suspend fun createNote(): Either<NoteDto, DataError.Network> {
-        return notesRemoteDataSource.createNote()
+    override suspend fun createNote(noteDto: NoteDto): Either<NoteDto, DataError.Network> {
+        return notesRemoteDataSource.createNote(noteDto)
     }
 
-    override suspend fun updateNote(): Either<NoteDto, DataError.Network> {
-        return notesRemoteDataSource.updateNote()
+    override suspend fun updateNote(noteDto: NoteDto): Either<NoteDto, DataError.Network> {
+        return notesRemoteDataSource.updateNote(noteDto)
     }
 
     override suspend fun deleteNote(id: String): Either<Unit, DataError.Network> {

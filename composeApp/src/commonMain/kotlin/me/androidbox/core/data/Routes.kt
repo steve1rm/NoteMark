@@ -8,4 +8,6 @@ object Routes {
     const val DELETE_NOTE = "$BASE_URL/api/notes/{id}"
     const val TOKEN_REFRESH = "$BASE_URL/api/auth/refresh"
 
+    const val SIZE = "size"
+    const val PAGE = "page"
 }
