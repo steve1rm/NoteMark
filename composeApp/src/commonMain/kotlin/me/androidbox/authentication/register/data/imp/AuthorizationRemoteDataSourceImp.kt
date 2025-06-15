@@ -3,7 +3,7 @@ package me.androidbox.authentication.register.data.imp
 import io.ktor.client.HttpClient
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
-import me.androidbox.authentication.login.data.Login
+import me.androidbox.authentication.login.data.LoginDto
 import me.androidbox.authentication.register.data.AuthorizationRemoteDataSource
 import me.androidbox.authentication.register.data.Register
 import me.androidbox.core.data.Routes
@@ -26,11 +26,11 @@ class AuthorizationRemoteDataSourceImp(
         return safeResult
     }
 
-    override suspend fun loginUser(login: Login): Either<Unit, DataError.Network> {
+    override suspend fun loginUser(loginDto: LoginDto): Either<Unit, DataError.Network> {
         val safeResult = safeApiRequest<Unit> {
             val response = httpClient
                 .post(Routes.LOGIN) {
-                    this.setBody(login)
+                    this.setBody(loginDto)
                 }
             response
         }

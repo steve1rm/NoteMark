@@ -1,6 +1,6 @@
 package me.androidbox.authentication.register.data.imp
 
-import me.androidbox.authentication.login.data.Login
+import me.androidbox.authentication.login.data.LoginDto
 import me.androidbox.authentication.register.data.AuthorizationRemoteDataSource
 import me.androidbox.authentication.register.data.Register
 import me.androidbox.authentication.register.domain.AuthorizationRepository
@@ -14,7 +14,7 @@ class AuthorizationRepositoryImp(
         return authorizationRemoteDataSource.registerUser(register)
     }
 
-    override suspend fun login(login: Login): Either<Unit, DataError.Network> {
-        return authorizationRemoteDataSource.loginUser(login)
+    override suspend fun login(loginDto: LoginDto): Either<Unit, DataError.Network> {
+        return authorizationRemoteDataSource.loginUser(loginDto)
     }
 }
