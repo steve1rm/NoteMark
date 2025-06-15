@@ -17,7 +17,7 @@ class AuthorizationRemoteDataSourceImp(
     override suspend fun registerUser(register: Register): Either<Unit, DataError> {
         val safeResult = safeApiRequest<Unit> {
             val response = httpClient
-                .post(Routes.REGISTATION) {
+                .post(Routes.REGISTRATION) {
                     this.setBody(register)
                 }
             response

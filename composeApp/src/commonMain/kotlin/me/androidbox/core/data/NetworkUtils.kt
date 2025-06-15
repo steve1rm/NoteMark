@@ -28,7 +28,7 @@ suspend inline fun <reified D> safeApiRequest(block: () -> HttpResponse) : Eithe
     catch (exception: JsonConvertException) {
         exception.printStackTrace()
 
-        return Right(DataError.Network.JSONCONVERT)
+        return Right(DataError.Network.JSON_CONVERT)
     }
     catch (exception: Exception) {
         if(exception is CancellationException) {
@@ -51,6 +51,9 @@ suspend inline fun <reified D> responseToResult(response: HttpResponse): Either<
         }
         401 -> {
             Right(DataError.Network.UNAUTHORIZED)
+        }
+        405 -> {
+            Right(DataError.Network.METHOD_NOT_ALLOWED)
         }
         408 -> {
             Right(DataError.Network.REQUEST_TIMEOUT)
