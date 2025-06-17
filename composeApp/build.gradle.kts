@@ -9,6 +9,8 @@ plugins {
     alias(libs.plugins.composeCompiler)
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.gmazzo.buildconfig)
+    alias(libs.plugins.room)
+    alias(libs.plugins.ksp)
 }
 
 kotlin {
@@ -54,7 +56,9 @@ kotlin {
             implementation(libs.ktorClientContentNegotiation)
             implementation(libs.kvault)
             implementation(libs.either)
-            implementation("co.touchlab:kermit:2.0.5")
+            implementation(libs.kermit)
+            implementation(libs.androidx.room.runtime)
+            implementation(libs.sqlite.bundled)
         }
 
         androidMain.dependencies {
@@ -105,7 +109,12 @@ android {
     }
 }
 
+room {
+    schemaDirectory("$projectDir/schema")
+}
+
 dependencies {
+    ksp(libs.androidx.room.compiler)
     debugImplementation(compose.uiTooling)
 }
 
