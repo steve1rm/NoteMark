@@ -12,9 +12,9 @@ import me.androidbox.core.data.Routes.PAGE
 import me.androidbox.core.data.Routes.SIZE
 import me.androidbox.core.data.safeApiRequest
 import me.androidbox.core.models.DataError
-import me.androidbox.notes.data.NoteDto
-import me.androidbox.notes.data.NotesDto
 import me.androidbox.notes.data.datasources.NotesRemoteDataSource
+import me.androidbox.notes.data.models.NoteDto
+import me.androidbox.notes.data.models.NotesDto
 import net.orandja.either.Either
 
 class NotesRemoteDataSourceImp(

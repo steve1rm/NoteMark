@@ -1,4 +1,4 @@
-package me.androidbox.notes.data
+package me.androidbox.notes.data.models
 
 import kotlinx.serialization.Serializable
 
