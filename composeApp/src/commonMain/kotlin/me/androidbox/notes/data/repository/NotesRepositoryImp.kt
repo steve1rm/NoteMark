@@ -1,6 +1,7 @@
 package me.androidbox.notes.data.repository
 
 import me.androidbox.core.models.DataError
+import me.androidbox.notes.data.datasources.NotesLocalDataSource
 import me.androidbox.notes.data.datasources.NotesRemoteDataSource
 import me.androidbox.notes.data.models.NoteDto
 import me.androidbox.notes.data.models.NotesDto
@@ -8,7 +9,8 @@ import me.androidbox.notes.domain.NotesRepository
 import net.orandja.either.Either
 
 class NotesRepositoryImp(
-    private val notesRemoteDataSource: NotesRemoteDataSource
+    private val notesRemoteDataSource: NotesRemoteDataSource,
+    private val notesLocalDataSource: NotesLocalDataSource
 ) : NotesRepository {
     override suspend fun createNote(noteDto: NoteDto): Either<NoteDto, DataError.Network> {
         return notesRemoteDataSource.createNote(noteDto)
