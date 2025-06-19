@@ -9,8 +9,6 @@ plugins {
     alias(libs.plugins.composeCompiler)
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.gmazzo.buildconfig)
-    alias(libs.plugins.room)
-    alias(libs.plugins.ksp)
 }
 
 kotlin {
@@ -60,6 +58,10 @@ kotlin {
             implementation(libs.androidx.room.runtime)
             implementation(libs.sqlite.bundled)
             implementation(libs.kotlinx.datetime)
+            implementation(compose.materialIconsExtended)
+            implementation(libs.kotlinx.datetime)
+//            implementation("androidx.compose.material:material-icons-extended:1.8.2")
+            implementation("co.touchlab:kermit:2.0.5")
         }
 
         androidMain.dependencies {
@@ -110,12 +112,7 @@ android {
     }
 }
 
-room {
-    schemaDirectory("$projectDir/schema")
-}
-
 dependencies {
-    ksp(libs.androidx.room.compiler)
     debugImplementation(compose.uiTooling)
 }
 

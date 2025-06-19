@@ -17,5 +17,6 @@ class NoteMarkApplication : Application() {
             },
             androidSpecificModule
         )
+
     }
 }
