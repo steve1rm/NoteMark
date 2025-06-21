@@ -16,6 +16,8 @@ sealed interface NavGraph {
     }
 
     @Serializable
-    data object BlankScreen : NavGraph
+    data object NotesScreen : NavGraph
 
+    @Serializable
+    data object NoteEditScreen : NavGraph
 }

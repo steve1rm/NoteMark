@@ -1,12 +1,13 @@
 package me.androidbox.navigation
 
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import me.androidbox.blank.BlankScreen
+import me.androidbox.edit_note.presentation.EditNoteScreenPortrait
+import me.androidbox.edit_note.presentation.EditNoteScreenRoot
+import me.androidbox.edit_note.presentation.EditNoteUiState
+import me.androidbox.notes.presentation.NoteListScreenRoot
 import me.androidbox.startup.presentation.LandingScreen
 
 @Composable
@@ -15,7 +16,7 @@ fun AppNavigation(
     val navHostController = rememberNavController()
     NavHost(
         navController = navHostController,
-        startDestination = NavGraph.LandingScreen
+        startDestination = NavGraph.NotesScreen
     ) {
         composable<NavGraph.LandingScreen> {
             LandingScreen(
@@ -31,8 +32,14 @@ fun AppNavigation(
         this.authenticationGraph(navController = navHostController)
 
 
-        composable<NavGraph.BlankScreen> {
-            BlankScreen()
+        composable<NavGraph.NotesScreen> {
+            NoteListScreenRoot(onNavigateToEditNote = {
+                navHostController.navigate(NavGraph.NoteEditScreen)
+            })
+        }
+
+        composable<NavGraph.NoteEditScreen> {
+            EditNoteScreenRoot()
         }
     }
 }

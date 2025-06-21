@@ -11,6 +11,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import me.androidbox.core.presentation.designsystem.theming.NoteMarkTheme
 import org.jetbrains.compose.ui.tooling.preview.Preview
@@ -20,6 +21,7 @@ fun TextButton(
     modifier: Modifier = Modifier,
     text: String,
     enabled: Boolean = true,
+    textStyle: TextStyle = MaterialTheme.typography.titleSmall,
     onClick: () -> Unit
 ) {
     TextButton(
@@ -33,7 +35,7 @@ fun TextButton(
     ) {
         Text(
             text = text,
-            style = MaterialTheme.typography.titleSmall,
+            style = textStyle,
             color = MaterialTheme.colorScheme.primary
         )
     }

@@ -6,9 +6,11 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
-import java.util.UUID
+import me.androidbox.core.presentation.designsystem.theming.NoteMarkTheme
+import me.androidbox.edit_note.presentation.EditNoteScreenRoot
+import me.androidbox.navigation.AppNavigation
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -16,25 +18,30 @@ class MainActivity : ComponentActivity() {
 
         val viewModel: MainViewModel by viewModels()
 
-        UUID.randomUUID().toString()
         installSplashScreen().apply {
             setKeepOnScreenCondition {
                 viewModel.state.value.showSplash
             }
         }
 
-
         enableEdgeToEdge()
 
         setContent {
-            App()
+            AppNavigation()
         }
 
     }
 
-    @Preview
+    @PreviewScreenSizes
     @Composable
     fun AppAndroidPreview() {
-        App()
+        NoteMarkTheme {
+            EditNoteScreenRoot(
+//                state = EditNoteUiState(),
+//                onAction = {},
+            )
+        }
     }
+
+
 }
