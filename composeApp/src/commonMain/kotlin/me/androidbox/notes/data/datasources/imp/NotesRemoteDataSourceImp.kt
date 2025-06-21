@@ -1,30 +1,25 @@
 package me.androidbox.notes.data.datasources.imp
 
-import io.ktor.client.HttpClient
-import io.ktor.client.request.delete
-import io.ktor.client.request.get
-import io.ktor.client.request.parameter
-import io.ktor.client.request.post
-import io.ktor.client.request.put
-import io.ktor.client.request.setBody
+import io.ktor.client.*
+import io.ktor.client.request.*
 import me.androidbox.core.data.Routes
 import me.androidbox.core.data.Routes.PAGE
 import me.androidbox.core.data.Routes.SIZE
 import me.androidbox.core.data.safeApiRequest
 import me.androidbox.core.models.DataError
 import me.androidbox.notes.data.datasources.NotesRemoteDataSource
-import me.androidbox.notes.data.models.NoteDto
+import me.androidbox.notes.data.models.NoteItemDto
 import me.androidbox.notes.data.models.NotesDto
 import net.orandja.either.Either
 
 class NotesRemoteDataSourceImp(
     private val httpClient: HttpClient
 ) : NotesRemoteDataSource {
-    override suspend fun createNote(noteDto: NoteDto): Either<NoteDto, DataError.Network> {
-        val safeRequest = safeApiRequest<NoteDto> {
+    override suspend fun createNote(noteItemDto: NoteItemDto): Either<NoteItemDto, DataError.Network> {
+        val safeRequest = safeApiRequest<NoteItemDto> {
             val response = httpClient
                 .post(Routes.NOTES) {
-                    this.setBody(noteDto)
+                    this.setBody(noteItemDto)
                 }
 
             response
@@ -33,11 +28,11 @@ class NotesRemoteDataSourceImp(
         return safeRequest
     }
 
-    override suspend fun updateNote(noteDto: NoteDto): Either<NoteDto, DataError.Network> {
-        val safeRequest = safeApiRequest<NoteDto> {
+    override suspend fun updateNote(noteItemDto: NoteItemDto): Either<NoteItemDto, DataError.Network> {
+        val safeRequest = safeApiRequest<NoteItemDto> {
             val response = httpClient
                 .put(Routes.NOTES) {
-                    this.setBody(noteDto)
+                    this.setBody(noteItemDto)
                 }
 
             response

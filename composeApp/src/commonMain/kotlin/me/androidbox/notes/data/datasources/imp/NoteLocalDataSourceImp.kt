@@ -26,10 +26,10 @@ class NoteLocalDataSourceImp(
         }
     }
 
-    override suspend fun updateNote(noteItemEntity: NoteItemEntity): Either<Long, DataError.Local> {
+    override suspend fun deleteNote(noteItemEntity: NoteItemEntity): Either<Unit, DataError.Local> {
         return try {
-            val rowId = notesDatabase.noteMarkDao().insertNote(noteItemEntity)
-            Left(rowId)
+            notesDatabase.noteMarkDao().deleteNote(noteItemEntity)
+            Left(Unit)
         }
         catch(exception: Exception) {
             if(exception is CancellationException) {

@@ -15,6 +15,6 @@ interface NoteMarkDao {
     @Delete
     suspend fun deleteNote(noteItemEntity: NoteItemEntity)
 
-    @Query("SELECT * FROM noteitementity")
+    @Query("SELECT * FROM NoteItemEntity")
     fun getAllNotes(): Flow<List<NoteItemEntity>>
 }

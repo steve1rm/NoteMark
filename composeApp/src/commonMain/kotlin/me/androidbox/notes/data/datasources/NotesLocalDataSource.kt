@@ -7,6 +7,6 @@ import net.orandja.either.Either
 
 interface NotesLocalDataSource {
     suspend fun saveNote(noteItemEntity: NoteItemEntity): Either<Long, DataError.Local>
-    suspend fun updateNote(noteItemEntity: NoteItemEntity): Either<Long, DataError.Local>
+    suspend fun deleteNote(noteItemEntity: NoteItemEntity): Either<Unit, DataError.Local>
     fun getAllNotes(): Flow<List<NoteItemEntity>>
 }
