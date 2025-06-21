@@ -2,15 +2,14 @@ package me.androidbox.core.presentation.utils
 
 import androidx.compose.ui.text.buildAnnotatedString
 import me.androidbox.getCurrentMillis
-import me.androidbox.notes.domain.model.Note
+import me.androidbox.notes.domain.model.NoteItem
 import kotlin.random.Random
-import kotlin.time.Clock
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 
 @OptIn(ExperimentalUuidApi::class)
 object Previews {
-    val note = Note(
+    val noteItem = NoteItem(
         id = Uuid.random().toString(),
         title = "Item ${Random.nextInt(0, 999)}",
         content = buildAnnotatedString {
@@ -22,8 +21,8 @@ object Previews {
         lastEditedAt = 0
     )
 
-    val noteList = (0..100).map {
-        Note(
+    val noteItemList = (0..100).map {
+        NoteItem(
             id = Uuid.random().toString(),
             title = "Item ${Random.nextInt(0, 999)}",
             content = buildAnnotatedString {

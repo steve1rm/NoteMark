@@ -1,20 +1,7 @@
 package me.androidbox.notes.presentation
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.safeContentPadding
-import androidx.compose.foundation.layout.safeDrawingPadding
-import androidx.compose.foundation.layout.statusBars
-import androidx.compose.foundation.layout.windowInsetsPadding
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.foundation.lazy.staggeredgrid.items
@@ -35,7 +22,6 @@ import me.androidbox.core.presentation.designsystem.NoteMarkLayout
 import me.androidbox.core.presentation.designsystem.buttons.GradientFAB
 import me.androidbox.core.presentation.designsystem.theming.bgGradient
 import me.androidbox.getOrientation
-import me.androidbox.isAtLeastMedium
 import me.androidbox.isTablet
 import me.androidbox.notes.presentation.components.AvatarIcon
 import me.androidbox.notes.presentation.components.NoteItem
@@ -104,7 +90,7 @@ fun NoteListScreen(
                     ) {
                         items(state.notesList) { note ->
                             NoteItem(
-                                note = note
+                                noteItem = note
                             )
                         }
                     }

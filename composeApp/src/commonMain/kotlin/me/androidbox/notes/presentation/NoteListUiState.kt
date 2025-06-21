@@ -1,9 +1,9 @@
 package me.androidbox.notes.presentation
 
 import me.androidbox.core.presentation.utils.Previews
-import me.androidbox.notes.domain.model.Note
+import me.androidbox.notes.domain.model.NoteItem
 
 data class NoteListUiState(
     val profilePicText: String = "PL",
-    val notesList: List<Note> = Previews.noteList
+    val notesList: List<NoteItem> = Previews.noteItemList
 )

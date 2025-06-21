@@ -1,11 +1,7 @@
 package me.androidbox.notes.presentation.components
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -16,21 +12,20 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.unit.dp
 import me.androidbox.core.presentation.utils.toFormattedDate
-import me.androidbox.isAtLeastMedium
 import me.androidbox.isTablet
-import me.androidbox.notes.domain.model.Note
+import me.androidbox.notes.domain.model.NoteItem
 
 @Composable
 fun NoteItem(
-    note: Note,
+    noteItem: NoteItem,
     modifier: Modifier = Modifier
 ) {
     val isTablet = isTablet()
     val textLengthLimitation = if (isTablet) 250 else 150
     val contentText = remember(isTablet, textLengthLimitation) {
-        if (note.content.length > textLengthLimitation) {
-            note.content.take(textLengthLimitation).plus("...")
-        } else note.content.take(textLengthLimitation)
+        if (noteItem.content.length > textLengthLimitation) {
+            noteItem.content.take(textLengthLimitation).plus("...")
+        } else noteItem.content.take(textLengthLimitation)
     }
     val titleStyle = if (isTablet) MaterialTheme.typography.titleLarge else
         MaterialTheme.typography.titleMedium
@@ -51,13 +46,13 @@ fun NoteItem(
             .padding(16.dp)
     ) {
         Text(
-            text = note.createdAt.toFormattedDate(),
+            text = noteItem.createdAt.toFormattedDate(),
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.primary,
         )
         Spacer(modifier = Modifier.height(8.dp))
         Text(
-            text = note.title,
+            text = noteItem.title,
             color = MaterialTheme.colorScheme.onSurface,
             style = titleStyle
         )
