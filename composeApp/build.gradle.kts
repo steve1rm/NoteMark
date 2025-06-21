@@ -9,6 +9,8 @@ plugins {
     alias(libs.plugins.composeCompiler)
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.gmazzo.buildconfig)
+    alias(libs.plugins.ksp)
+    alias(libs.plugins.room)
     id("io.kotzilla.kotzilla-plugin")
 }
 
@@ -115,7 +117,13 @@ android {
     }
 }
 
+room {
+    schemaDirectory("$projectDir/schema")
+}
+
 dependencies {
     debugImplementation(compose.uiTooling)
+
+    ksp(libs.androidx.room.compiler)
 }
 

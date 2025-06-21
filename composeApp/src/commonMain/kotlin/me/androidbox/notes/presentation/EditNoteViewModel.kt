@@ -2,6 +2,7 @@ package me.androidbox.notes.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import co.touchlab.kermit.Logger
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
@@ -27,6 +28,9 @@ class EditNoteViewModel(
 
             is EditNoteActions.OnSaveNote -> {
                 viewModelScope.launch {
+                    Logger.d {
+                        "Saving the note ${state.value.title}"
+                    }
                     saveNoteUseCase.execute(
                         NoteItem(
                             id = "random UUID",
@@ -34,7 +38,8 @@ class EditNoteViewModel(
                             content = state.value.content,
                             createdAt = Clock.System.now().toEpochMilliseconds(),
                             lastEditedAt = Clock.System.now().toEpochMilliseconds()
-                        ))
+                        )
+                    )
                 }
             }
         }

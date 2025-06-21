@@ -1,7 +1,11 @@
 package me.androidbox.di
 
-import io.ktor.client.*
-import kotlinx.coroutines.*
+import io.ktor.client.HttpClient
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.IO
+import kotlinx.coroutines.SupervisorJob
 import me.androidbox.NoteMarkPreferences
 import me.androidbox.authentication.login.domain.use_case.LoginUseCase
 import me.androidbox.authentication.login.presentation.LoginViewModel
@@ -26,13 +30,24 @@ import me.androidbox.notes.domain.usecases.imp.DeleteNoteUseCaseImp
 import me.androidbox.notes.domain.usecases.imp.FetchNotesUseCaseImp
 import me.androidbox.notes.domain.usecases.imp.SaveNoteUseCaseImp
 import me.androidbox.notes.presentation.EditNoteViewModel
+import org.koin.core.module.dsl.viewModel
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.bind
 import org.koin.dsl.module
 
 val noteMarkModule = module {
+    /** ViewModels */
+    viewModelOf(::RegisterViewModel)
+    viewModelOf(::LoginViewModel)
+    viewModel {
+        EditNoteViewModel(get<SaveNoteUseCase>())
+    }
+
+    factory<SaveNoteUseCase> { SaveNoteUseCaseImp(get()) }
+
+
     /** UseCases */
-    factory { SaveNoteUseCaseImp(get<NotesRepository>()) }.bind(SaveNoteUseCase::class)
+//    factory { SaveNoteUseCaseImp(get<NotesRepository>()) }.bind(SaveNoteUseCase::class)
     factory { DeleteNoteUseCaseImp() }.bind(DeleteNoteUseCase::class)
     factory { FetchNotesUseCaseImp() }.bind(FetchNotesUseCase::class)
 
@@ -76,11 +91,6 @@ val noteMarkModule = module {
             get<NoteMarkDatabase>()
         )
     }.bind(NotesLocalDataSource::class)
-
-    /** ViewModels */
-    viewModelOf(::RegisterViewModel)
-    viewModelOf(::LoginViewModel)
-    viewModelOf(::EditNoteViewModel)
 
     single<HttpClient> {
         HttpNetworkClientImp(get<NoteMarkPreferences>())

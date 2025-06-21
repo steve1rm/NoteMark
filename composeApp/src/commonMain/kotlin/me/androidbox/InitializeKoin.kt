@@ -1,6 +1,5 @@
 package me.androidbox
 
-import io.kotzilla.sdk.analytics.koin.analytics
 import me.androidbox.di.noteMarkModule
 import org.koin.core.context.startKoin
 import org.koin.core.module.Module
@@ -16,9 +15,5 @@ fun initializeKoin(
             noteMarkModule,
             *platformSpecificModules
         )
-        analytics {
-            setApiKey("ktz-sdk-ue7AdrDm5l2-O0fp8e-7UUyOcSDSaBkUZzKdJUdWXXs")
-            setVersion("1.0.0")
-        }
     }
 }
