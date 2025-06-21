@@ -9,6 +9,7 @@ plugins {
     alias(libs.plugins.composeCompiler)
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.gmazzo.buildconfig)
+    id("io.kotzilla.kotzilla-plugin")
 }
 
 kotlin {
@@ -62,6 +63,8 @@ kotlin {
             implementation(libs.kotlinx.datetime)
 //            implementation("androidx.compose.material:material-icons-extended:1.8.2")
             implementation("co.touchlab:kermit:2.0.5")
+//            implementation("io.kotzilla:kotzilla-sdk-ktor3:1.1.0")
+            implementation("io.kotzilla:kotzilla-sdk:1.0.1")
         }
 
         androidMain.dependencies {

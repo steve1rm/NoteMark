@@ -29,11 +29,10 @@ logbackClassicVersion = "1.5.18"
 statelyCommon = "2.0.6"
 gmazzo-buildconfig-version = "5.6.6"
 kotlinx-datetime = "0.6.2"
-
 room = "2.7.1"
 ksp = "2.1.20-2.0.0"
 sqlite = "2.5.1"
-
+kotzilla = "1.1.0"
 
 [libraries]
 androidx-core-splashscreen = { module = "androidx.core:core-splashscreen", version.ref = "coreSplashscreen" }
@@ -91,3 +90,4 @@ kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", versi
 gmazzo-buildconfig = { id = "com.github.gmazzo.buildconfig", version.ref = "gmazzo-buildconfig-version" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 room = { id = "androidx.room", version.ref = "room" }
+# kotzilla = { id = "io.kotzilla:kotzilla-plugin", version.ref = "kotzilla" }

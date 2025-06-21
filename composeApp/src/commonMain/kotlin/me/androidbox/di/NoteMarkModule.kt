@@ -11,7 +11,13 @@ import me.androidbox.authentication.register.data.imp.AuthorizationRepositoryImp
 import me.androidbox.authentication.register.domain.AuthorizationRepository
 import me.androidbox.authentication.register.domain.use_case.RegisterUseCase
 import me.androidbox.authentication.register.presentation.RegisterViewModel
+import me.androidbox.core.data.NoteMarkDatabase
 import me.androidbox.core.data.imp.HttpNetworkClientImp
+import me.androidbox.notes.data.datasources.NotesLocalDataSource
+import me.androidbox.notes.data.datasources.NotesRemoteDataSource
+import me.androidbox.notes.data.datasources.imp.NotesLocalDataSourceImp
+import me.androidbox.notes.data.datasources.imp.NotesRemoteDataSourceImp
+import me.androidbox.notes.data.repository.NotesRepositoryImp
 import me.androidbox.notes.domain.NotesRepository
 import me.androidbox.notes.domain.usecases.DeleteNoteUseCase
 import me.androidbox.notes.domain.usecases.FetchNotesUseCase
@@ -19,6 +25,7 @@ import me.androidbox.notes.domain.usecases.SaveNoteUseCase
 import me.androidbox.notes.domain.usecases.imp.DeleteNoteUseCaseImp
 import me.androidbox.notes.domain.usecases.imp.FetchNotesUseCaseImp
 import me.androidbox.notes.domain.usecases.imp.SaveNoteUseCaseImp
+import me.androidbox.notes.presentation.EditNoteViewModel
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.bind
 import org.koin.dsl.module
@@ -55,10 +62,25 @@ val noteMarkModule = module {
         CoroutineScope(Dispatchers.Default + SupervisorJob())
     }
 
+    factory { NotesRepositoryImp(
+        notesLocalDataSource = get<NotesLocalDataSource>(),
+        notesRemoteDataSource = get<NotesRemoteDataSource>()
+    ) }.bind(NotesRepository::class)
+
+    factory {
+        NotesRemoteDataSourceImp(get<HttpClient>())
+    }.bind(NotesRemoteDataSource::class)
+
+    factory {
+        NotesLocalDataSourceImp(
+            get<NoteMarkDatabase>()
+        )
+    }.bind(NotesLocalDataSource::class)
+
     /** ViewModels */
     viewModelOf(::RegisterViewModel)
-
     viewModelOf(::LoginViewModel)
+    viewModelOf(::EditNoteViewModel)
 
     single<HttpClient> {
         HttpNetworkClientImp(get<NoteMarkPreferences>())

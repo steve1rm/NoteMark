@@ -4,9 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import me.androidbox.edit_note.presentation.EditNoteScreenPortrait
-import me.androidbox.edit_note.presentation.EditNoteScreenRoot
-import me.androidbox.edit_note.presentation.EditNoteUiState
+import me.androidbox.notes.presentation.EditNoteScreenRoot
 import me.androidbox.notes.presentation.NoteListScreenRoot
 import me.androidbox.startup.presentation.LandingScreen
 

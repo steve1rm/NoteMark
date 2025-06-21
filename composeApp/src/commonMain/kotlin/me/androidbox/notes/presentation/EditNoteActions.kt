@@ -1,4 +1,4 @@
-package me.androidbox.edit_note.presentation
+package me.androidbox.notes.presentation
 
 import me.androidbox.notes.domain.model.NoteItem
 

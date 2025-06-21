@@ -9,8 +9,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import me.androidbox.core.presentation.designsystem.theming.NoteMarkTheme
-import me.androidbox.edit_note.presentation.EditNoteScreenRoot
 import me.androidbox.navigation.AppNavigation
+import me.androidbox.notes.presentation.EditNoteScreenRoot
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

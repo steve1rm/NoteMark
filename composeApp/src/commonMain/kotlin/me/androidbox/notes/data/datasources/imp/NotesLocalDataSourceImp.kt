@@ -10,7 +10,7 @@ import net.orandja.either.Left
 import net.orandja.either.Right
 import kotlin.coroutines.cancellation.CancellationException
 
-class NoteLocalDataSourceImp(
+class NotesLocalDataSourceImp(
     private val notesDatabase: NoteMarkDatabase
 ) : NotesLocalDataSource {
     override suspend fun saveNote(noteItemEntity: NoteItemEntity): Either<Long, DataError.Local> {

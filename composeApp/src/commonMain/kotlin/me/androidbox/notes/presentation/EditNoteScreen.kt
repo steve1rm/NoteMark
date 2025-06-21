@@ -1,4 +1,4 @@
-package me.androidbox.edit_note.presentation
+package me.androidbox.notes.presentation
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -6,7 +6,6 @@ import androidx.compose.runtime.getValue
 import androidx.lifecycle.viewmodel.compose.viewModel
 import me.androidbox.core.models.Orientation
 import me.androidbox.getOrientation
-import me.androidbox.isTablet
 
 @Composable
 fun EditNoteScreenRoot() {

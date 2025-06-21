@@ -1,4 +1,4 @@
-package me.androidbox.edit_note.presentation
+package me.androidbox.notes.presentation
 
 data class EditNoteUiState(
     val title: String = "",
