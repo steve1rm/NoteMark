@@ -1,19 +1,50 @@
 package me.androidbox.notes.data.repository
 
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.async
 import me.androidbox.core.models.DataError
 import me.androidbox.notes.data.datasources.NotesLocalDataSource
 import me.androidbox.notes.data.datasources.NotesRemoteDataSource
 import me.androidbox.notes.domain.NotesRepository
+import me.androidbox.notes.domain.mappers.toNoteItemDto
 import me.androidbox.notes.domain.mappers.toNoteItemEntity
 import me.androidbox.notes.domain.model.NoteItem
 import net.orandja.either.Either
+import net.orandja.either.Left
+import net.orandja.either.Right
 
 class NotesRepositoryImp(
     private val notesRemoteDataSource: NotesRemoteDataSource,
-    private val notesLocalDataSource: NotesLocalDataSource
+    private val notesLocalDataSource: NotesLocalDataSource,
+    private val applicationScope: CoroutineScope
 ) : NotesRepository {
-    override suspend fun saveNote(noteItem: NoteItem): Either<Long, DataError.Local> {
-        return notesLocalDataSource.saveNote(noteItem.toNoteItemEntity())
+    override suspend fun saveNote(noteItem: NoteItem): Either<Unit, DataError> {
+        /** Save locally to Room */
+        val localResult =  notesLocalDataSource.saveNote(noteItem.toNoteItemEntity())
+
+        if(localResult is Right) {
+            return localResult
+        }
+
+        /**
+         * We have saved the note to the local database
+         * Let's protect the following code from being canceled when the user
+         * navigates away from the current screen
+         */
+        val result = applicationScope.async {
+            val networkResult = notesRemoteDataSource.createNote(noteItem.toNoteItemDto())
+
+            when(networkResult) {
+                is Left -> {
+                    return@async Left(Unit)
+                }
+                is Right -> {
+                    return@async networkResult
+                }
+            }
+        }
+
+        return result.await()
     }
 
     override suspend fun deleteNote(id: String): Either<Unit, DataError.Local> {

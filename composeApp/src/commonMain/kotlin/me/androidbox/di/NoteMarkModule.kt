@@ -1,11 +1,7 @@
 package me.androidbox.di
 
-import io.ktor.client.HttpClient
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.IO
-import kotlinx.coroutines.SupervisorJob
+import io.ktor.client.*
+import kotlinx.coroutines.*
 import me.androidbox.NoteMarkPreferences
 import me.androidbox.authentication.login.domain.use_case.LoginUseCase
 import me.androidbox.authentication.login.presentation.LoginViewModel
@@ -43,11 +39,8 @@ val noteMarkModule = module {
         EditNoteViewModel(get<SaveNoteUseCase>())
     }
 
-    factory<SaveNoteUseCase> { SaveNoteUseCaseImp(get()) }
-
-
     /** UseCases */
-//    factory { SaveNoteUseCaseImp(get<NotesRepository>()) }.bind(SaveNoteUseCase::class)
+    factory { SaveNoteUseCaseImp(get<NotesRepository>()) }.bind(SaveNoteUseCase::class)
     factory { DeleteNoteUseCaseImp() }.bind(DeleteNoteUseCase::class)
     factory { FetchNotesUseCaseImp() }.bind(FetchNotesUseCase::class)
 
@@ -79,7 +72,8 @@ val noteMarkModule = module {
 
     factory { NotesRepositoryImp(
         notesLocalDataSource = get<NotesLocalDataSource>(),
-        notesRemoteDataSource = get<NotesRemoteDataSource>()
+        notesRemoteDataSource = get<NotesRemoteDataSource>(),
+        applicationScope = get<CoroutineScope>()
     ) }.bind(NotesRepository::class)
 
     factory {

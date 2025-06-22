@@ -10,6 +10,8 @@ import kotlinx.coroutines.launch
 import kotlinx.datetime.Clock
 import me.androidbox.notes.domain.model.NoteItem
 import me.androidbox.notes.domain.usecases.SaveNoteUseCase
+import net.orandja.either.Left
+import net.orandja.either.Right
 
 class EditNoteViewModel(
     private val saveNoteUseCase: SaveNoteUseCase
@@ -31,7 +33,8 @@ class EditNoteViewModel(
                     Logger.d {
                         "Saving the note ${state.value.title}"
                     }
-                    saveNoteUseCase.execute(
+
+                    val result = saveNoteUseCase.execute(
                         NoteItem(
                             id = "random UUID",
                             title = state.value.title,
@@ -40,6 +43,19 @@ class EditNoteViewModel(
                             lastEditedAt = Clock.System.now().toEpochMilliseconds()
                         )
                     )
+
+                    when(result) {
+                        is Left -> {
+                            Logger.d {
+                                "Saved to the local database and updated the remote"
+                            }
+                        }
+                        is Right -> {
+                            Logger.e {
+                                "Failed to upload the note ${result.right}"
+                            }
+                        }
+                    }
                 }
             }
         }
