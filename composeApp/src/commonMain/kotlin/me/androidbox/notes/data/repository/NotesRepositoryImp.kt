@@ -47,10 +47,28 @@ class NotesRepositoryImp(
         return result.await()
     }
 
-    override suspend fun deleteNote(id: String): Either<Unit, DataError.Local> {
-       // return notesRemoteDataSource.deleteNote(id)
+    override suspend fun deleteNote(noteItem: NoteItem): Either<Unit, DataError> {
+        /** Delete it locally */
+        val localResult = notesLocalDataSource.deleteNote(noteItem.toNoteItemEntity())
 
-        TODO()
+        if(localResult is Left) {
+            return localResult
+        }
+
+        val result = applicationScope.async {
+            val remoteRemote = notesRemoteDataSource.deleteNote(noteItem.id)
+
+            when(remoteRemote) {
+                is Left -> {
+                    return@async Left(Unit)
+                }
+                is Right -> {
+                    remoteRemote
+                }
+            }
+        }
+
+        return result.await()
     }
 
     override suspend fun fetchNotes(
