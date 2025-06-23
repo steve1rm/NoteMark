@@ -31,17 +31,15 @@ class MainActivity : ComponentActivity() {
         }
 
     }
+}
 
-    @PreviewScreenSizes
-    @Composable
-    fun AppAndroidPreview() {
-        NoteMarkTheme {
-            EditNoteScreenRoot(
+@PreviewScreenSizes
+@Composable
+fun AppAndroidPreview() {
+    NoteMarkTheme {
+        EditNoteScreenRoot(
 //                state = EditNoteUiState(),
 //                onAction = {},
-            )
-        }
+        )
     }
-
-
 }

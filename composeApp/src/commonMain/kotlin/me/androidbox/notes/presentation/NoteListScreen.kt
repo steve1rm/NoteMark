@@ -16,6 +16,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import me.androidbox.core.models.Orientation
 import me.androidbox.core.presentation.designsystem.NoteMarkLayout
@@ -25,13 +26,15 @@ import me.androidbox.getOrientation
 import me.androidbox.isTablet
 import me.androidbox.notes.presentation.components.AvatarIcon
 import me.androidbox.notes.presentation.components.NoteItem
+import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun NoteListScreenRoot(
     onNavigateToEditNote : () -> Unit,
 ) {
-    val viewModel = viewModel<NoteListViewModel>()
-    val state by viewModel.state.collectAsState()
+    val viewModel = koinViewModel<NoteListViewModel>()
+    val state by viewModel.state.collectAsStateWithLifecycle()
+
     NoteListScreen(
         state = state,
         onAction = viewModel::onAction,

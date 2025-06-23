@@ -26,6 +26,7 @@ import me.androidbox.notes.domain.usecases.imp.DeleteNoteUseCaseImp
 import me.androidbox.notes.domain.usecases.imp.FetchNotesUseCaseImp
 import me.androidbox.notes.domain.usecases.imp.SaveNoteUseCaseImp
 import me.androidbox.notes.presentation.EditNoteViewModel
+import me.androidbox.notes.presentation.NoteListViewModel
 import org.koin.core.module.dsl.viewModel
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.bind
@@ -36,6 +37,7 @@ val noteMarkModule = module {
     viewModelOf(::RegisterViewModel)
     viewModelOf(::LoginViewModel)
     viewModelOf(::EditNoteViewModel)
+    viewModelOf(::NoteListViewModel)
 
     /** UseCases */
     factory { SaveNoteUseCaseImp(get<NotesRepository>()) }.bind(SaveNoteUseCase::class)
