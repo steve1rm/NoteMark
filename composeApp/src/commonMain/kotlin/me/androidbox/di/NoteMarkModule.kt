@@ -4,6 +4,8 @@ import io.ktor.client.*
 import kotlinx.coroutines.*
 import me.androidbox.NoteMarkPreferences
 import me.androidbox.authentication.login.domain.use_case.LoginUseCase
+import me.androidbox.authentication.login.domain.use_case.LoginUseCaseV2
+import me.androidbox.authentication.login.domain.use_case.imp.LoginUseCaseV2Imp
 import me.androidbox.authentication.login.presentation.LoginViewModel
 import me.androidbox.authentication.register.data.AuthorizationRemoteDataSource
 import me.androidbox.authentication.register.data.imp.AuthorizationRemoteDataSourceImp
@@ -27,7 +29,6 @@ import me.androidbox.notes.domain.usecases.imp.FetchNotesUseCaseImp
 import me.androidbox.notes.domain.usecases.imp.SaveNoteUseCaseImp
 import me.androidbox.notes.presentation.EditNoteViewModel
 import me.androidbox.notes.presentation.NoteListViewModel
-import org.koin.core.module.dsl.viewModel
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.bind
 import org.koin.dsl.module
@@ -43,6 +44,10 @@ val noteMarkModule = module {
     factory { SaveNoteUseCaseImp(get<NotesRepository>()) }.bind(SaveNoteUseCase::class)
     factory { DeleteNoteUseCaseImp(get<NotesRepository>()) }.bind(DeleteNoteUseCase::class)
     factory { FetchNotesUseCaseImp(get<NotesRepository>()) }.bind(FetchNotesUseCase::class)
+    factory { LoginUseCaseV2Imp(
+        get<AuthorizationRepository>(),
+        get<NoteMarkPreferences>()) }
+        .bind(LoginUseCaseV2::class)
 
     factory { LoginUseCase(
         get<AuthorizationRepository>()
