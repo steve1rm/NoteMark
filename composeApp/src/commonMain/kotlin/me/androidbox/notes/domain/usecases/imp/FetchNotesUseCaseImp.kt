@@ -1,12 +1,16 @@
 package me.androidbox.notes.domain.usecases.imp
 
+import kotlinx.coroutines.flow.Flow
 import me.androidbox.core.models.DataError
+import me.androidbox.notes.domain.NotesRepository
 import me.androidbox.notes.domain.model.NoteItem
 import me.androidbox.notes.domain.usecases.FetchNotesUseCase
 import net.orandja.either.Either
 
-class FetchNotesUseCaseImp : FetchNotesUseCase {
-    override suspend fun execute(): Either<List<NoteItem>, DataError.Local> {
-        TODO("Not yet implemented")
+class FetchNotesUseCaseImp(
+    private val notesRepository: NotesRepository
+) : FetchNotesUseCase {
+    override suspend fun execute(): Flow<List<NoteItem>> {
+        return notesRepository.fetchNotes(0, 0)
     }
 }

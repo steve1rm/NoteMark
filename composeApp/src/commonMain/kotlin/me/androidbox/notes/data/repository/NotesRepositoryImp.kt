@@ -2,10 +2,13 @@ package me.androidbox.notes.data.repository
 
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.async
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import me.androidbox.core.models.DataError
 import me.androidbox.notes.data.datasources.NotesLocalDataSource
 import me.androidbox.notes.data.datasources.NotesRemoteDataSource
 import me.androidbox.notes.domain.NotesRepository
+import me.androidbox.notes.domain.mappers.toNoteItem
 import me.androidbox.notes.domain.mappers.toNoteItemDto
 import me.androidbox.notes.domain.mappers.toNoteItemEntity
 import me.androidbox.notes.domain.model.NoteItem
@@ -74,9 +77,11 @@ class NotesRepositoryImp(
     override suspend fun fetchNotes(
         page: Int,
         size: Int
-    ): Either<List<NoteItem>, DataError.Local> {
-     //   return notesRemoteDataSource.fetchNotes(page = page, size = size)
-
-        TODO()
+    ): Flow<List<NoteItem>> {
+        return notesLocalDataSource.getAllNotes().map { listOfNoteItemEntity ->
+            listOfNoteItemEntity.map { noteItemEntity ->
+                noteItemEntity.toNoteItem()
+            }
+        }
     }
 }
