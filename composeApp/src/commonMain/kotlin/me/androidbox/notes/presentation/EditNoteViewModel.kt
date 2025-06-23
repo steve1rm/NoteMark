@@ -9,15 +9,19 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.datetime.Clock
 import me.androidbox.notes.domain.model.NoteItem
+import me.androidbox.notes.domain.usecases.FetchNotesUseCase
 import me.androidbox.notes.domain.usecases.SaveNoteUseCase
 import net.orandja.either.Left
 import net.orandja.either.Right
 
 class EditNoteViewModel(
-    private val saveNoteUseCase: SaveNoteUseCase
+    private val saveNoteUseCase: SaveNoteUseCase,
+    private val fetchNotesUseCase: FetchNotesUseCase
 ) : ViewModel() {
     private val _state = MutableStateFlow(EditNoteUiState())
     val state = _state.asStateFlow()
+
+
 
     fun onAction(action: EditNoteActions) {
         when (action) {

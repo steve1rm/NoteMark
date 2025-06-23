@@ -10,6 +10,6 @@ class DeleteNoteUseCaseImp(
     private val notesRepository: NotesRepository
 ) : DeleteNoteUseCase {
     override suspend fun execute(noteItem: NoteItem): Either<Unit, DataError> {
-        notesRepository.deleteNote(noteItem)
+        return notesRepository.deleteNote(noteItem)
     }
 }

@@ -35,14 +35,12 @@ val noteMarkModule = module {
     /** ViewModels */
     viewModelOf(::RegisterViewModel)
     viewModelOf(::LoginViewModel)
-    viewModel {
-        EditNoteViewModel(get<SaveNoteUseCase>())
-    }
+    viewModelOf(::EditNoteViewModel)
 
     /** UseCases */
     factory { SaveNoteUseCaseImp(get<NotesRepository>()) }.bind(SaveNoteUseCase::class)
-    factory { DeleteNoteUseCaseImp() }.bind(DeleteNoteUseCase::class)
-    factory { FetchNotesUseCaseImp() }.bind(FetchNotesUseCase::class)
+    factory { DeleteNoteUseCaseImp(get<NotesRepository>()) }.bind(DeleteNoteUseCase::class)
+    factory { FetchNotesUseCaseImp(get<NotesRepository>()) }.bind(FetchNotesUseCase::class)
 
     factory { LoginUseCase(
         get<AuthorizationRepository>()
