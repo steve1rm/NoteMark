@@ -7,10 +7,10 @@ import kotlinx.coroutines.flow.map
 import me.androidbox.core.models.DataError
 import me.androidbox.notes.data.datasources.NotesLocalDataSource
 import me.androidbox.notes.data.datasources.NotesRemoteDataSource
+import me.androidbox.notes.data.mappers.toNoteItem
+import me.androidbox.notes.data.mappers.toNoteItemDto
+import me.androidbox.notes.data.mappers.toNoteItemEntity
 import me.androidbox.notes.domain.NotesRepository
-import me.androidbox.notes.domain.mappers.toNoteItem
-import me.androidbox.notes.domain.mappers.toNoteItemDto
-import me.androidbox.notes.domain.mappers.toNoteItemEntity
 import me.androidbox.notes.domain.model.NoteItem
 import net.orandja.either.Either
 import net.orandja.either.Left

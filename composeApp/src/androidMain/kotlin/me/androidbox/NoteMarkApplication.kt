@@ -14,7 +14,7 @@ class NoteMarkApplication : Application() {
             config = {
                 androidContext(this@NoteMarkApplication)
                 androidLogger(Level.DEBUG)
-          //      analytics { apiKey() }
+          // FIXME      analytics { apiKey() }
             },
             androidSpecificModule
         )

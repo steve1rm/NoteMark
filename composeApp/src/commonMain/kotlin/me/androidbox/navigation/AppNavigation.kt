@@ -14,7 +14,7 @@ fun AppNavigation(
     val navHostController = rememberNavController()
     NavHost(
         navController = navHostController,
-        startDestination = NavGraph.NotesScreen
+        startDestination = NavGraph.AuthenticationGraph
     ) {
         composable<NavGraph.LandingScreen> {
             LandingScreen(

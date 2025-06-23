@@ -1,4 +1,4 @@
-package me.androidbox.notes.domain.mappers
+package me.androidbox.notes.data.mappers
 
 import me.androidbox.notes.data.models.NoteItemDto
 import me.androidbox.notes.data.models.NoteItemEntity
