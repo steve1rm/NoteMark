@@ -39,7 +39,7 @@ fun AppAndroidPreview() {
     NoteMarkTheme {
         EditNoteScreenRoot(
 //                state = EditNoteUiState(),
-//                onAction = {},
+                {},
         )
     }
 }

@@ -5,5 +5,7 @@ import me.androidbox.notes.domain.model.NoteItem
 
 data class NoteListUiState(
     val profilePicText: String = "PL",
-    val notesList: List<NoteItem> = Previews.noteItemList
+    val notesList: List<NoteItem> = emptyList(),
+    val showDeleteDialog: Boolean = false,
+    val currentSelectedNote: NoteItem? = null
 )

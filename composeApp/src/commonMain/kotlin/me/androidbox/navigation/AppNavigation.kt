@@ -37,7 +37,11 @@ fun AppNavigation(
         }
 
         composable<NavGraph.NoteEditScreen> {
-            EditNoteScreenRoot()
+            EditNoteScreenRoot(
+                onNavigateBack = {
+                    navHostController.popBackStack()
+                }
+            )
         }
     }
 }
