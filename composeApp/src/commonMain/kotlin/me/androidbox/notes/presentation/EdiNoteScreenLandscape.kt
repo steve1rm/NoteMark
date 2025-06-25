@@ -103,7 +103,7 @@ fun EdiNoteScreenLandscape(
                 TextButton(
                     text = "SAVE NOTE",
                     onClick = {
-
+                        onAction(EditNoteActions.OnSaveNote)
                     },
                     textStyle = TextStyle(
                         fontFamily = spaceGrotesk,

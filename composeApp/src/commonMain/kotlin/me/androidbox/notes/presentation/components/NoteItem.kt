@@ -1,15 +1,19 @@
 package me.androidbox.notes.presentation.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.dp
 import me.androidbox.core.presentation.utils.toFormattedDate
 import me.androidbox.isTablet
@@ -18,6 +22,7 @@ import me.androidbox.notes.domain.model.NoteItem
 @Composable
 fun NoteItem(
     noteItem: NoteItem,
+    onLongClick : () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val isTablet = isTablet()
@@ -42,6 +47,13 @@ fun NoteItem(
                 spotColor = MaterialTheme.colorScheme.onSurface.copy(alpha = .08f)
             )
             .clip(shape = RoundedCornerShape(12.dp))
+            .pointerInput(Unit) {
+                detectTapGestures(
+                    onLongPress = {
+                        onLongClick()
+                    }
+                )
+            }
             .background(MaterialTheme.colorScheme.surfaceContainerLowest)
             .padding(16.dp)
     ) {
@@ -50,13 +62,17 @@ fun NoteItem(
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.primary,
         )
+
         Spacer(modifier = Modifier.height(8.dp))
+
         Text(
             text = noteItem.title,
             color = MaterialTheme.colorScheme.onSurface,
             style = titleStyle
         )
+
         Spacer(modifier = Modifier.height(4.dp))
+
         Text(
             text = contentText,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
