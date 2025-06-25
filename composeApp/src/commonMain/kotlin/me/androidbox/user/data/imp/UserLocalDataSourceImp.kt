@@ -22,10 +22,10 @@ class UserLocalDataSourceImp(
         }
     }
 
-    override suspend fun fetchUser(): Either<UserEntity?, DataError.Local> {
+    override suspend fun fetchUser(): Either<UserEntity, DataError.Local> {
         val userEntity = noteMarkDatabase.noteMarkDao().getUser()
 
-        return if(userEntity == null) {
+        return if(userEntity != null) {
             Left(userEntity)
         }
         else {

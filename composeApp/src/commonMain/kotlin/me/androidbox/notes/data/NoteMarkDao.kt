@@ -23,5 +23,5 @@ interface NoteMarkDao {
     suspend fun insertUser(userEntity: UserEntity): Long
 
     @Query("SELECT * from UserEntity LIMIT 1")
-    fun getUser(): UserEntity?
+    suspend fun getUser(): UserEntity?
 }
