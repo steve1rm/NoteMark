@@ -20,6 +20,6 @@ class AuthorizationRepositoryImp(
     }
 
     override suspend fun loginV2(loginV2Dto: LoginV2Dto): Either<Unit, DataError.Network> {
-        TODO("Not yet implemented")
+        return authorizationRemoteDataSource.loginUserV2(loginV2Dto)
     }
 }
