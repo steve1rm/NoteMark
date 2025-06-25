@@ -3,7 +3,7 @@ package me.androidbox.authentication.register
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
-@Entity(tableName = "User")
+@Entity(tableName = "UserEntity")
 data class UserEntity(
     @PrimaryKey(autoGenerate = true)
     val id: Int = 0,

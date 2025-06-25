@@ -83,7 +83,7 @@ val noteMarkModule = module {
     }.bind(UserRepository::class)
 
     factory {
-        UserLocalDataSourceImp(get<NoteMarkDao>())
+        UserLocalDataSourceImp(get<NoteMarkDatabase>())
     }.bind(UserLocalDataSource::class)
 
     single<CoroutineDispatcher> { Dispatchers.IO }
