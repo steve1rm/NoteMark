@@ -5,7 +5,7 @@ import io.ktor.client.request.*
 import me.androidbox.authentication.login.data.LoginDto
 import me.androidbox.authentication.login.data.LoginV2Dto
 import me.androidbox.authentication.register.data.AuthorizationRemoteDataSource
-import me.androidbox.authentication.register.data.Register
+import me.androidbox.authentication.register.data.RegisterDto
 import me.androidbox.core.data.Routes
 import me.androidbox.core.data.safeApiRequest
 import me.androidbox.core.models.DataError
@@ -14,11 +14,11 @@ import net.orandja.either.Either
 class AuthorizationRemoteDataSourceImp(
     private val httpClient: HttpClient
 ) : AuthorizationRemoteDataSource {
-    override suspend fun registerUser(register: Register): Either<Unit, DataError> {
+    override suspend fun registerUser(registerDto: RegisterDto): Either<Unit, DataError> {
         val safeResult = safeApiRequest<Unit> {
             val response = httpClient
                 .post(Routes.REGISTRATION) {
-                    this.setBody(register)
+                    this.setBody(registerDto)
                 }
             response
         }

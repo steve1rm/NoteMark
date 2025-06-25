@@ -6,7 +6,7 @@ import me.androidbox.core.models.DataError
 import net.orandja.either.Either
 
 interface AuthorizationRemoteDataSource {
-    suspend fun registerUser(register: Register) : Either<Unit, DataError>
+    suspend fun registerUser(registerDto: RegisterDto) : Either<Unit, DataError>
     suspend fun loginUser(loginDto: LoginDto) : Either<Unit, DataError.Network>
     suspend fun loginUserV2(loginV2Dto: LoginV2Dto) : Either<Unit, DataError.Network>
 }
