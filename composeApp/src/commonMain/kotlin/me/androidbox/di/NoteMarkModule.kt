@@ -1,7 +1,11 @@
 package me.androidbox.di
 
-import io.ktor.client.*
-import kotlinx.coroutines.*
+import io.ktor.client.HttpClient
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.IO
+import kotlinx.coroutines.SupervisorJob
 import me.androidbox.NoteMarkPreferences
 import me.androidbox.authentication.login.domain.use_case.LoginUseCase
 import me.androidbox.authentication.login.domain.use_case.LoginUseCaseV2
@@ -15,6 +19,7 @@ import me.androidbox.authentication.register.domain.use_case.RegisterUseCase
 import me.androidbox.authentication.register.presentation.RegisterViewModel
 import me.androidbox.core.data.NoteMarkDatabase
 import me.androidbox.core.data.imp.HttpNetworkClientImp
+import me.androidbox.notes.data.NoteMarkDao
 import me.androidbox.notes.data.datasources.NotesLocalDataSource
 import me.androidbox.notes.data.datasources.NotesRemoteDataSource
 import me.androidbox.notes.data.datasources.imp.NotesLocalDataSourceImp
@@ -29,6 +34,10 @@ import me.androidbox.notes.domain.usecases.imp.FetchNotesUseCaseImp
 import me.androidbox.notes.domain.usecases.imp.SaveNoteUseCaseImp
 import me.androidbox.notes.presentation.EditNoteViewModel
 import me.androidbox.notes.presentation.NoteListViewModel
+import me.androidbox.user.data.UserLocalDataSource
+import me.androidbox.user.data.imp.UserLocalDataSourceImp
+import me.androidbox.user.data.imp.UserRepositoryImp
+import me.androidbox.user.domain.UserRepository
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.bind
 import org.koin.dsl.module
@@ -68,6 +77,14 @@ val noteMarkModule = module {
             get<HttpClient>()
         )
     }
+
+    factory {
+        UserRepositoryImp(get<UserLocalDataSource>())
+    }.bind(UserRepository::class)
+
+    factory {
+        UserLocalDataSourceImp(get<NoteMarkDao>())
+    }.bind(UserLocalDataSource::class)
 
     single<CoroutineDispatcher> { Dispatchers.IO }
 
