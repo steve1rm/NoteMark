@@ -64,8 +64,9 @@ class LoginViewModel(
                         _state.update { it.copy(isLoading = true) }
                         val username = userRepository.fetchUser().left
 
-                        val result = loginUseCaseV2.execute(
-                            username = username.userName
+                        val result = loginUseCase.execute(
+                            email = state.value.email,
+                            password = state.value.password
                         )
 
                         when(result) {
