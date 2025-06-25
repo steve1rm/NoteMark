@@ -4,8 +4,6 @@ import me.androidbox.authentication.register.UserEntity
 import me.androidbox.core.models.DataError
 import me.androidbox.notes.data.NoteMarkDao
 import me.androidbox.user.data.UserLocalDataSource
-import me.androidbox.user.domain.User
-import me.androidbox.user.domain.UserRepository
 import net.orandja.either.Either
 import net.orandja.either.Left
 import net.orandja.either.Right
