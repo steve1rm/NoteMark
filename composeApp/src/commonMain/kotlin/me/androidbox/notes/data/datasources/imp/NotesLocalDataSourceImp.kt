@@ -3,6 +3,7 @@ package me.androidbox.notes.data.datasources.imp
 import kotlinx.coroutines.flow.Flow
 import me.androidbox.core.data.NoteMarkDatabase
 import me.androidbox.core.models.DataError
+import me.androidbox.notes.data.NoteMarkDao
 import me.androidbox.notes.data.datasources.NotesLocalDataSource
 import me.androidbox.notes.data.models.NoteItemEntity
 import net.orandja.either.Either
@@ -11,11 +12,11 @@ import net.orandja.either.Right
 import kotlin.coroutines.cancellation.CancellationException
 
 class NotesLocalDataSourceImp(
-    private val notesDatabase: NoteMarkDatabase
+    private val noteMarkDao: NoteMarkDao
 ) : NotesLocalDataSource {
     override suspend fun saveNote(noteItemEntity: NoteItemEntity): Either<Long, DataError.Local> {
         return try {
-            val rowId = notesDatabase.noteMarkDao().insertNote(noteItemEntity)
+            val rowId = noteMarkDao.insertNote(noteItemEntity)
             Left(rowId)
         }
         catch(exception: Exception) {
@@ -28,7 +29,7 @@ class NotesLocalDataSourceImp(
 
     override suspend fun deleteNote(noteItemEntity: NoteItemEntity): Either<Unit, DataError.Local> {
         return try {
-            notesDatabase.noteMarkDao().deleteNote(noteItemEntity)
+            noteMarkDao.deleteNote(noteItemEntity)
             Left(Unit)
         }
         catch(exception: Exception) {
@@ -40,6 +41,6 @@ class NotesLocalDataSourceImp(
     }
 
     override fun getAllNotes(): Flow<List<NoteItemEntity>> {
-        return notesDatabase.noteMarkDao().getAllNotes()
+        return noteMarkDao.getAllNotes()
     }
 }
