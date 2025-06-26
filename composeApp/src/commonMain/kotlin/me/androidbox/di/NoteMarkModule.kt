@@ -28,6 +28,7 @@ import me.androidbox.notes.data.repository.NotesRepositoryImp
 import me.androidbox.notes.domain.NotesRepository
 import me.androidbox.notes.domain.usecases.DeleteNoteUseCase
 import me.androidbox.notes.domain.usecases.FetchNotesUseCase
+import me.androidbox.notes.domain.usecases.GetProfilePictureUseCase
 import me.androidbox.notes.domain.usecases.SaveNoteUseCase
 import me.androidbox.notes.domain.usecases.imp.DeleteNoteUseCaseImp
 import me.androidbox.notes.domain.usecases.imp.FetchNotesUseCaseImp
@@ -61,6 +62,8 @@ val noteMarkModule = module {
     factory { LoginUseCase(
         get<AuthorizationRepository>()
     ) }
+
+    factory { GetProfilePictureUseCase() }
 
     factory { RegisterUseCase(
         get<AuthorizationRepository>())
