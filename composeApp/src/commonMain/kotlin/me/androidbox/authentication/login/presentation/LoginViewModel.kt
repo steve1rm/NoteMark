@@ -17,11 +17,13 @@ import me.androidbox.authentication.login.domain.model.LoginRequest
 import me.androidbox.authentication.login.domain.use_case.LoginUseCaseV2
 import me.androidbox.core.models.DataError
 import me.androidbox.emailValid
+import me.androidbox.notes.domain.usecases.GetProfilePictureUseCase
 import net.orandja.either.Left
 import net.orandja.either.Right
 
 class LoginViewModel(
     private val loginUseCaseV2: LoginUseCaseV2,
+    private val profilePictureUseCase: GetProfilePictureUseCase
 ) : ViewModel() {
     private val _state = MutableStateFlow(LoginUiState())
     val state = _state.asStateFlow()
@@ -61,17 +63,24 @@ class LoginViewModel(
                         _state.update { it.copy(isLoading = true) }
 
                         val result = loginUseCaseV2.execute(
-                            LoginRequest(email = state.value.email,
-                            password = state.value.password
-                        ))
+                            LoginRequest(
+                                email = state.value.email,
+                                password = state.value.password
+                            )
+                        )
 
-                        when(result) {
+                        when (result) {
                             is Left -> {
                                 _state.update { loginUiState ->
                                     loginUiState.copy(isLoading = false)
                                 }
-                                _events.send(AuthenticationEvents.OnAuthenticationSuccess(result.left.username))
+
+                                val profileUsername =
+                                    profilePictureUseCase(username = result.left.username)
+
+                                _events.send(AuthenticationEvents.OnAuthenticationSuccess(username = profileUsername))
                             }
+
                             is Right<DataError> -> {
                                 _state.update { loginUiState ->
                                     loginUiState.copy(isLoading = false)
@@ -80,8 +89,7 @@ class LoginViewModel(
                                 _events.send(AuthenticationEvents.OnAuthenticationFail(result.right.errorMessage))
                             }
                         }
-                    }
-                    catch (exception: Exception) {
+                    } catch (exception: Exception) {
                         _state.update { loginUiState ->
                             loginUiState.copy(isLoading = false)
                         }
