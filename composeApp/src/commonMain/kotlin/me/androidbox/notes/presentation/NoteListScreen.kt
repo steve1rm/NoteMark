@@ -71,7 +71,7 @@ fun NoteListScreen(
                 )
 
                 AvatarIcon(
-                    name = "PL",
+                    name = state.profilePicText,
                     backgroundColor = MaterialTheme.colorScheme.primary
                 )
             }

@@ -2,6 +2,7 @@ package me.androidbox.notes.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.async
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -13,10 +14,14 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import me.androidbox.notes.domain.usecases.DeleteNoteUseCase
 import me.androidbox.notes.domain.usecases.FetchNotesUseCase
+import me.androidbox.notes.domain.usecases.GetProfilePictureUseCase
+import me.androidbox.user.domain.UserRepository
 
 class NoteListViewModel(
     private val fetchNotesUseCase: FetchNotesUseCase,
-    private val deleteNoteUseCase: DeleteNoteUseCase
+    private val deleteNoteUseCase: DeleteNoteUseCase,
+    private val userRepository: UserRepository,
+    private val getProfilePictureUseCase: GetProfilePictureUseCase
 ) : ViewModel() {
     private var hasFetched = false
 
@@ -25,6 +30,7 @@ class NoteListViewModel(
         .onStart {
             if (!hasFetched) {
                 fetchNotes()
+                getProfilePicture()
                 hasFetched = true
             }
         }
@@ -33,6 +39,14 @@ class NoteListViewModel(
             started = SharingStarted.WhileSubscribed(5_000L),
             initialValue = NoteListUiState()
         )
+
+    private fun getProfilePicture() {
+        viewModelScope.launch {
+            val user = async { userRepository.fetchUser().left }
+            val pictureText = async { getProfilePictureUseCase(user.await().userName) }
+            _state.update { it.copy(profilePicText = pictureText.await()) }
+        }
+    }
 
     private fun fetchNotes() {
         viewModelScope.launch {
