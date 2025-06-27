@@ -1,11 +1,7 @@
 package me.androidbox.di
 
-import io.ktor.client.HttpClient
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.IO
-import kotlinx.coroutines.SupervisorJob
+import io.ktor.client.*
+import kotlinx.coroutines.*
 import me.androidbox.NoteMarkPreferences
 import me.androidbox.authentication.login.domain.use_case.LoginUseCase
 import me.androidbox.authentication.login.domain.use_case.LoginUseCaseV2
@@ -44,13 +40,17 @@ import org.koin.dsl.bind
 import org.koin.dsl.module
 
 val noteMarkModule = module {
-    /** ViewModels */
+    /**
+     * ViewModels
+     **/
     viewModelOf(::RegisterViewModel)
     viewModelOf(::LoginViewModel)
     viewModelOf(::EditNoteViewModel)
     viewModelOf(::NoteListViewModel)
 
-    /** UseCases */
+    /**
+     *  UseCases
+     **/
     factory { SaveNoteUseCaseImp(get<NotesRepository>()) }.bind(SaveNoteUseCase::class)
     factory { DeleteNoteUseCaseImp(get<NotesRepository>()) }.bind(DeleteNoteUseCase::class)
     factory { FetchNotesUseCaseImp(get<NotesRepository>()) }.bind(FetchNotesUseCase::class)
@@ -69,15 +69,12 @@ val noteMarkModule = module {
         get<AuthorizationRepository>())
     }
 
+    /**
+     * Repositories
+     **/
     factory<AuthorizationRepository> {
         AuthorizationRepositoryImp(
             get<AuthorizationRemoteDataSource>()
-        )
-    }
-
-    factory<AuthorizationRemoteDataSource> {
-        AuthorizationRemoteDataSourceImp(
-            get<HttpClient>()
         )
     }
 
@@ -86,34 +83,48 @@ val noteMarkModule = module {
     }.bind(UserRepository::class)
 
     factory {
-        UserLocalDataSourceImp(get<NoteMarkDao>())
-    }.bind(UserLocalDataSource::class)
+        NotesRepositoryImp(
+            notesLocalDataSource = get<NotesLocalDataSource>(),
+            notesRemoteDataSource = get<NotesRemoteDataSource>(),
+            applicationScope = get<CoroutineScope>()
+        )
+    }.bind(NotesRepository::class)
 
-    single<CoroutineDispatcher> { Dispatchers.IO }
-
-    single<CoroutineScope> {
-        CoroutineScope(Dispatchers.Default + SupervisorJob())
+    /**
+     * DataSources
+     **/
+    factory<AuthorizationRemoteDataSource> {
+        AuthorizationRemoteDataSourceImp(
+            get<HttpClient>()
+        )
     }
 
-    factory { NotesRepositoryImp(
-        notesLocalDataSource = get<NotesLocalDataSource>(),
-        notesRemoteDataSource = get<NotesRemoteDataSource>(),
-        applicationScope = get<CoroutineScope>()
-    ) }.bind(NotesRepository::class)
+    factory {
+        UserLocalDataSourceImp(get<NoteMarkDao>())
+    }.bind(UserLocalDataSource::class)
 
     factory {
         NotesRemoteDataSourceImp(get<HttpClient>())
     }.bind(NotesRemoteDataSource::class)
-
-    single<NoteMarkDao> {
-        get<NoteMarkDatabase>().noteMarkDao()
-    }
 
     factory {
         NotesLocalDataSourceImp(
             get<NoteMarkDao>()
         )
     }.bind(NotesLocalDataSource::class)
+
+    /**
+     * Misc
+     **/
+    single<CoroutineDispatcher> { Dispatchers.IO }
+
+    single<CoroutineScope> {
+        CoroutineScope(Dispatchers.Default + SupervisorJob())
+    }
+
+    single<NoteMarkDao> {
+        get<NoteMarkDatabase>().noteMarkDao()
+    }
 
     single<HttpClient> {
         HttpNetworkClientImp(get<NoteMarkPreferences>())
