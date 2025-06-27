@@ -4,15 +4,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.flow.receiveAsFlow
-import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import me.androidbox.authentication.core.AuthenticationEvents
+import me.androidbox.authentication.login.domain.model.LoginRequest
 import me.androidbox.authentication.login.domain.use_case.LoginUseCase
 import me.androidbox.authentication.login.domain.use_case.LoginUseCaseV2
 import me.androidbox.core.models.DataError
@@ -62,12 +57,11 @@ class LoginViewModel(
                 viewModelScope.launch {
                     try {
                         _state.update { it.copy(isLoading = true) }
-                        val username = userRepository.fetchUser().left
 
-                        val result = loginUseCase.execute(
-                            email = state.value.email,
+                        val result = loginUseCaseV2.execute(
+                            LoginRequest(email = state.value.email,
                             password = state.value.password
-                        )
+                        ))
 
                         when(result) {
                             is Left -> {
@@ -80,12 +74,8 @@ class LoginViewModel(
                                 _state.update { loginUiState ->
                                     loginUiState.copy(isLoading = false)
                                 }
-                                val message = if(result.right is DataError.Network) {
-                                    "Invalid login credentials"
-                                } else {
-                                    "Invalid"
-                                }
-                                _events.send(AuthenticationEvents.OnAuthenticationFail(message))
+
+                                _events.send(AuthenticationEvents.OnAuthenticationFail(result.right.errorMessage))
                             }
                         }
                     }

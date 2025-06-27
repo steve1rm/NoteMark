@@ -55,8 +55,7 @@ val noteMarkModule = module {
     factory { DeleteNoteUseCaseImp(get<NotesRepository>()) }.bind(DeleteNoteUseCase::class)
     factory { FetchNotesUseCaseImp(get<NotesRepository>()) }.bind(FetchNotesUseCase::class)
     factory { LoginUseCaseV2Imp(
-        get<AuthorizationRepository>(),
-        get<NoteMarkPreferences>()) }
+        get<AuthorizationRepository>()) }
         .bind(LoginUseCaseV2::class)
 
     factory { LoginUseCase(
