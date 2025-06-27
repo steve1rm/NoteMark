@@ -5,8 +5,8 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "NoteItemEntity")
 data class NoteItemEntity(
-    @PrimaryKey(autoGenerate = true)
-    val id: Int = 0,
+    @PrimaryKey(autoGenerate = false)
+    val id: String,
     val title: String,
     val content: String,
     val createdAt: Long, // Gonna make it formatted date :), let's think about this first

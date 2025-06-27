@@ -26,6 +26,7 @@ fun NoteItemDto.toNoteItem(): NoteItem {
 
 fun NoteItem.toNoteItemEntity(): NoteItemEntity {
     return NoteItemEntity(
+        id = this.id,
         title = this.title,
         content = this.content,
         createdAt = this.createdAt,
@@ -35,7 +36,7 @@ fun NoteItem.toNoteItemEntity(): NoteItemEntity {
 
 fun NoteItemEntity.toNoteItem(): NoteItem {
     return NoteItem(
-        id = this.id.toString(),
+        id = this.id,
         title = this.title,
         content = this.content,
         createdAt = this.createdAt,

@@ -12,6 +12,7 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import me.androidbox.NoteMarkPreferences
 import me.androidbox.authentication.core.AuthenticationEvents
 import me.androidbox.authentication.login.domain.model.LoginRequest
 import me.androidbox.authentication.login.domain.use_case.LoginUseCaseV2
@@ -23,7 +24,8 @@ import net.orandja.either.Right
 
 class LoginViewModel(
     private val loginUseCaseV2: LoginUseCaseV2,
-    private val profilePictureUseCase: GetProfilePictureUseCase
+    private val profilePictureUseCase: GetProfilePictureUseCase,
+    private val noteMarkPreferences: NoteMarkPreferences
 ) : ViewModel() {
     private val _state = MutableStateFlow(LoginUiState())
     val state = _state.asStateFlow()
@@ -77,6 +79,9 @@ class LoginViewModel(
 
                                 val profileUsername =
                                     profilePictureUseCase(username = result.left.username)
+
+                                noteMarkPreferences.setRefreshToken(result.left.refreshToken)
+                                noteMarkPreferences.setAccessToken(result.left.accessToken)
 
                                 _events.send(AuthenticationEvents.OnAuthenticationSuccess(username = profileUsername))
                             }

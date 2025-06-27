@@ -10,8 +10,8 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.datetime.Clock
+import me.androidbox.generateUUID
 import me.androidbox.notes.domain.model.NoteItem
-import me.androidbox.notes.domain.usecases.FetchNotesUseCase
 import me.androidbox.notes.domain.usecases.SaveNoteUseCase
 import net.orandja.either.Left
 import net.orandja.either.Right
@@ -43,7 +43,7 @@ class EditNoteViewModel(
 
                     val result = saveNoteUseCase.execute(
                         NoteItem(
-                            id = "random UUID",
+                            id = generateUUID(),
                             title = state.value.title,
                             content = state.value.content,
                             createdAt = Clock.System.now().toEpochMilliseconds(),

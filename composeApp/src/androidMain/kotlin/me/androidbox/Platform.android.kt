@@ -20,13 +20,17 @@ import java.time.Instant
 import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
-import java.time.temporal.TemporalAccessor
+import java.util.UUID
 
 class AndroidPlatform : Platform {
     override val name: String = "Android ${Build.VERSION.SDK_INT}"
 }
 
 actual fun getPlatform(): Platform = AndroidPlatform()
+
+actual fun generateUUID(): String {
+    return UUID.randomUUID().toString()
+}
 
 @Composable
 actual fun getOrientation(): Orientation {

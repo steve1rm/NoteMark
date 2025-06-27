@@ -3,6 +3,7 @@ package me.androidbox
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalDensity
 import me.androidbox.core.models.Orientation
+import platform.Foundation.NSUUID.Companion.UUID
 import platform.UIKit.UIDevice
 
 class IOSPlatform: Platform {
@@ -10,6 +11,10 @@ class IOSPlatform: Platform {
 }
 
 actual fun getPlatform(): Platform = IOSPlatform()
+
+actual fun generateUUID(): String {
+    return UUID().UUIDString
+}
 
 @Composable
 actual fun getOrientation(): Orientation {

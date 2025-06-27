@@ -9,6 +9,8 @@ interface Platform {
 
 expect fun getPlatform(): Platform
 
+expect fun generateUUID(): String
+
 @Composable
 expect fun getOrientation(): Orientation
 
