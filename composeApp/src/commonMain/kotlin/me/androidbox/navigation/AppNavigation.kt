@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.toRoute
 import me.androidbox.notes.presentation.EditNoteScreenRoot
 import me.androidbox.notes.presentation.NoteListScreenRoot
 import me.androidbox.startup.presentation.LandingScreen
@@ -29,11 +30,13 @@ fun AppNavigation(
 
         this.authenticationGraph(navController = navHostController)
 
-
         composable<NavGraph.NotesScreen> {
-            NoteListScreenRoot(onNavigateToEditNote = {
-                navHostController.navigate(NavGraph.NoteEditScreen)
-            })
+            val username = it.toRoute<NavGraph.NotesScreen>().username
+            NoteListScreenRoot(
+                username = username,
+                onNavigateToEditNote = {
+                    navHostController.navigate(NavGraph.NoteEditScreen)
+                })
         }
 
         composable<NavGraph.NoteEditScreen> {

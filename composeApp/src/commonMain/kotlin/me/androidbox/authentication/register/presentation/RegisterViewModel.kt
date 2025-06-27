@@ -95,7 +95,7 @@ class RegisterViewModel(
                                 email = state.value.email
                             )
                         )
-                        _events.send(AuthenticationEvents.OnAuthenticationSuccess)
+                        _events.send(AuthenticationEvents.OnAuthenticationSuccess(state.value.username))
                     }
 
                     is Right<DataError> -> {

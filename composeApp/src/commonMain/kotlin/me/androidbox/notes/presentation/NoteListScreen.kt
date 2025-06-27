@@ -1,7 +1,16 @@
 package me.androidbox.notes.presentation
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawingPadding
+import androidx.compose.foundation.layout.statusBars
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.foundation.lazy.staggeredgrid.items
@@ -20,7 +29,6 @@ import me.androidbox.core.models.Orientation
 import me.androidbox.core.presentation.designsystem.NoteMarkLayout
 import me.androidbox.core.presentation.designsystem.buttons.GradientFAB
 import me.androidbox.core.presentation.designsystem.theming.bgGradient
-import me.androidbox.core.presentation.utils.ObserveAsEvents
 import me.androidbox.getOrientation
 import me.androidbox.isTablet
 import me.androidbox.notes.presentation.components.AvatarIcon
@@ -30,12 +38,14 @@ import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun NoteListScreenRoot(
+    username: String,
     onNavigateToEditNote: () -> Unit,
 ) {
     val viewModel = koinViewModel<NoteListViewModel>()
     val state by viewModel.state.collectAsStateWithLifecycle()
 
     NoteListScreen(
+        username,
         state = state,
         onAction = viewModel::onAction,
         onNavigateToEditNote = onNavigateToEditNote
@@ -44,6 +54,7 @@ fun NoteListScreenRoot(
 
 @Composable
 fun NoteListScreen(
+    username: String,
     state: NoteListUiState,
     onAction: (NoteListActions) -> Unit,
     onNavigateToEditNote: () -> Unit,
@@ -53,6 +64,7 @@ fun NoteListScreen(
     val isTablet = isTablet()
     val gridColumns = if (screenOrientation == Orientation.PORTRAIT || isTablet)
         2 else if (screenOrientation == Orientation.LANDSCAPE) 3 else 2
+
     NoteMarkLayout(
         toolBar = {
             Row(
@@ -71,7 +83,7 @@ fun NoteListScreen(
                 )
 
                 AvatarIcon(
-                    name = state.profilePicText,
+                    name = username,
                     backgroundColor = MaterialTheme.colorScheme.primary
                 )
             }

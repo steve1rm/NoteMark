@@ -4,22 +4,24 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import me.androidbox.authentication.core.AuthenticationEvents
 import me.androidbox.authentication.login.domain.model.LoginRequest
-import me.androidbox.authentication.login.domain.use_case.LoginUseCase
 import me.androidbox.authentication.login.domain.use_case.LoginUseCaseV2
 import me.androidbox.core.models.DataError
 import me.androidbox.emailValid
-import me.androidbox.user.domain.UserRepository
 import net.orandja.either.Left
 import net.orandja.either.Right
 
 class LoginViewModel(
-    private val loginUseCase: LoginUseCase,
     private val loginUseCaseV2: LoginUseCaseV2,
-    private val userRepository: UserRepository
 ) : ViewModel() {
     private val _state = MutableStateFlow(LoginUiState())
     val state = _state.asStateFlow()
@@ -68,7 +70,7 @@ class LoginViewModel(
                                 _state.update { loginUiState ->
                                     loginUiState.copy(isLoading = false)
                                 }
-                                _events.send(AuthenticationEvents.OnAuthenticationSuccess)
+                                _events.send(AuthenticationEvents.OnAuthenticationSuccess(result.left.username))
                             }
                             is Right<DataError> -> {
                                 _state.update { loginUiState ->

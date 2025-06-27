@@ -3,12 +3,10 @@ package me.androidbox.notes.presentation
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.async
-import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.onStart
-import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -30,7 +28,7 @@ class NoteListViewModel(
         .onStart {
             if (!hasFetched) {
                 fetchNotes()
-                getProfilePicture()
+           //     getProfilePicture()
                 hasFetched = true
             }
         }
