@@ -7,6 +7,6 @@ data class NoteItemDto(
     val id: String,
     val title: String,
     val content: String,
-    val createdAt: Long,
-    val lastEditedAt: Long
+    val createdAt: String,
+    val lastEditedAt: String
 )
