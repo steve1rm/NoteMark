@@ -24,4 +24,7 @@ interface NoteMarkDao {
 
     @Query("SELECT * from UserEntity LIMIT 1")
     suspend fun getUser(): UserEntity?
+
+    @Query("SELECT * from NoteItemEntity WHERE id = :noteId LIMIT 1")
+    suspend fun getNoteById(noteId: String): NoteItemEntity?
 }

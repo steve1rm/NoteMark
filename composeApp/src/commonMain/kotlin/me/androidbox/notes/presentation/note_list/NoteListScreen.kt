@@ -1,4 +1,4 @@
-package me.androidbox.notes.presentation
+package me.androidbox.notes.presentation.note_list
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -17,18 +17,22 @@ import androidx.compose.foundation.lazy.staggeredgrid.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import kotlinx.coroutines.launch
 import me.androidbox.core.models.Orientation
 import me.androidbox.core.presentation.designsystem.NoteMarkLayout
 import me.androidbox.core.presentation.designsystem.buttons.GradientFAB
 import me.androidbox.core.presentation.designsystem.theming.bgGradient
+import me.androidbox.core.presentation.utils.ObserveAsEvents
 import me.androidbox.getOrientation
 import me.androidbox.isTablet
 import me.androidbox.notes.presentation.components.AvatarIcon
@@ -39,16 +43,32 @@ import org.koin.compose.viewmodel.koinViewModel
 @Composable
 fun NoteListScreenRoot(
     username: String,
-    onNavigateToEditNote: () -> Unit,
+    onNavigateToEditNote: (noteId: String) -> Unit,
 ) {
     val viewModel = koinViewModel<NoteListViewModel>()
     val state by viewModel.state.collectAsStateWithLifecycle()
+    val snackbarHostState = SnackbarHostState()
+    val coroutineScope = rememberCoroutineScope()
+
+    ObserveAsEvents(viewModel.events) { event ->
+        when(event) {
+            is NoteListEvents.OnNavigateToEditNote -> {
+                onNavigateToEditNote(event.noteId)
+            }
+
+            is NoteListEvents.OnFailureMessage -> {
+                coroutineScope.launch {
+                    snackbarHostState.showSnackbar(event.message)
+                }
+            }
+        }
+    }
 
     NoteListScreen(
-        username,
+        username = username,
         state = state,
         onAction = viewModel::onAction,
-        onNavigateToEditNote = onNavigateToEditNote
+        snackbarHostState = snackbarHostState
     )
 }
 
@@ -57,8 +77,8 @@ fun NoteListScreen(
     username: String,
     state: NoteListUiState,
     onAction: (NoteListActions) -> Unit,
-    onNavigateToEditNote: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    snackbarHostState: SnackbarHostState
 ) {
     val screenOrientation = getOrientation()
     val isTablet = isTablet()
@@ -105,9 +125,12 @@ fun NoteListScreen(
                         items(state.notesList) { note ->
                             NoteItem(
                                 noteItem = note,
+                                onClick = {
+                                    onAction(NoteListActions.OnNavigateToEditNoteWithNoteId(note.id))
+                                },
                                 onLongClick = {
                                     onAction(NoteListActions.OnShowDeleteDialog(note))
-                                }
+                                },
                             )
                         }
                     }
@@ -134,14 +157,17 @@ fun NoteListScreen(
             GradientFAB(
                 icon = Icons.Filled.Add,
                 buttonGradient = MaterialTheme.colorScheme.bgGradient,
-                onClick = onNavigateToEditNote
+                onClick = {
+                    onAction(NoteListActions.OnNavigateToEditNoteWithNewNote)
+                }
 
             )
         },
         modifier = modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.surfaceContainerLowest)
-            .safeDrawingPadding()
+            .safeDrawingPadding(),
+        snackState = snackbarHostState
     )
 
     if (state.showDeleteDialog) {

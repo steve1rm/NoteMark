@@ -1,4 +1,4 @@
-package me.androidbox.notes.presentation
+package me.androidbox.notes.presentation.edit_note
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -15,6 +15,7 @@ import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.DividerDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -34,6 +35,7 @@ fun EditNoteScreenPortrait(
     state: EditNoteUiState,
     onAction: (EditNoteActions) -> Unit,
     modifier: Modifier = Modifier,
+    noteId: String,
 ) {
     NoteMarkLayout(
         toolBar = {
@@ -45,16 +47,22 @@ fun EditNoteScreenPortrait(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                Icon(
-                    imageVector = Icons.Default.Close,
-                    contentDescription = "Close icon",
-                    modifier = Modifier.size(20.dp),
-                    tint = MaterialTheme.colorScheme.onSurfaceVariant
-                )
+                IconButton(
+                    onClick = {
+                        onAction(EditNoteActions.OnCloseClick)
+                    }
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Close,
+                        contentDescription = "Close icon",
+                        modifier = Modifier.size(20.dp),
+                        tint = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
                 TextButton(
                     text = "SAVE NOTE",
                     onClick = {
-                        onAction(EditNoteActions.OnSaveNote)
+                        onAction(EditNoteActions.OnSaveNote(noteId))
                     },
                     textStyle = TextStyle(
                         fontFamily = spaceGrotesk,
@@ -72,7 +80,7 @@ fun EditNoteScreenPortrait(
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 BasicTextField(
-                    value = state.title,
+                    value = state.inputTitle,
                     onValueChange = {
                         onAction(EditNoteActions.OnTitleChange(it))
                     },
@@ -83,7 +91,7 @@ fun EditNoteScreenPortrait(
                         .fillMaxWidth()
                         .padding(horizontal = 16.dp),
                     decorationBox = { input ->
-                        if (state.title.isEmpty()) {
+                        if (state.inputTitle.isEmpty()) {
                             Text(
                                 text = "Note title",
                                 style = MaterialTheme.typography.titleLarge
@@ -97,7 +105,7 @@ fun EditNoteScreenPortrait(
                 HorizontalDivider(Modifier, DividerDefaults.Thickness, DividerDefaults.color)
 
                 BasicTextField(
-                    value = state.content,
+                    value = state.inputContent,
                     onValueChange = {
                         onAction(EditNoteActions.OnContentChange(it))
                     },
@@ -105,7 +113,7 @@ fun EditNoteScreenPortrait(
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     ),
                     decorationBox = { input ->
-                        if (state.content.isEmpty()) {
+                        if (state.inputContent.isEmpty()) {
                             Text(
                                 text = "Note content",
                                 style = MaterialTheme.typography.bodyLarge,

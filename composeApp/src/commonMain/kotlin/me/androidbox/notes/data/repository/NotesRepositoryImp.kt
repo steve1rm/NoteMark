@@ -23,9 +23,9 @@ class NotesRepositoryImp(
 ) : NotesRepository {
     override suspend fun saveNote(noteItem: NoteItem): Either<Unit, DataError> {
         /** Save locally to Room */
-        val localResult =  notesLocalDataSource.saveNote(noteItem.toNoteItemEntity())
+        val localResult = notesLocalDataSource.saveNote(noteItem.toNoteItemEntity())
 
-        if(localResult is Right) {
+        if (localResult is Right) {
             return localResult
         }
 
@@ -37,10 +37,11 @@ class NotesRepositoryImp(
         val result = applicationScope.async {
             val networkResult = notesRemoteDataSource.createNote(noteItem.toNoteItemDto())
 
-            when(networkResult) {
+            when (networkResult) {
                 is Left -> {
                     return@async Left(Unit)
                 }
+
                 is Right -> {
                     return@async networkResult
                 }
@@ -54,17 +55,18 @@ class NotesRepositoryImp(
         /** Delete it locally */
         val localResult = notesLocalDataSource.deleteNote(noteItem.toNoteItemEntity())
 
-        if(localResult is Left) {
+        if (localResult is Left) {
             return localResult
         }
 
         val result = applicationScope.async {
             val remoteRemote = notesRemoteDataSource.deleteNote(noteItem.id)
 
-            when(remoteRemote) {
+            when (remoteRemote) {
                 is Left -> {
                     return@async Left(Unit)
                 }
+
                 is Right -> {
                     remoteRemote
                 }
@@ -82,6 +84,15 @@ class NotesRepositoryImp(
             listOfNoteItemEntity.map { noteItemEntity ->
                 noteItemEntity.toNoteItem()
             }
+        }
+    }
+
+    override suspend fun getNoteById(noteId: String): Either<NoteItem, DataError.Local> {
+        val noteEntityResult = notesLocalDataSource.getNoteById(noteId)
+        return if (noteEntityResult is Left) {
+            Left(noteEntityResult.value.toNoteItem())
+        } else {
+            Right(noteEntityResult.right)
         }
     }
 }

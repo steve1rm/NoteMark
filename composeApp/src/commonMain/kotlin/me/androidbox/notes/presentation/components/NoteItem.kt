@@ -1,6 +1,7 @@
 package me.androidbox.notes.presentation.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -25,6 +26,7 @@ import me.androidbox.notes.domain.model.NoteItem
 fun NoteItem(
     noteItem: NoteItem,
     onLongClick: () -> Unit,
+    onClick : () -> Unit,
     modifier: Modifier = Modifier
 ) {
     val isTablet = isTablet()
@@ -53,6 +55,9 @@ fun NoteItem(
                 detectTapGestures(
                     onLongPress = {
                         onLongClick()
+                    },
+                    onTap = {
+                        onClick()
                     }
                 )
             }
