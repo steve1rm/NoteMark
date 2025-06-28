@@ -1,19 +1,29 @@
-package me.androidbox.notes.presentation
+package me.androidbox.notes.presentation.note_list
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.onStart
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.datetime.Clock
+import me.androidbox.generateUUID
+import me.androidbox.notes.domain.model.NoteItem
 import me.androidbox.notes.domain.usecases.DeleteNoteUseCase
 import me.androidbox.notes.domain.usecases.FetchNotesUseCase
+import me.androidbox.notes.domain.usecases.SaveNoteUseCase
+import me.androidbox.notes.presentation.note_list.NoteListEvents.*
+import net.orandja.either.Left
+import net.orandja.either.Right
 
 class NoteListViewModel(
     private val fetchNotesUseCase: FetchNotesUseCase,
+    private val saveNoteUseCase: SaveNoteUseCase,
     private val deleteNoteUseCase: DeleteNoteUseCase,
 ) : ViewModel() {
     private var hasFetched = false
@@ -31,6 +41,9 @@ class NoteListViewModel(
             started = SharingStarted.WhileSubscribed(5_000L),
             initialValue = NoteListUiState()
         )
+
+    private val _events = Channel<NoteListEvents>()
+    val events = _events.receiveAsFlow()
 
     private fun fetchNotes() {
         viewModelScope.launch {
@@ -69,6 +82,35 @@ class NoteListViewModel(
                         showDeleteDialog = true,
                         currentSelectedNote = action.noteItem
                     )
+                }
+            }
+
+            NoteListActions.OnNavigateToEditNoteWithNewNote -> {
+                viewModelScope.launch {
+                    val noteId = generateUUID()
+                    val noteItem = NoteItem(
+                        id = noteId,
+                        title = "Note title",
+                        content = "",
+                        createdAt = Clock.System.now().toEpochMilliseconds(),
+                        lastEditedAt = Clock.System.now().toEpochMilliseconds()
+                    )
+                    val result = saveNoteUseCase.execute(noteItem)
+                    when (result) {
+                        is Left -> {
+                            _events.send(OnNavigateToEditNote(noteId))
+                        }
+
+                        is Right -> {
+                            _events.send(OnFailureMessage("Failed to create new note"))
+                        }
+                    }
+                }
+            }
+
+            is NoteListActions.OnNavigateToEditNoteWithNoteId -> {
+                viewModelScope.launch {
+                    _events.send(NoteListEvents.OnNavigateToEditNote(action.noteId))
                 }
             }
         }

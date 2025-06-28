@@ -10,7 +10,7 @@ import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import me.androidbox.core.presentation.designsystem.theming.NoteMarkTheme
 import me.androidbox.navigation.AppNavigation
-import me.androidbox.notes.presentation.EditNoteScreenRoot
+import me.androidbox.notes.presentation.edit_note.EditNoteScreenRoot
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -38,8 +38,7 @@ class MainActivity : ComponentActivity() {
 fun AppAndroidPreview() {
     NoteMarkTheme {
         EditNoteScreenRoot(
-//                state = EditNoteUiState(),
-                {},
+            "", {}
         )
     }
 }

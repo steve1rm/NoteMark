@@ -23,13 +23,13 @@ import androidx.compose.ui.window.DialogProperties
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DeleteNoteDialog(
-    onCancel: () -> Unit,
-    onDeleteClick: () -> Unit,
+fun DiscardNoteDialog(
+    onDiscardNoteClick: () -> Unit,
+    onKeepEditingClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     BasicAlertDialog(
-        onDismissRequest = onCancel,
+        onDismissRequest = onKeepEditingClick,
         modifier = modifier
             .fillMaxWidth()
             .padding(16.dp)
@@ -43,7 +43,7 @@ fun DeleteNoteDialog(
     ) {
         Column {
             Text(
-                text = "Delete Note?",
+                text = "Discard Changes?",
                 style = MaterialTheme.typography.titleLarge,
                 color = MaterialTheme.colorScheme.onErrorContainer
             )
@@ -51,7 +51,7 @@ fun DeleteNoteDialog(
             Spacer(Modifier.height(8.dp))
 
             Text(
-                text = "Are you sure you want to delete this note? This action cannot be undone.",
+                text = "You have unsaved changes. If you discard now, all changes will be lost.",
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onErrorContainer
             )
@@ -65,22 +65,22 @@ fun DeleteNoteDialog(
             ) {
 
                 TextButton(
-                    onClick = onCancel
+                    onClick = onKeepEditingClick
                 ) {
 
                     Text(
-                        text = "Cancel",
+                        text = "Keep Editing",
                         style = MaterialTheme.typography.labelMedium,
                         color = MaterialTheme.colorScheme.onErrorContainer
                     )
                 }
 
                 TextButton(
-                    onClick = onDeleteClick
+                    onClick = onDiscardNoteClick
                 ) {
 
                     Text(
-                        text = "Delete",
+                        text = "Discard",
                         style = MaterialTheme.typography.labelMedium,
                         color = MaterialTheme.colorScheme.onErrorContainer
                     )

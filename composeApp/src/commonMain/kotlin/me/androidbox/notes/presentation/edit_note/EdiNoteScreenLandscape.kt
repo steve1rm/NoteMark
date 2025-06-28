@@ -1,4 +1,4 @@
-package me.androidbox.notes.presentation
+package me.androidbox.notes.presentation.edit_note
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.BasicTextField
@@ -23,9 +23,10 @@ fun EdiNoteScreenLandscape(
     state: EditNoteUiState,
     onAction: (EditNoteActions) -> Unit,
     modifier: Modifier = Modifier,
+    noteId: String,
 ) {
     NoteMarkTheme {
-        Scaffold (
+        Scaffold(
             modifier = modifier
                 .fillMaxSize(),
             containerColor = Color.Transparent
@@ -37,12 +38,18 @@ fun EdiNoteScreenLandscape(
                     .padding(16.dp),
                 horizontalArrangement = Arrangement.spacedBy(36.dp, Alignment.CenterHorizontally)
             ) {
-                Icon(
-                    imageVector = Icons.Default.Close,
-                    contentDescription = "Close icon",
-                    modifier = Modifier.size(20.dp),
-                    tint = MaterialTheme.colorScheme.onSurfaceVariant
-                )
+                IconButton(
+                    onClick = {
+                        onAction(EditNoteActions.OnCloseClick)
+                    }
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Close,
+                        contentDescription = "Close icon",
+                        modifier = Modifier.size(20.dp),
+                        tint = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
 
                 Column(
                     modifier = Modifier
@@ -50,7 +57,7 @@ fun EdiNoteScreenLandscape(
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     BasicTextField(
-                        value = state.title,
+                        value = state.inputTitle,
                         onValueChange = {
                             onAction(EditNoteActions.OnTitleChange(it))
                         },
@@ -61,7 +68,7 @@ fun EdiNoteScreenLandscape(
                             .fillMaxWidth()
                             .padding(horizontal = 16.dp),
                         decorationBox = { input ->
-                            if (state.title.isEmpty()) {
+                            if (state.inputTitle.isEmpty()) {
                                 Text(
                                     text = "Note title",
                                     style = MaterialTheme.typography.titleLarge
@@ -75,7 +82,7 @@ fun EdiNoteScreenLandscape(
                     HorizontalDivider(Modifier, DividerDefaults.Thickness, DividerDefaults.color)
 
                     BasicTextField(
-                        value = state.content,
+                        value = state.inputContent,
                         onValueChange = {
                             onAction(EditNoteActions.OnContentChange(it))
                         },
@@ -83,7 +90,7 @@ fun EdiNoteScreenLandscape(
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         ),
                         decorationBox = { input ->
-                            if (state.content.isEmpty()) {
+                            if (state.inputContent.isEmpty()) {
                                 Text(
                                     text = "Note content",
                                     style = MaterialTheme.typography.bodyLarge,
@@ -103,7 +110,7 @@ fun EdiNoteScreenLandscape(
                 TextButton(
                     text = "SAVE NOTE",
                     onClick = {
-                        onAction(EditNoteActions.OnSaveNote)
+                        onAction(EditNoteActions.OnSaveNote(noteId))
                     },
                     textStyle = TextStyle(
                         fontFamily = spaceGrotesk,

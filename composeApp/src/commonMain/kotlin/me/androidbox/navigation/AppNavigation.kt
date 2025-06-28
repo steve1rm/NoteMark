@@ -5,8 +5,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
-import me.androidbox.notes.presentation.EditNoteScreenRoot
-import me.androidbox.notes.presentation.NoteListScreenRoot
+import me.androidbox.notes.presentation.edit_note.EditNoteScreenRoot
+import me.androidbox.notes.presentation.note_list.NoteListScreenRoot
 import me.androidbox.startup.presentation.LandingScreen
 
 @Composable
@@ -34,13 +34,15 @@ fun AppNavigation(
             val username = it.toRoute<NavGraph.NotesScreen>().username
             NoteListScreenRoot(
                 username = username,
-                onNavigateToEditNote = {
-                    navHostController.navigate(NavGraph.NoteEditScreen)
+                onNavigateToEditNote = { noteId ->
+                    navHostController.navigate(NavGraph.NoteEditScreen(noteId))
                 })
         }
 
-        composable<NavGraph.NoteEditScreen> {
+        composable<NavGraph.NoteEditScreen> { backStackEntry ->
+            val args = backStackEntry.toRoute<NavGraph.NoteEditScreen>()
             EditNoteScreenRoot(
+                noteId = args.noteId,
                 onNavigateBack = {
                     navHostController.popBackStack()
                 }

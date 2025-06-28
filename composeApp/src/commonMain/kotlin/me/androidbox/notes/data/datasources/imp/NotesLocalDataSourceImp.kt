@@ -18,9 +18,8 @@ class NotesLocalDataSourceImp(
         return try {
             val rowId = noteMarkDao.insertNote(noteItemEntity)
             Left(rowId)
-        }
-        catch(exception: Exception) {
-            if(exception is CancellationException) {
+        } catch (exception: Exception) {
+            if (exception is CancellationException) {
                 throw exception
             }
             Right(DataError.Local.DISK_FULL)
@@ -31,9 +30,8 @@ class NotesLocalDataSourceImp(
         return try {
             noteMarkDao.deleteNote(noteItemEntity)
             Left(Unit)
-        }
-        catch(exception: Exception) {
-            if(exception is CancellationException) {
+        } catch (exception: Exception) {
+            if (exception is CancellationException) {
                 throw exception
             }
             Right(DataError.Local.DISK_FULL)
@@ -42,5 +40,14 @@ class NotesLocalDataSourceImp(
 
     override fun getAllNotes(): Flow<List<NoteItemEntity>> {
         return noteMarkDao.getAllNotes()
+    }
+
+    override suspend fun getNoteById(noteId: String): Either<NoteItemEntity, DataError.Local> {
+        val note = noteMarkDao.getNoteById(noteId = noteId)
+        return if (note != null) {
+            Left(note)
+        } else {
+            Right(DataError.Local.EMPTY)
+        }
     }
 }
