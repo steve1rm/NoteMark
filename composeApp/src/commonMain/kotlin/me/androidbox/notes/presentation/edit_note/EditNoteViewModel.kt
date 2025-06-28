@@ -101,7 +101,7 @@ class EditNoteViewModel(
                                 noteContent = "",
                             )
                         }
-                    }else {
+                    } else {
                         val noteResult = fetchNoteUseCase.fetchNote(action.noteId)
                         when (noteResult) {
                             is Left -> {
