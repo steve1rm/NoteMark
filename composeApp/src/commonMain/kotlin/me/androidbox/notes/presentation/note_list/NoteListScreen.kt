@@ -43,7 +43,7 @@ import org.koin.compose.viewmodel.koinViewModel
 @Composable
 fun NoteListScreenRoot(
     username: String,
-    onNavigateToEditNote: (noteId: String) -> Unit,
+    onNavigateToEditNote: (noteId: String?) -> Unit,
 ) {
     val viewModel = koinViewModel<NoteListViewModel>()
     val state by viewModel.state.collectAsStateWithLifecycle()

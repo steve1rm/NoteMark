@@ -14,7 +14,7 @@ import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun EditNoteScreenRoot(
-    noteId: String,
+    noteId: String?,
     onNavigateBack: () -> Unit,
 ) {
     val viewModel = koinViewModel<EditNoteViewModel>()

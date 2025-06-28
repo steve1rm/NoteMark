@@ -20,6 +20,6 @@ sealed interface NavGraph {
 
     @Serializable
     data class NoteEditScreen(
-        val noteId: String
+        val noteId: String?
     ) : NavGraph
 }

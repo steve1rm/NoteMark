@@ -87,24 +87,25 @@ class NoteListViewModel(
 
             NoteListActions.OnNavigateToEditNoteWithNewNote -> {
                 viewModelScope.launch {
-                    val noteId = generateUUID()
-                    val noteItem = NoteItem(
-                        id = noteId,
-                        title = "Note title",
-                        content = "",
-                        createdAt = Clock.System.now().toEpochMilliseconds(),
-                        lastEditedAt = Clock.System.now().toEpochMilliseconds()
-                    )
-                    val result = saveNoteUseCase.execute(noteItem)
-                    when (result) {
-                        is Left -> {
-                            _events.send(OnNavigateToEditNote(noteId))
-                        }
+//                    val noteId = generateUUID()
+//                    val noteItem = NoteItem(
+//                        id = noteId,
+//                        title = "Note title",
+//                        content = "",
+//                        createdAt = Clock.System.now().toEpochMilliseconds(),
+//                        lastEditedAt = Clock.System.now().toEpochMilliseconds()
+//                    )
+//                    val result = saveNoteUseCase.execute(noteItem)
+                    _events.send(OnNavigateToEditNote(null))
 
-                        is Right -> {
-                            _events.send(OnFailureMessage("Failed to create new note"))
-                        }
-                    }
+//                    when (result) {
+//                        is Left -> {
+//                        }
+//
+//                        is Right -> {
+//                            _events.send(OnFailureMessage("Failed to create new note"))
+//                        }
+//                    }
                 }
             }
 

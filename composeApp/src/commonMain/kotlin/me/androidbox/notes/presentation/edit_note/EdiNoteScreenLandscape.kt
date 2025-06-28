@@ -23,7 +23,7 @@ fun EdiNoteScreenLandscape(
     state: EditNoteUiState,
     onAction: (EditNoteActions) -> Unit,
     modifier: Modifier = Modifier,
-    noteId: String,
+    noteId: String?,
 ) {
     NoteMarkTheme {
         Scaffold(

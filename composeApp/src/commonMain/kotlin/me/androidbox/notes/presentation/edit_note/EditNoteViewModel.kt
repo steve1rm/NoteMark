@@ -10,6 +10,7 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.datetime.Clock
+import me.androidbox.generateUUID
 import me.androidbox.notes.domain.model.NoteItem
 import me.androidbox.notes.domain.usecases.FetchNoteUseCase
 import me.androidbox.notes.domain.usecases.SaveNoteUseCase
@@ -43,11 +44,10 @@ class EditNoteViewModel(
                         "Saving the note ${state.value.inputTitle}"
                     }
 
-
                     // FIXME
                     val result = saveNoteUseCase.execute(
                         NoteItem(
-                            id = action.noteId,
+                            id = action.noteId ?: generateUUID(),
                             title = state.value.inputTitle,
                             content = state.value.inputContent,
                             createdAt = Clock.System.now().toEpochMilliseconds(),
@@ -92,23 +92,34 @@ class EditNoteViewModel(
 
             is EditNoteActions.OnLoadContent -> {
                 viewModelScope.launch {
-                    val noteResult = fetchNoteUseCase.fetchNote(action.noteId)
-                    when (noteResult) {
-                        is Left -> {
-                            val noteTitle = noteResult.value.title
-                            val noteContent = noteResult.value.content
-                            _state.update { state ->
-                                state.copy(
-                                    inputTitle = noteTitle,
-                                    inputContent = noteContent,
-                                    noteTitle = noteTitle,
-                                    noteContent = noteContent,
-                                )
-                            }
+                    if (action.noteId == null) {
+                        _state.update { state ->
+                            state.copy(
+                                inputTitle = "Note title",
+                                inputContent = "",
+                                noteTitle = "Note title",
+                                noteContent = "",
+                            )
                         }
+                    }else {
+                        val noteResult = fetchNoteUseCase.fetchNote(action.noteId)
+                        when (noteResult) {
+                            is Left -> {
+                                val noteTitle = noteResult.value.title
+                                val noteContent = noteResult.value.content
+                                _state.update { state ->
+                                    state.copy(
+                                        inputTitle = noteTitle,
+                                        inputContent = noteContent,
+                                        noteTitle = noteTitle,
+                                        noteContent = noteContent,
+                                    )
+                                }
+                            }
 
-                        is Right -> {
-                            _events.send(OnFailureMessage("Failed to load note"))
+                            is Right -> {
+                                _events.send(OnFailureMessage("Failed to load note"))
+                            }
                         }
                     }
                 }
