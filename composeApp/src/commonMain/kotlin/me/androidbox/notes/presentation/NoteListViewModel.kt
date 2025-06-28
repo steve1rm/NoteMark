@@ -2,7 +2,6 @@ package me.androidbox.notes.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
@@ -37,14 +36,6 @@ class NoteListViewModel(
             started = SharingStarted.WhileSubscribed(5_000L),
             initialValue = NoteListUiState()
         )
-
-    private fun getProfilePicture() {
-        viewModelScope.launch {
-            val user = async { userRepository.fetchUser().left }
-            val pictureText = async { getProfilePictureUseCase(user.await().userName) }
-            _state.update { it.copy(profilePicText = pictureText.await()) }
-        }
-    }
 
     private fun fetchNotes() {
         viewModelScope.launch {
