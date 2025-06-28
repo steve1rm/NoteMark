@@ -11,14 +11,10 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import me.androidbox.notes.domain.usecases.DeleteNoteUseCase
 import me.androidbox.notes.domain.usecases.FetchNotesUseCase
-import me.androidbox.notes.domain.usecases.GetProfilePictureUseCase
-import me.androidbox.user.domain.UserRepository
 
 class NoteListViewModel(
     private val fetchNotesUseCase: FetchNotesUseCase,
     private val deleteNoteUseCase: DeleteNoteUseCase,
-    private val userRepository: UserRepository,
-    private val getProfilePictureUseCase: GetProfilePictureUseCase
 ) : ViewModel() {
     private var hasFetched = false
 
@@ -27,7 +23,6 @@ class NoteListViewModel(
         .onStart {
             if (!hasFetched) {
                 fetchNotes()
-           //     getProfilePicture()
                 hasFetched = true
             }
         }
