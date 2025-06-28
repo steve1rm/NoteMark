@@ -35,7 +35,7 @@ fun EditNoteScreenPortrait(
     state: EditNoteUiState,
     onAction: (EditNoteActions) -> Unit,
     modifier: Modifier = Modifier,
-    noteId: String,
+    noteId: String?,
 ) {
     NoteMarkLayout(
         toolBar = {
