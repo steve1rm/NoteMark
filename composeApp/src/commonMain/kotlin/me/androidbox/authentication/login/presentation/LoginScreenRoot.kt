@@ -17,7 +17,7 @@ import org.koin.compose.viewmodel.koinViewModel
 @Composable
 fun LoginScreenRoot(
     onNavigateToRegister: () -> Unit,
-    onNavigateToBlankScreen : () -> Unit
+    onNavigateToBlankScreen : (username: String) -> Unit
 ) {
     val viewModel: LoginViewModel = koinViewModel()
     val state by viewModel.state.collectAsState()
@@ -25,11 +25,11 @@ fun LoginScreenRoot(
     ObserveAsEvents(viewModel.events) { event ->
         when (event) {
             is AuthenticationEvents.OnAuthenticationFail -> {
-                viewModel.onAction(LoginActions.OnSendMessage("Invalid login credentials"))
+                viewModel.onAction(LoginActions.OnSendMessage(event.message))
             }
 
-            AuthenticationEvents.OnAuthenticationSuccess -> {
-                onNavigateToBlankScreen()
+            is AuthenticationEvents.OnAuthenticationSuccess -> {
+                onNavigateToBlankScreen(event.username)
             }
         }
     }

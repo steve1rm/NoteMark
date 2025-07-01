@@ -2,9 +2,6 @@ package me.androidbox.authentication.login.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.IO
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -15,16 +12,20 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import me.androidbox.NoteMarkPreferences
 import me.androidbox.authentication.core.AuthenticationEvents
-import me.androidbox.authentication.login.domain.use_case.LoginUseCase
+import me.androidbox.authentication.login.domain.model.LoginRequest
+import me.androidbox.authentication.login.domain.use_case.LoginUseCaseV2
 import me.androidbox.core.models.DataError
 import me.androidbox.emailValid
+import me.androidbox.notes.domain.usecases.GetProfilePictureUseCase
 import net.orandja.either.Left
 import net.orandja.either.Right
 
 class LoginViewModel(
-    private val loginUseCase: LoginUseCase,
-    private val dispatcher: CoroutineDispatcher = Dispatchers.IO
+    private val loginUseCaseV2: LoginUseCaseV2,
+    private val profilePictureUseCase: GetProfilePictureUseCase,
+    private val noteMarkPreferences: NoteMarkPreferences
 ) : ViewModel() {
     private val _state = MutableStateFlow(LoginUiState())
     val state = _state.asStateFlow()
@@ -59,35 +60,41 @@ class LoginViewModel(
             }
 
             LoginActions.OnLogin -> {
-                viewModelScope.launch(dispatcher) {
+                viewModelScope.launch {
                     try {
                         _state.update { it.copy(isLoading = true) }
-                        val result = loginUseCase.execute(
-                            email = state.value.email,
-                            password = state.value.password
+
+                        val result = loginUseCaseV2.execute(
+                            LoginRequest(
+                                email = state.value.email,
+                                password = state.value.password
+                            )
                         )
 
-                        when(result) {
+                        when (result) {
                             is Left -> {
                                 _state.update { loginUiState ->
                                     loginUiState.copy(isLoading = false)
                                 }
-                                _events.send(AuthenticationEvents.OnAuthenticationSuccess)
+
+                                val profileUsername =
+                                    profilePictureUseCase(username = result.left.username)
+
+                                noteMarkPreferences.setRefreshToken(result.left.refreshToken)
+                                noteMarkPreferences.setAccessToken(result.left.accessToken)
+
+                                _events.send(AuthenticationEvents.OnAuthenticationSuccess(username = profileUsername))
                             }
+
                             is Right<DataError> -> {
                                 _state.update { loginUiState ->
                                     loginUiState.copy(isLoading = false)
                                 }
-                                val message = if(result.right is DataError.Network) {
-                                    "Invalid login credentials"
-                                } else {
-                                    "Invalid"
-                                }
-                                _events.send(AuthenticationEvents.OnAuthenticationFail(message))
+
+                                _events.send(AuthenticationEvents.OnAuthenticationFail(result.right.errorMessage))
                             }
                         }
-                    }
-                    catch (exception: Exception) {
+                    } catch (exception: Exception) {
                         _state.update { loginUiState ->
                             loginUiState.copy(isLoading = false)
                         }

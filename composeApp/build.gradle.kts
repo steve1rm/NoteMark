@@ -9,6 +9,9 @@ plugins {
     alias(libs.plugins.composeCompiler)
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.gmazzo.buildconfig)
+    alias(libs.plugins.ksp)
+    alias(libs.plugins.room)
+    id("io.kotzilla.kotzilla-plugin")
 }
 
 kotlin {
@@ -54,7 +57,16 @@ kotlin {
             implementation(libs.ktorClientContentNegotiation)
             implementation(libs.kvault)
             implementation(libs.either)
+            implementation(libs.kermit)
+            implementation(libs.androidx.room.runtime)
+            implementation(libs.sqlite.bundled)
+            implementation(libs.kotlinx.datetime)
+            implementation(compose.materialIconsExtended)
+            implementation(libs.kotlinx.datetime)
+//            implementation("androidx.compose.material:material-icons-extended:1.8.2")
             implementation("co.touchlab:kermit:2.0.5")
+//            implementation("io.kotzilla:kotzilla-sdk-ktor3:1.1.0")
+            implementation("io.kotzilla:kotzilla-sdk:1.0.1")
         }
 
         androidMain.dependencies {
@@ -105,7 +117,13 @@ android {
     }
 }
 
+room {
+    schemaDirectory("$projectDir/schema")
+}
+
 dependencies {
     debugImplementation(compose.uiTooling)
+
+    ksp(libs.androidx.room.compiler)
 }
 

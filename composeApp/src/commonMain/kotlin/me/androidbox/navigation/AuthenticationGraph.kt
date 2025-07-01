@@ -4,9 +4,9 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
+import co.touchlab.kermit.Logger
 import me.androidbox.authentication.login.presentation.LoginScreenRoot
 import me.androidbox.authentication.register.presentation.RegisterScreenRoot
-import me.androidbox.blank.BlankScreen
 
 fun NavGraphBuilder.authenticationGraph(navController: NavController) {
     this.navigation<NavGraph.AuthenticationGraph>(
@@ -17,8 +17,11 @@ fun NavGraphBuilder.authenticationGraph(navController: NavController) {
                 onNavigateToRegister = {
                     navController.navigate(NavGraph.AuthenticationGraph.RegisterScreen)
                 },
-                onNavigateToBlankScreen = {
-                    navController.navigate(NavGraph.BlankScreen, {
+                onNavigateToBlankScreen = { username ->
+                    Logger.d {
+                        "username $username"
+                    }
+                    navController.navigate(NavGraph.NotesScreen(username), {
                         popUpTo(0) { // Pop everything from back stack, e.g (Startup, login, register)
                             inclusive = true
                         }

@@ -15,11 +15,14 @@ import me.androidbox.authentication.register.domain.use_case.RegisterUseCase
 import me.androidbox.authentication.register.presentation.model.ValidationResult
 import me.androidbox.core.models.DataError
 import me.androidbox.emailValid
+import me.androidbox.user.domain.User
+import me.androidbox.user.domain.UserRepository
 import net.orandja.either.Left
 import net.orandja.either.Right
 
 class RegisterViewModel(
-    private val registerUseCase: RegisterUseCase
+    private val registerUseCase: RegisterUseCase,
+    private val userRepository: UserRepository
 ) : ViewModel() {
     private val _state = MutableStateFlow(RegisterUiState())
     val state = _state.asStateFlow()
@@ -86,7 +89,13 @@ class RegisterViewModel(
                         _state.update { registerUiState ->
                             registerUiState.copy(isLoading = false)
                         }
-                        _events.send(AuthenticationEvents.OnAuthenticationSuccess)
+                        userRepository.saveUser(
+                            User(
+                                userName = state.value.username,
+                                email = state.value.email
+                            )
+                        )
+                        _events.send(AuthenticationEvents.OnAuthenticationSuccess(state.value.username))
                     }
 
                     is Right<DataError> -> {

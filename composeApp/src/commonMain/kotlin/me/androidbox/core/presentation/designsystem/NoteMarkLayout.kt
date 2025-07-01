@@ -14,6 +14,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import me.androidbox.core.presentation.designsystem.theming.NoteMarkTheme
 
 @Composable
 fun NoteMarkLayout(
@@ -21,21 +22,25 @@ fun NoteMarkLayout(
     toolBar: @Composable () -> Unit = {},
     content: @Composable (paddingValue: PaddingValues) -> Unit,
     bottomBar: @Composable () -> Unit = {},
-    snackState: SnackbarHostState? = null
+    snackState: SnackbarHostState? = null,
+    floatingActionButton : @Composable () -> Unit = {}
 ) {
-    Scaffold(
-        snackbarHost = { snackState?.let { SnackbarHost(it) } },
-        modifier = modifier.fillMaxWidth(),
-        containerColor = Color.Transparent,
-        topBar = {
-            toolBar()
+    NoteMarkTheme {
+        Scaffold(
+            snackbarHost = { snackState?.let { SnackbarHost(it) } },
+            modifier = modifier.fillMaxWidth(),
+            containerColor = Color.Transparent,
+            topBar = {
+                toolBar()
 
-        },
-        content = { paddingValues ->
-            content(paddingValues)
-        },
-        bottomBar = {
-            bottomBar()
-        }
-    )
+            },
+            content = { paddingValues ->
+                content(paddingValues)
+            },
+            bottomBar = {
+                bottomBar()
+            },
+            floatingActionButton = floatingActionButton
+        )
+    }
 }

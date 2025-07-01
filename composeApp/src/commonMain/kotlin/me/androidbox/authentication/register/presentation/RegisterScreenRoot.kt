@@ -27,7 +27,7 @@ fun RegisterScreenRoot(
             is AuthenticationEvents.OnAuthenticationFail -> {
                 viewModel.onAction(RegisterActions.OnSendMessage(event.message))
             }
-            AuthenticationEvents.OnAuthenticationSuccess -> {
+            is AuthenticationEvents.OnAuthenticationSuccess -> {
                 onNavigateToLogin()
             }
         }

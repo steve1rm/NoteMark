@@ -9,11 +9,18 @@ interface Platform {
 
 expect fun getPlatform(): Platform
 
+expect fun generateUUID(): String
+
 @Composable
 expect fun getOrientation(): Orientation
 
 @Composable
 expect fun isAtLeastMedium(): Boolean
+
+expect fun isTablet() : Boolean
+
+expect fun getCurrentMillis() : Long
+expect fun Long.formattedDateString() : String
 
 expect fun emailValid(email: String) : Boolean
 

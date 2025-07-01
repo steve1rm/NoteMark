@@ -7,3 +7,9 @@ plugins {
     alias(libs.plugins.composeCompiler) apply false
     alias(libs.plugins.kotlinMultiplatform) apply false
 }
+
+buildscript {
+    this.dependencies {
+        classpath("io.kotzilla:kotzilla-plugin:1.0.1")
+    }
+}

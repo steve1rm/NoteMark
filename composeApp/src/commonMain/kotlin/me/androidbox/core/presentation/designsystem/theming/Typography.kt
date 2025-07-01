@@ -12,7 +12,7 @@ import notemark.composeapp.generated.resources.space_grotesk
 import org.jetbrains.compose.resources.Font
 
 
-private val spaceGrotesk: FontFamily
+internal val spaceGrotesk: FontFamily
     @Composable
     get() = FontFamily(
         Font(Res.font.space_grotesk, FontWeight.Normal)
@@ -78,14 +78,14 @@ fun appTypography(): Typography {
         bodyMedium = TextStyle(
             fontFamily = spaceGrotesk,
             fontWeight = FontWeight.Normal,
-            lineHeight = 18.sp,
-            fontSize = 14.sp
+            lineHeight = 20.sp,
+            fontSize = 15.sp
         ),
         bodySmall = TextStyle(
             fontFamily = spaceGrotesk,
             fontWeight = FontWeight.Normal,
-            lineHeight = 18.sp,
-            fontSize = 14.sp
+            lineHeight = 20.sp,
+            fontSize = 15.sp
         ),
         labelLarge = TextStyle(
             fontFamily = spaceGrotesk,
@@ -116,6 +116,12 @@ fun appTypography(): Typography {
             fontWeight = FontWeight.Medium,
             lineHeight = 24.sp,
             fontSize = 17.sp
+        ),
+        titleMedium = TextStyle(
+            fontFamily = spaceGrotesk,
+            fontWeight = FontWeight.Bold,
+            lineHeight = 24.sp,
+            fontSize = 20.sp
         )
     )
 }
