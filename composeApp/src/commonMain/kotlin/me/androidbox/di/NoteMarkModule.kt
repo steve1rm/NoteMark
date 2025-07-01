@@ -1,11 +1,17 @@
 package me.androidbox.di
 
-import io.ktor.client.*
-import kotlinx.coroutines.*
+import io.ktor.client.HttpClient
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.IO
+import kotlinx.coroutines.SupervisorJob
 import me.androidbox.NoteMarkPreferences
 import me.androidbox.authentication.login.domain.use_case.LoginUseCase
 import me.androidbox.authentication.login.domain.use_case.LoginUseCaseV2
+import me.androidbox.authentication.login.domain.use_case.LogoutUseCase
 import me.androidbox.authentication.login.domain.use_case.imp.LoginUseCaseV2Imp
+import me.androidbox.authentication.login.domain.use_case.imp.LogoutUseCaseImp
 import me.androidbox.authentication.login.presentation.LoginViewModel
 import me.androidbox.authentication.register.data.AuthorizationRemoteDataSource
 import me.androidbox.authentication.register.data.imp.AuthorizationRemoteDataSourceImp
@@ -61,8 +67,12 @@ val noteMarkModule = module {
         LoginUseCaseV2Imp(
             get<AuthorizationRepository>()
         )
-    }
-        .bind(LoginUseCaseV2::class)
+    }.bind(LoginUseCaseV2::class)
+    factory {
+        LogoutUseCaseImp(
+            get<AuthorizationRepository>()
+        )
+    }.bind(LogoutUseCase::class)
 
     factory {
         LoginUseCase(
