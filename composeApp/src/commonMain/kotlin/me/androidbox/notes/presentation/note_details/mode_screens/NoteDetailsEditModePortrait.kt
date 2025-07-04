@@ -1,4 +1,4 @@
-package me.androidbox.notes.presentation.edit_note
+package me.androidbox.notes.presentation.note_details.mode_screens
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -29,11 +29,13 @@ import androidx.compose.ui.unit.sp
 import me.androidbox.core.presentation.designsystem.NoteMarkLayout
 import me.androidbox.core.presentation.designsystem.buttons.TextButton
 import me.androidbox.core.presentation.designsystem.theming.spaceGrotesk
+import me.androidbox.notes.presentation.note_details.NoteDetailsActions
+import me.androidbox.notes.presentation.note_details.NoteDetailsUiState
 
 @Composable
-fun EditNoteScreenPortrait(
-    state: EditNoteUiState,
-    onAction: (EditNoteActions) -> Unit,
+fun NoteDetailsEditModePortrait(
+    state: NoteDetailsUiState,
+    onAction: (NoteDetailsActions) -> Unit,
     modifier: Modifier = Modifier,
     noteId: String?,
 ) {
@@ -49,7 +51,7 @@ fun EditNoteScreenPortrait(
             ) {
                 IconButton(
                     onClick = {
-                        onAction(EditNoteActions.OnCloseClick)
+                        onAction(NoteDetailsActions.OnCloseClick)
                     }
                 ) {
                     Icon(
@@ -62,7 +64,7 @@ fun EditNoteScreenPortrait(
                 TextButton(
                     text = "SAVE NOTE",
                     onClick = {
-                        onAction(EditNoteActions.OnSaveNote(noteId))
+                        onAction(NoteDetailsActions.OnSaveNote)
                     },
                     textStyle = TextStyle(
                         fontFamily = spaceGrotesk,
@@ -82,7 +84,7 @@ fun EditNoteScreenPortrait(
                 BasicTextField(
                     value = state.inputTitle,
                     onValueChange = {
-                        onAction(EditNoteActions.OnTitleChange(it))
+                        onAction(NoteDetailsActions.OnTitleChange(it))
                     },
                     textStyle = MaterialTheme.typography.titleLarge.copy(
                         color = MaterialTheme.colorScheme.onSurface
@@ -107,7 +109,7 @@ fun EditNoteScreenPortrait(
                 BasicTextField(
                     value = state.inputContent,
                     onValueChange = {
-                        onAction(EditNoteActions.OnContentChange(it))
+                        onAction(NoteDetailsActions.OnContentChange(it))
                     },
                     textStyle = MaterialTheme.typography.bodyLarge.copy(
                         color = MaterialTheme.colorScheme.onSurfaceVariant

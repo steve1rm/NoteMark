@@ -29,7 +29,7 @@ val Typography.headLineXSmall: TextStyle
     @Composable
     get() {
         return TextStyle(
-            fontFamily = spaceGrotesk ,
+            fontFamily = spaceGrotesk,
             fontWeight = FontWeight.Normal,
             lineHeight = 18.sp,
             fontSize = 14.sp
@@ -122,6 +122,12 @@ fun appTypography(): Typography {
             fontWeight = FontWeight.Bold,
             lineHeight = 24.sp,
             fontSize = 20.sp
+        ),
+        displaySmall = TextStyle(
+            fontFamily = spaceGrotesk,
+            fontWeight = FontWeight.Bold,
+            lineHeight = 24.sp,
+            fontSize = 16.sp
         )
     )
 }

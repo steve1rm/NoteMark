@@ -1,12 +1,17 @@
 package me.androidbox
 
+import android.app.Activity
 import android.content.Context
+import android.content.pm.ActivityInfo
 import android.content.res.Configuration
 import android.content.res.Resources
 import android.os.Build
 import android.util.Patterns
+import androidx.activity.compose.LocalActivity
 import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.window.core.layout.WindowSizeClass
@@ -30,6 +35,30 @@ actual fun getPlatform(): Platform = AndroidPlatform()
 
 actual fun generateUUID(): String {
     return UUID.randomUUID().toString()
+}
+
+@Composable
+actual fun OnChangeOrientation(orientation: Orientation) {
+    val context = LocalContext.current
+    val activity = context as? Activity
+    LaunchedEffect(orientation) {
+        val requested = when (orientation) {
+            Orientation.PORTRAIT -> ActivityInfo.SCREEN_ORIENTATION_FULL_USER
+            Orientation.LANDSCAPE -> ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+        }
+
+        if (activity?.requestedOrientation != requested) {
+            activity?.requestedOrientation = requested
+            activity?.overridePendingTransition(0, 0) // optional: suppress flicker
+        }
+    }
+
+    // Optional: Reset when Composable leaves
+    DisposableEffect(Unit) {
+        onDispose {
+            activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
+        }
+    }
 }
 
 @Composable
