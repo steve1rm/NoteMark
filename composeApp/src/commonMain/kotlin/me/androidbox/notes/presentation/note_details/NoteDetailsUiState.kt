@@ -1,5 +1,6 @@
 package me.androidbox.notes.presentation.note_details
 
+import kotlinx.datetime.Clock
 import me.androidbox.notes.presentation.note_details.model.NoteDetailsMode
 
 data class NoteDetailsUiState(
@@ -11,6 +12,7 @@ data class NoteDetailsUiState(
     val showDiscardDialog: Boolean = false,
     val noteDetailsMode: NoteDetailsMode = NoteDetailsMode.VIEWER_MODE,
     val showActionItems: Boolean = true,
+    val noteCreatedDateMillis: Long? = null,
     val noteEditedDateFormatted: String = "",
     val noteCreatedDateFormatted: String = ""
 )

@@ -37,7 +37,6 @@ fun NoteDetailsEditModePortrait(
     state: NoteDetailsUiState,
     onAction: (NoteDetailsActions) -> Unit,
     modifier: Modifier = Modifier,
-    noteId: String?,
 ) {
     NoteMarkLayout(
         toolBar = {

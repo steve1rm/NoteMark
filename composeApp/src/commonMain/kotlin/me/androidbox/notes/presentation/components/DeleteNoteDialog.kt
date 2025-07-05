@@ -37,7 +37,7 @@ fun DeleteNoteDialog(
             .background(MaterialTheme.colorScheme.errorContainer)
             .padding(16.dp),
         properties = DialogProperties(
-            usePlatformDefaultWidth = false,
+            usePlatformDefaultWidth = true,
             dismissOnClickOutside = false
         )
     ) {

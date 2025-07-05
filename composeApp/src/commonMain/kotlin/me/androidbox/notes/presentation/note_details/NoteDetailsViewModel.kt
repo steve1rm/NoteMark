@@ -53,9 +53,9 @@ class NoteDetailsViewModel(
                     val result = saveNoteUseCase.execute(
                         NoteItem(
                             id = _state.value.noteId ?: generateUUID(),
-                            title = state.value.inputTitle,
-                            content = state.value.inputContent,
-                            createdAt = Clock.System.now().toEpochMilliseconds(),
+                            title = _state.value.inputTitle,
+                            content = _state.value.inputContent,
+                            createdAt = _state.value.noteCreatedDateMillis ?: Clock.System.now().toEpochMilliseconds(),
                             lastEditedAt = Clock.System.now().toEpochMilliseconds()
                         )
                     )
@@ -113,13 +113,14 @@ class NoteDetailsViewModel(
                             is Left -> {
                                 val noteTitle = noteResult.value.title
                                 val noteContent = noteResult.value.content
+                                val noteCreatedDate = noteResult.value.createdAt
                                 val createdDateFormatted =
                                     NoteDetailsTimeFormatter.toFormattedDateString(
                                         timeMillis = noteResult.value.createdAt
                                     )
                                 val editedDateFormatted =
                                     NoteDetailsTimeFormatter.toFormattedDateString(
-                                        timeMillis = noteResult.value.createdAt
+                                        timeMillis = noteResult.value.lastEditedAt
                                     )
                                 _state.update { state ->
                                     state.copy(
@@ -128,7 +129,8 @@ class NoteDetailsViewModel(
                                         noteTitle = noteTitle,
                                         noteContent = noteContent,
                                         noteEditedDateFormatted = editedDateFormatted,
-                                        noteCreatedDateFormatted = createdDateFormatted
+                                        noteCreatedDateFormatted = createdDateFormatted,
+                                        noteCreatedDateMillis = noteCreatedDate
                                     )
                                 }
                             }
