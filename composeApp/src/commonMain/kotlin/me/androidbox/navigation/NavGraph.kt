@@ -22,4 +22,7 @@ sealed interface NavGraph {
     data class NoteEditScreen(
         val noteId: String?
     ) : NavGraph
+
+    @Serializable
+    data object SettingsScreen : NavGraph
 }

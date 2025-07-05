@@ -51,6 +51,7 @@ import org.koin.compose.viewmodel.koinViewModel
 fun NoteListScreenRoot(
     username: String,
     onNavigateToEditNote: (noteId: String?) -> Unit,
+    onNavigateToSettings: () -> Unit
 ) {
     val viewModel = koinViewModel<NoteListViewModel>()
     val state by viewModel.state.collectAsStateWithLifecycle()
@@ -74,7 +75,16 @@ fun NoteListScreenRoot(
     NoteListScreen(
         username = username,
         state = state,
-        onAction = viewModel::onAction,
+        onAction = { noteListActions ->
+            when(noteListActions) {
+                NoteListActions.OnSettingsClicked -> {
+                    onNavigateToSettings()
+                }
+                else -> {
+                    viewModel.onAction(noteListActions)
+                }
+            }
+        },
         snackbarHostState = snackbarHostState
     )
 }
@@ -112,7 +122,9 @@ fun NoteListScreen(
                 Spacer(modifier = Modifier.weight(1f))
 
                 IconButton(
-                    onClick = {},
+                    onClick = {
+                        onAction(NoteListActions.OnSettingsClicked)
+                    },
                     content = {
                         Icon(
                             modifier = Modifier.size(20.dp),

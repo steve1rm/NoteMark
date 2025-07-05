@@ -28,7 +28,8 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
 fun SettingsScreen(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onAction: (settingsAction: SettingsAction) -> Unit
 ) {
     Scaffold(
         topBar = {
@@ -57,7 +58,9 @@ fun SettingsScreen(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 IconButton(
-                    onClick = {},
+                    onClick = {
+                        onAction(SettingsAction.onLogout)
+                    },
                     content = {
                         Icon(
                             modifier = Modifier.size(20.dp),
@@ -79,7 +82,8 @@ fun SettingsScreen(
 @Composable
 fun SettingsScreenPreview() {
     NoteMarkTheme {
-        SettingsScreen()
-
+        SettingsScreen(
+            onAction = {}
+        )
     }
 }

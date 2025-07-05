@@ -7,6 +7,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import me.androidbox.notes.presentation.edit_note.EditNoteScreenRoot
 import me.androidbox.notes.presentation.note_list.NoteListScreenRoot
+import me.androidbox.settings.presentation.SettingsScreenRoot
 import me.androidbox.startup.presentation.LandingScreen
 
 @Composable
@@ -36,6 +37,9 @@ fun AppNavigation(
                 username = username,
                 onNavigateToEditNote = { noteId ->
                     navHostController.navigate(NavGraph.NoteEditScreen(noteId))
+                },
+                onNavigateToSettings = {
+                    navHostController.navigate(NavGraph.SettingsScreen)
                 })
         }
 
@@ -47,6 +51,10 @@ fun AppNavigation(
                     navHostController.popBackStack()
                 }
             )
+        }
+
+        composable<NavGraph.SettingsScreen> {
+            SettingsScreenRoot()
         }
     }
 }

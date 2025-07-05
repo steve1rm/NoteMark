@@ -11,15 +11,10 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlinx.datetime.Clock
-import me.androidbox.generateUUID
-import me.androidbox.notes.domain.model.NoteItem
 import me.androidbox.notes.domain.usecases.DeleteNoteUseCase
 import me.androidbox.notes.domain.usecases.FetchNotesUseCase
 import me.androidbox.notes.domain.usecases.SaveNoteUseCase
-import me.androidbox.notes.presentation.note_list.NoteListEvents.*
-import net.orandja.either.Left
-import net.orandja.either.Right
+import me.androidbox.notes.presentation.note_list.NoteListEvents.OnNavigateToEditNote
 
 class NoteListViewModel(
     private val fetchNotesUseCase: FetchNotesUseCase,
@@ -93,8 +88,12 @@ class NoteListViewModel(
 
             is NoteListActions.OnNavigateToEditNoteWithNoteId -> {
                 viewModelScope.launch {
-                    _events.send(NoteListEvents.OnNavigateToEditNote(action.noteId))
+                    _events.send(OnNavigateToEditNote(action.noteId))
                 }
+            }
+
+            NoteListActions.OnSettingsClicked -> {
+                /** no-op handle in navigation */
             }
         }
     }
