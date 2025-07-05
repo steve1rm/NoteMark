@@ -65,14 +65,16 @@ fun SettingsScreen(
                         Icon(
                             modifier = Modifier.size(20.dp),
                             imageVector = vectorResource(Res.drawable.logout),
-                            contentDescription = "Logout"
+                            contentDescription = "Logout",
+                            tint = MaterialTheme.colorScheme.error
                         )
                     }
                 )
 
                 Text(
                     text = "Logout",
-                    style = MaterialTheme.typography.titleSmall)
+                    style = MaterialTheme.typography.titleSmall,
+                    color = MaterialTheme.colorScheme.error)
             }
         }
     )
