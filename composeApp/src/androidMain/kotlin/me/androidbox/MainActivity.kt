@@ -9,8 +9,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import me.androidbox.core.presentation.designsystem.theming.NoteMarkTheme
-import me.androidbox.navigation.AppNavigation
-import me.androidbox.notes.presentation.edit_note.EditNoteScreenRoot
+import me.androidbox.notes.presentation.note_details.EditNoteScreenRoot
+import me.androidbox.notes.presentation.note_details.NoteDetailsUiState
+import me.androidbox.notes.presentation.note_details.mode_screens.NoteDetailsViewerModeLandscape
+import me.androidbox.notes.presentation.note_details.mode_screens.NoteDetailsViewerModePortrait
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -27,7 +29,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
 
         setContent {
-            AppNavigation()
+            App()
         }
 
     }
@@ -37,8 +39,6 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun AppAndroidPreview() {
     NoteMarkTheme {
-        EditNoteScreenRoot(
-            "", {}
-        )
+        App()
     }
 }

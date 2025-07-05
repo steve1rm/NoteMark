@@ -15,6 +15,9 @@ expect fun generateUUID(): String
 expect fun getOrientation(): Orientation
 
 @Composable
+expect fun OnChangeOrientation(orientation: Orientation)
+
+@Composable
 expect fun isAtLeastMedium(): Boolean
 
 expect fun isTablet() : Boolean

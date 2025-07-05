@@ -8,29 +8,14 @@ import androidx.navigation.toRoute
 import me.androidbox.notes.presentation.note_details.EditNoteScreenRoot
 import me.androidbox.notes.presentation.note_list.NoteListScreenRoot
 import me.androidbox.settings.presentation.SettingsScreenRoot
-import me.androidbox.startup.presentation.LandingScreen
 
 @Composable
-fun AppNavigation(
-) {
+fun TestNavigation() {
     val navHostController = rememberNavController()
     NavHost(
         navController = navHostController,
-        startDestination = NavGraph.AuthenticationGraph
+        startDestination = NavGraph.NotesListScreen("TT")
     ) {
-        composable<NavGraph.LandingScreen> {
-            LandingScreen(
-                onGettingStartedClick = {
-                    navHostController.navigate(NavGraph.AuthenticationGraph.RegisterScreen)
-                },
-                onLoginClick = {
-                    navHostController.navigate(NavGraph.AuthenticationGraph.LoginScreen)
-                }
-            )
-        }
-
-        this.authenticationGraph(navController = navHostController)
-
         composable<NavGraph.NotesListScreen> {
             val username = it.toRoute<NavGraph.NotesListScreen>().username
             NoteListScreenRoot(
@@ -40,7 +25,8 @@ fun AppNavigation(
                 },
                 onNavigateToSettings = {
                     navHostController.navigate(NavGraph.SettingsScreen)
-                })
+                }
+            )
         }
 
         composable<NavGraph.NoteDetailsScreen> { backStackEntry ->
