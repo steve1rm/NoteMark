@@ -37,7 +37,7 @@ class SettingsViewModel(
                         when(result) {
                             is Left -> {
                                 noteMarkPreferences.deleteAllPreferences()
-                      //          nukeAllNotesUseCase.execute()
+                                nukeAllNotesUseCase.execute()
                                 _settingsEvent.send(SettingsEvent.logoutSuccess(isSuccess = true))
                             }
                             is Right -> {
