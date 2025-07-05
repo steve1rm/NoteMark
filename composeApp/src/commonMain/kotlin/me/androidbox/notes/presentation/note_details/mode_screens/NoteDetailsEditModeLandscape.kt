@@ -25,7 +25,6 @@ fun NoteDetailsEditModeLandscape(
     state: NoteDetailsUiState,
     onAction: (NoteDetailsActions) -> Unit,
     modifier: Modifier = Modifier,
-    noteId: String?,
 ) {
     NoteMarkTheme {
         Scaffold(

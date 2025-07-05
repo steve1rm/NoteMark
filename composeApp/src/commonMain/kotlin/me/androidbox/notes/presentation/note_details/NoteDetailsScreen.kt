@@ -85,13 +85,11 @@ fun EditNoteScreenRoot(
                     if (isScreenPortraitMode) {
                         OnChangeOrientation(Orientation.PORTRAIT)
                         NoteDetailsEditModePortrait(
-                            noteId = noteId,
                             state = state,
                             onAction = viewModel::onAction,
                         )
                     } else {
                         NoteDetailsEditModeLandscape(
-                            noteId = noteId,
                             state = state,
                             onAction = viewModel::onAction,
                         )
@@ -137,13 +135,11 @@ fun EditNoteScreenRoot(
         } else {
             if (isScreenPortraitMode) {
                 NoteDetailsEditModePortrait(
-                    noteId = noteId,
                     state = state,
                     onAction = viewModel::onAction,
                 )
             } else {
                 NoteDetailsEditModeLandscape(
-                    noteId = noteId,
                     state = state,
                     onAction = viewModel::onAction,
                 )
