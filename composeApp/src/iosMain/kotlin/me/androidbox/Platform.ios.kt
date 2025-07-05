@@ -55,4 +55,8 @@ actual class NoteMarkPreferencesImp : NoteMarkPreferences {
     override fun getAccessToken(): String {
         TODO("Not yet implemented")
     }
+
+    actual override fun deleteAllPreferences() {
+        TODO("Not yet implemented")
+    }
 }

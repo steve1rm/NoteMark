@@ -1,7 +1,6 @@
 package me.androidbox.notes.data.datasources.imp
 
 import kotlinx.coroutines.flow.Flow
-import me.androidbox.core.data.NoteMarkDatabase
 import me.androidbox.core.models.DataError
 import me.androidbox.notes.data.NoteMarkDao
 import me.androidbox.notes.data.datasources.NotesLocalDataSource
@@ -48,6 +47,19 @@ class NotesLocalDataSourceImp(
             Left(note)
         } else {
             Right(DataError.Local.EMPTY)
+        }
+    }
+
+    override suspend fun nukeAllNotes(): Either<Unit, DataError.Local> {
+        return try {
+            noteMarkDao.nukeAllNotes()
+            Left(Unit)
+        }
+        catch (exception: Exception) {
+            if(exception is CancellationException) {
+                throw exception
+            }
+            Right(DataError.Local.UNKNOWN)
         }
     }
 }

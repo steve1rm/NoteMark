@@ -1,11 +1,17 @@
 package me.androidbox.di
 
-import io.ktor.client.*
-import kotlinx.coroutines.*
+import io.ktor.client.HttpClient
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.IO
+import kotlinx.coroutines.SupervisorJob
 import me.androidbox.NoteMarkPreferences
 import me.androidbox.authentication.login.domain.use_case.LoginUseCase
 import me.androidbox.authentication.login.domain.use_case.LoginUseCaseV2
+import me.androidbox.authentication.login.domain.use_case.LogoutUseCase
 import me.androidbox.authentication.login.domain.use_case.imp.LoginUseCaseV2Imp
+import me.androidbox.authentication.login.domain.use_case.imp.LogoutUseCaseImp
 import me.androidbox.authentication.login.presentation.LoginViewModel
 import me.androidbox.authentication.register.data.AuthorizationRemoteDataSource
 import me.androidbox.authentication.register.data.imp.AuthorizationRemoteDataSourceImp
@@ -26,13 +32,16 @@ import me.androidbox.notes.domain.usecases.DeleteNoteUseCase
 import me.androidbox.notes.domain.usecases.FetchNoteUseCase
 import me.androidbox.notes.domain.usecases.FetchNotesUseCase
 import me.androidbox.notes.domain.usecases.GetProfilePictureUseCase
+import me.androidbox.notes.domain.usecases.NukeAllNotesUseCase
 import me.androidbox.notes.domain.usecases.SaveNoteUseCase
 import me.androidbox.notes.domain.usecases.imp.DeleteNoteUseCaseImp
 import me.androidbox.notes.domain.usecases.imp.FetchNoteUseCaseImp
 import me.androidbox.notes.domain.usecases.imp.FetchNotesUseCaseImp
+import me.androidbox.notes.domain.usecases.imp.NukeAllNotesUseCaseImp
 import me.androidbox.notes.domain.usecases.imp.SaveNoteUseCaseImp
 import me.androidbox.notes.presentation.note_details.NoteDetailsViewModel
 import me.androidbox.notes.presentation.note_list.NoteListViewModel
+import me.androidbox.settings.presentation.SettingsViewModel
 import me.androidbox.user.data.UserLocalDataSource
 import me.androidbox.user.data.imp.UserLocalDataSourceImp
 import me.androidbox.user.data.imp.UserRepositoryImp
@@ -49,6 +58,7 @@ val noteMarkModule = module {
     viewModelOf(::LoginViewModel)
     viewModelOf(::NoteDetailsViewModel)
     viewModelOf(::NoteListViewModel)
+    viewModelOf(::SettingsViewModel)
 
     /**
      *  UseCases
@@ -57,12 +67,17 @@ val noteMarkModule = module {
     factory { DeleteNoteUseCaseImp(get<NotesRepository>()) }.bind(DeleteNoteUseCase::class)
     factory { FetchNotesUseCaseImp(get<NotesRepository>()) }.bind(FetchNotesUseCase::class)
     factory { FetchNoteUseCaseImp(get<NotesRepository>()) }.bind(FetchNoteUseCase::class)
+    factory { NukeAllNotesUseCaseImp(get<NotesRepository>())}.bind(NukeAllNotesUseCase::class)
     factory {
         LoginUseCaseV2Imp(
             get<AuthorizationRepository>()
         )
-    }
-        .bind(LoginUseCaseV2::class)
+    }.bind(LoginUseCaseV2::class)
+    factory {
+        LogoutUseCaseImp(
+            get<AuthorizationRepository>()
+        )
+    }.bind(LogoutUseCase::class)
 
     factory {
         LoginUseCase(

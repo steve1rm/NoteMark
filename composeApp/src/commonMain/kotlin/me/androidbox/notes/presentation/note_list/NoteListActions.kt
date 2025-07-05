@@ -8,4 +8,5 @@ sealed interface NoteListActions {
     object OnCancelDeleteDialog : NoteListActions
     object OnNavigateToEditNoteWithNewNote : NoteListActions
     data class OnNavigateToEditNoteWithNoteId(val noteId: String) : NoteListActions
+    data object OnSettingsClicked : NoteListActions
 }

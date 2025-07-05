@@ -88,8 +88,12 @@ class NoteListViewModel(
 
             is NoteListActions.OnNavigateToEditNoteWithNoteId -> {
                 viewModelScope.launch {
-                    _events.send(NoteListEvents.OnNavigateToEditNote(action.noteId))
+                    _events.send(OnNavigateToEditNote(action.noteId))
                 }
+            }
+
+            NoteListActions.OnSettingsClicked -> {
+                /** no-op handle in navigation */
             }
         }
     }
