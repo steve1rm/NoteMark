@@ -5,7 +5,9 @@ import me.androidbox.core.presentation.utils.ObserveAsEvents
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
-fun SettingsScreenRoot() {
+fun SettingsScreenRoot(
+    onLogoutClicked: () -> Unit
+) {
     val settingsViewModel = koinViewModel<SettingsViewModel>()
 
     ObserveAsEvents(
@@ -14,10 +16,10 @@ fun SettingsScreenRoot() {
             when(settingsEvent) {
                 is SettingsEvent.logoutSuccess -> {
                     if(settingsEvent.isSuccess) {
-
+                        onLogoutClicked()
                     }
                     else {
-
+                        /** In case we fail to logout, how to handle. Ask in Channel */
                     }
                 }
             }

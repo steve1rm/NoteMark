@@ -30,6 +30,7 @@ interface NoteMarkPreferences {
 
     fun setAccessToken(value: String)
     fun getAccessToken(): String?
+    fun deleteAllPreferences()
 }
 
 expect class NoteMarkPreferencesImp : NoteMarkPreferences {
@@ -37,4 +38,6 @@ expect class NoteMarkPreferencesImp : NoteMarkPreferences {
     override fun getRefreshToken(): String?
     override fun setAccessToken(value: String)
     override fun getAccessToken(): String?
+    override fun deleteAllPreferences()
+
 }

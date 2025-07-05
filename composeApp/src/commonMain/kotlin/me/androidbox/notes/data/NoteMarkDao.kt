@@ -27,4 +27,7 @@ interface NoteMarkDao {
 
     @Query("SELECT * from NoteItemEntity WHERE id = :noteId LIMIT 1")
     suspend fun getNoteById(noteId: String): NoteItemEntity?
+
+    @Query("DELETE FROM NoteItemEntity")
+    suspend fun nukeAllNotes()
 }

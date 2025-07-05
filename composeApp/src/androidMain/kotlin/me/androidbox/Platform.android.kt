@@ -109,4 +109,8 @@ actual class NoteMarkPreferencesImp(context: Context) : NoteMarkPreferences {
     actual override fun getAccessToken(): String? {
         return store.string(forKey = ACCESS_TOKEN_KEY)
     }
+
+    actual override fun deleteAllPreferences() {
+        store.clear()
+    }
 }

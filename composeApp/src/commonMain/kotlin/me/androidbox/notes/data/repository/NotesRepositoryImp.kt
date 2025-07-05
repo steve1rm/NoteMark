@@ -95,4 +95,8 @@ class NotesRepositoryImp(
             Right(noteEntityResult.right)
         }
     }
+
+    override suspend fun nukeAllNotes(): Either<Unit, DataError.Local> {
+        return notesLocalDataSource.nukeAllNotes()
+    }
 }

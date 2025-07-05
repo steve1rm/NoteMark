@@ -54,7 +54,13 @@ fun AppNavigation(
         }
 
         composable<NavGraph.SettingsScreen> {
-            SettingsScreenRoot()
+            SettingsScreenRoot(
+                onLogoutClicked = {
+                    navHostController.navigate(route = NavGraph.AuthenticationGraph) {
+                        this.popUpTo(navHostController.graph.id)
+                    }
+                }
+            )
         }
     }
 }

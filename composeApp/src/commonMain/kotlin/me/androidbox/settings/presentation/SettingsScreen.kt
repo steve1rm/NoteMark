@@ -59,7 +59,7 @@ fun SettingsScreen(
             ) {
                 IconButton(
                     onClick = {
-                        onAction(SettingsAction.onLogout)
+                        onAction(SettingsAction.OnLogout)
                     },
                     content = {
                         Icon(

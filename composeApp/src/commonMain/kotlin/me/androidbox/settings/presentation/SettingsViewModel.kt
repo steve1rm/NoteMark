@@ -8,11 +8,13 @@ import kotlinx.coroutines.launch
 import me.androidbox.NoteMarkPreferences
 import me.androidbox.authentication.login.domain.model.LogoutRequest
 import me.androidbox.authentication.login.domain.use_case.LogoutUseCase
+import me.androidbox.notes.domain.usecases.NukeAllNotesUseCase
 import net.orandja.either.Left
 import net.orandja.either.Right
 
 class SettingsViewModel(
     private val logoutUseCase: LogoutUseCase,
+    private val nukeAllNotesUseCase: NukeAllNotesUseCase,
     private val noteMarkPreferences: NoteMarkPreferences
 ) : ViewModel() {
 
@@ -21,7 +23,7 @@ class SettingsViewModel(
 
     fun action(settingsAction: SettingsAction) {
         when(settingsAction) {
-            SettingsAction.onLogout -> {
+            SettingsAction.OnLogout -> {
                 viewModelScope.launch {
                     val refreshToken = noteMarkPreferences.getRefreshToken()
 
@@ -34,6 +36,8 @@ class SettingsViewModel(
 
                         when(result) {
                             is Left -> {
+                                noteMarkPreferences.deleteAllPreferences()
+                      //          nukeAllNotesUseCase.execute()
                                 _settingsEvent.send(SettingsEvent.logoutSuccess(isSuccess = true))
                             }
                             is Right -> {
