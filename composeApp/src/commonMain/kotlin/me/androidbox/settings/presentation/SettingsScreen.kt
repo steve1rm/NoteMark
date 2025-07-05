@@ -72,7 +72,7 @@ fun SettingsScreen(
                 )
 
                 Text(
-                    text = "Logout",
+                    text = "Log out",
                     style = MaterialTheme.typography.titleSmall,
                     color = MaterialTheme.colorScheme.error)
             }
