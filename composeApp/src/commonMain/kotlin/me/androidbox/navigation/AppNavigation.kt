@@ -37,7 +37,7 @@ fun AppNavigation(
                 username = username,
                 onNavigateToEditNote = { noteId ->
                     navHostController.navigate(NavGraph.NoteDetailsScreen(noteId))
-                    navHostController.navigate(NavGraph.NoteEditScreen(noteId))
+                    navHostController.navigate(NavGraph.NoteDetailsScreen(noteId))
                 },
                 onNavigateToSettings = {
                     navHostController.navigate(NavGraph.SettingsScreen)
