@@ -39,7 +39,7 @@ import me.androidbox.notes.domain.usecases.imp.FetchNoteUseCaseImp
 import me.androidbox.notes.domain.usecases.imp.FetchNotesUseCaseImp
 import me.androidbox.notes.domain.usecases.imp.NukeAllNotesUseCaseImp
 import me.androidbox.notes.domain.usecases.imp.SaveNoteUseCaseImp
-import me.androidbox.notes.presentation.edit_note.EditNoteViewModel
+import me.androidbox.notes.presentation.note_details.NoteDetailsViewModel
 import me.androidbox.notes.presentation.note_list.NoteListViewModel
 import me.androidbox.settings.presentation.SettingsViewModel
 import me.androidbox.user.data.UserLocalDataSource
@@ -56,7 +56,7 @@ val noteMarkModule = module {
      **/
     viewModelOf(::RegisterViewModel)
     viewModelOf(::LoginViewModel)
-    viewModelOf(::EditNoteViewModel)
+    viewModelOf(::NoteDetailsViewModel)
     viewModelOf(::NoteListViewModel)
     viewModelOf(::SettingsViewModel)
 
