@@ -55,7 +55,8 @@ class NoteDetailsViewModel(
                             id = _state.value.noteId ?: generateUUID(),
                             title = _state.value.inputTitle,
                             content = _state.value.inputContent,
-                            createdAt = _state.value.noteCreatedDateMillis ?: Clock.System.now().toEpochMilliseconds(),
+                            createdAt = _state.value.noteCreatedDateMillis ?: Clock.System.now()
+                                .toEpochMilliseconds(),
                             lastEditedAt = Clock.System.now().toEpochMilliseconds()
                         )
                     )
@@ -144,31 +145,37 @@ class NoteDetailsViewModel(
             }
 
             is NoteDetailsActions.OnModeChange -> {
-                when (action.mode) {
-                    NoteDetailsMode.VIEWER_MODE, NoteDetailsMode.EDIT_MODE -> {
-                        _state.update {
-                            it.copy(
-                                noteDetailsMode = action.mode,
-                                showActionItems = true
-                            )
-                        }
-                    }
-
-                    NoteDetailsMode.READER_MODE -> {
-                        actionsVisibilityJob?.cancel()
-                        _state.update {
-                            it.copy(
-                                noteDetailsMode = action.mode,
-                                showActionItems = true
-                            )
-                        }
-
-                        actionsVisibilityJob = viewModelScope.launch {
-                            delay(5000)
+                if (action.mode == _state.value.noteDetailsMode
+                    && _state.value.noteDetailsMode != NoteDetailsMode.VIEWER_MODE
+                ) {
+                    _state.update { it.copy(noteDetailsMode = NoteDetailsMode.VIEWER_MODE) }
+                } else {
+                    when (action.mode) {
+                        NoteDetailsMode.VIEWER_MODE, NoteDetailsMode.EDIT_MODE -> {
                             _state.update {
-                                it.copy(showActionItems = false)
+                                it.copy(
+                                    noteDetailsMode = action.mode,
+                                    showActionItems = true
+                                )
                             }
-                            actionsVisibilityJob = null
+                        }
+
+                        NoteDetailsMode.READER_MODE -> {
+                            actionsVisibilityJob?.cancel()
+                            _state.update {
+                                it.copy(
+                                    noteDetailsMode = action.mode,
+                                    showActionItems = true
+                                )
+                            }
+
+                            actionsVisibilityJob = viewModelScope.launch {
+                                delay(5000)
+                                _state.update {
+                                    it.copy(showActionItems = false)
+                                }
+                                actionsVisibilityJob = null
+                            }
                         }
                     }
                 }
