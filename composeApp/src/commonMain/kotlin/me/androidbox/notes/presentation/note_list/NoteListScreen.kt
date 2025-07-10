@@ -37,6 +37,7 @@ import me.androidbox.core.presentation.designsystem.NoteMarkLayout
 import me.androidbox.core.presentation.designsystem.buttons.GradientFAB
 import me.androidbox.core.presentation.designsystem.theming.bgGradient
 import me.androidbox.core.presentation.utils.ObserveAsEvents
+import me.androidbox.core.presentation.utils.Previews.noteItem
 import me.androidbox.getOrientation
 import me.androidbox.isTablet
 import me.androidbox.notes.presentation.components.AvatarIcon
@@ -153,14 +154,19 @@ fun NoteListScreen(
                         verticalItemSpacing = 16.dp,
                         modifier = Modifier.fillMaxSize()
                     ) {
-                        items(state.notesList) { note ->
+                        items(items = state.notesList,
+                            key = { noteItem ->
+                                noteItem.id
+                            }) { note ->
+                            println("items in lazyGrid ${note.id} | ${note.title}")
                             NoteItem(
                                 noteItem = note,
                                 onClick = {
                                     onAction(NoteListActions.OnNavigateToEditNoteWithNoteId(note.id))
                                 },
-                                onLongClick = {
-                                    onAction(NoteListActions.OnShowDeleteDialog(note))
+                                onLongClick = { noteToDelete ->
+                                    println("onLongClick with ${note.id} | ${note.title}")
+                                    onAction(NoteListActions.OnShowDeleteDialog(noteToDelete))
                                 },
                             )
                         }
@@ -207,8 +213,8 @@ fun NoteListScreen(
                 onAction(NoteListActions.OnCancelDeleteDialog)
             },
             onDeleteClick = {
-                state.currentSelectedNote?.let {
-                    onAction(NoteListActions.OnDeleteNote(it))
+                state.currentSelectedNote?.let { noteItem ->
+                    onAction(NoteListActions.OnDeleteNote(noteItem))
                 }
             }
         )

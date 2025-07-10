@@ -27,13 +27,30 @@ class NotesLocalDataSourceImp(
 
     override suspend fun deleteNote(noteItemEntity: NoteItemEntity): Either<Unit, DataError.Local> {
         return try {
-            noteMarkDao.deleteNote(noteItemEntity)
+            println("Attempting to delete note: ${noteItemEntity.id}")
+
+            // Check if the note exists before deletion
+            val existingNote = noteMarkDao.getNoteById(noteItemEntity.id)
+            println("Existing note found: $existingNote")
+
+            if (existingNote != null) {
+                noteMarkDao.deleteNote(noteItemEntity)
+                println("Delete operation completed")
+
+                // Verify deletion
+                val verifyDelete = noteMarkDao.getNoteById(noteItemEntity.id)
+                println("Note after deletion: $verifyDelete")
+            } else {
+                println("Note not found in database")
+            }
             Left(Unit)
         } catch (exception: Exception) {
             if (exception is CancellationException) {
                 throw exception
             }
-            Right(DataError.Local.DISK_FULL)
+            println("Delete error: ${exception.message}")
+            exception.printStackTrace()
+            Right(DataError.Local.UNKNOWN)
         }
     }
 

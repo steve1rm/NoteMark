@@ -29,9 +29,9 @@ logbackClassicVersion = "1.5.18"
 statelyCommon = "2.0.6"
 gmazzo-buildconfig-version = "5.6.6"
 kotlinx-datetime = "0.6.2"
-room = "2.7.1"
-ksp = "2.1.20-2.0.0"
-sqlite = "2.5.1"
+room = "2.7.2"
+ksp = "2.2.0-2.0.2"
+sqlite = "2.5.2"
 kotzilla = "1.1.0"
 
 [libraries]
