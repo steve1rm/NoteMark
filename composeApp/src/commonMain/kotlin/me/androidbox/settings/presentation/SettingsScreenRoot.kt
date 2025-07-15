@@ -1,6 +1,9 @@
 package me.androidbox.settings.presentation
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import me.androidbox.core.presentation.utils.ObserveAsEvents
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -9,6 +12,7 @@ fun SettingsScreenRoot(
     onLogoutClicked: () -> Unit
 ) {
     val settingsViewModel = koinViewModel<SettingsViewModel>()
+    val state by settingsViewModel.state.collectAsStateWithLifecycle()
 
     ObserveAsEvents(
         flow = settingsViewModel.settingsEvent,
@@ -27,6 +31,7 @@ fun SettingsScreenRoot(
     )
 
     SettingsScreen(
+        state = state,
         onAction = settingsViewModel::action
     )
 }
