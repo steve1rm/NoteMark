@@ -99,4 +99,8 @@ class NotesRepositoryImp(
     override suspend fun nukeAllNotes(): Either<Unit, DataError.Local> {
         return notesLocalDataSource.nukeAllNotes()
     }
+
+    override suspend fun fetchAllNotes(): Either<List<NoteItem>, DataError> {
+        TODO("Not yet implemented")
+    }
 }
