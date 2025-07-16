@@ -1,6 +1,7 @@
 package me.androidbox
 
 import androidx.compose.runtime.Composable
+import kotlinx.coroutines.flow.Flow
 import me.androidbox.core.models.Orientation
 
 interface Platform {
@@ -34,6 +35,14 @@ interface NoteMarkPreferences {
     fun setAccessToken(value: String)
     fun getAccessToken(): String?
     fun deleteAllPreferences()
+}
+
+interface ConnectivityManager {
+    fun isConnected() : Flow<Boolean>
+}
+
+expect class AndroidConnectivityManager : ConnectivityManager {
+    override fun isConnected(): Flow<Boolean>
 }
 
 expect class NoteMarkPreferencesImp : NoteMarkPreferences {

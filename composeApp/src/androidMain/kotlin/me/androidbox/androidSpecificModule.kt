@@ -14,6 +14,12 @@ val androidSpecificModule = module {
         )
     }
 
+    single<ConnectivityManager> {
+        AndroidConnectivityManager(
+            context = androidContext()
+        )
+    }
+
     single<NoteMarkDatabase> {
         val dbFile = androidContext().getDatabasePath("notemark.db")
 
