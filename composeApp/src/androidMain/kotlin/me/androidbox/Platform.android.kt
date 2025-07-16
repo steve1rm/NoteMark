@@ -141,12 +141,12 @@ actual class AndroidConnectivityManager(
 
             override fun onLost(network: Network) {
                 super.onLost(network)
-                trySend(false)
+                trySend(false).isSuccess
             }
 
             override fun onUnavailable() {
                 super.onUnavailable()
-                trySend(false)
+                trySend(false).isSuccess
             }
 
             override fun onCapabilitiesChanged(
@@ -157,7 +157,7 @@ actual class AndroidConnectivityManager(
                 val isConnected = networkCapabilities.hasCapability(
                     NetworkCapabilities.NET_CAPABILITY_VALIDATED
                 )
-                trySend(isConnected)
+                trySend(isConnected).isSuccess
             }
         }
 
