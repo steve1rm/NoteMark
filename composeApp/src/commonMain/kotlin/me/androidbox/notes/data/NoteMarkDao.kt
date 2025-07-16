@@ -10,15 +10,22 @@ import me.androidbox.notes.data.models.NoteItemEntity
 
 @Dao
 interface NoteMarkDao {
+    /** Notes */
     @Upsert
     suspend fun insertNote(noteItemEntity: NoteItemEntity): Long
+    @Upsert
+    suspend fun insertAllNotes(noteItemsEntity: List<NoteItemEntity>): List<Long>
 
     @Delete
     suspend fun deleteNote(noteItemEntity: NoteItemEntity)
 
+    @Query("DELETE FROM NoteItemEntity")
+    suspend fun nukeAllNotes()
+
     @Query("SELECT * FROM NoteItemEntity")
     fun getAllNotes(): Flow<List<NoteItemEntity>>
 
+    /** User */
     @Upsert
     suspend fun insertUser(userEntity: UserEntity): Long
 
@@ -27,7 +34,4 @@ interface NoteMarkDao {
 
     @Query("SELECT * from NoteItemEntity WHERE id = :noteId LIMIT 1")
     suspend fun getNoteById(noteId: String): NoteItemEntity?
-
-    @Query("DELETE FROM NoteItemEntity")
-    suspend fun nukeAllNotes()
 }

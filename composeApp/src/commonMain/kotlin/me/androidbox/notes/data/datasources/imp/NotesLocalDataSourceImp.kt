@@ -25,6 +25,18 @@ class NotesLocalDataSourceImp(
         }
     }
 
+    override suspend fun saveAllNotes(noteItemsEntity: List<NoteItemEntity>): Either<List<Long>, DataError.Local> {
+        return try {
+            val listOfIds = noteMarkDao.insertAllNotes(noteItemsEntity)
+            Left(listOfIds)
+        } catch(exception: Exception) {
+            if(exception is CancellationException) {
+                throw exception
+            }
+            Right(DataError.Local.DISK_FULL)
+        }
+    }
+
     override suspend fun deleteNote(noteItemEntity: NoteItemEntity): Either<Unit, DataError.Local> {
         return try {
             println("Attempting to delete note: ${noteItemEntity.id}")
