@@ -5,6 +5,9 @@ import android.content.Context
 import android.content.pm.ActivityInfo
 import android.content.res.Configuration
 import android.content.res.Resources
+import android.net.ConnectivityManager.NetworkCallback
+import android.net.Network
+import android.net.NetworkCapabilities
 import android.os.Build
 import android.util.Patterns
 import androidx.activity.compose.LocalActivity
@@ -14,10 +17,14 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
+import androidx.core.content.getSystemService
 import androidx.window.core.layout.WindowSizeClass
 import androidx.window.layout.WindowMetricsCalculator
 import androidx.window.layout.adapter.computeWindowSizeClass
 import com.liftric.kvault.KVault
+import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.callbackFlow
 import me.androidbox.core.models.LocalPreferences.ACCESS_TOKEN_KEY
 import me.androidbox.core.models.LocalPreferences.REFRESH_TOKEN_KEY
 import me.androidbox.core.models.Orientation
@@ -83,6 +90,7 @@ actual fun getOrientation(): Orientation {
 actual fun emailValid(email: String): Boolean {
     return Patterns.EMAIL_ADDRESS.matcher(email).matches()
 }
+
 @Composable
 actual fun isAtLeastMedium(): Boolean {
     val sizeClass = calculateWindowSizeClass()
@@ -107,7 +115,7 @@ actual fun Long.formattedDateString(): String {
         ZoneId.systemDefault()
     )
 
-    val formatter = if(zonedDateTime.year == ZonedDateTime.now().year) {
+    val formatter = if (zonedDateTime.year == ZonedDateTime.now().year) {
         DateTimeFormatter.ofPattern("dd MMM")
     } else DateTimeFormatter.ofPattern("dd MMM yyyy")
     return formatter.format(zonedDateTime)
@@ -118,6 +126,48 @@ actual fun isTablet(): Boolean {
 
     return (configuration.screenLayout and Configuration.SCREENLAYOUT_SIZE_MASK) >=
             Configuration.SCREENLAYOUT_SIZE_LARGE
+}
+
+actual class AndroidConnectivityManager(
+    private val context: Context
+) : ConnectivityManager {
+    private val connectivityManager = context.getSystemService<android.net.ConnectivityManager>()
+    actual override fun isConnected(): Flow<Boolean> = callbackFlow {
+        val networkCallback = object : NetworkCallback() {
+            override fun onAvailable(network: Network) {
+                super.onAvailable(network)
+                trySend(true)
+            }
+
+            override fun onLost(network: Network) {
+                super.onLost(network)
+                trySend(false).isSuccess
+            }
+
+            override fun onUnavailable() {
+                super.onUnavailable()
+                trySend(false).isSuccess
+            }
+
+            override fun onCapabilitiesChanged(
+                network: Network,
+                networkCapabilities: NetworkCapabilities
+            ) {
+                super.onCapabilitiesChanged(network, networkCapabilities)
+                val isConnected = networkCapabilities.hasCapability(
+                    NetworkCapabilities.NET_CAPABILITY_VALIDATED
+                )
+                trySend(isConnected).isSuccess
+            }
+        }
+
+        connectivityManager?.registerDefaultNetworkCallback(networkCallback)
+
+        awaitClose {
+            connectivityManager?.unregisterNetworkCallback(networkCallback)
+        }
+    }
+
 }
 
 actual class NoteMarkPreferencesImp(context: Context) : NoteMarkPreferences {
