@@ -42,6 +42,6 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun AppAndroidPreview() {
     NoteMarkTheme {
-        SettingsScreen(state = SettingsScreenUiState()) {  }
+        App()
     }
 }
