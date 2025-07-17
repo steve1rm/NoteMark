@@ -6,5 +6,6 @@ data class NoteListUiState(
     val profilePicText: String = "",
     val notesList: List<NoteItem> = emptyList(),
     val showDeleteDialog: Boolean = false,
-    val currentSelectedNote: NoteItem? = null
+    val currentSelectedNote: NoteItem? = null,
+    val isConnected: Boolean = false
 )
