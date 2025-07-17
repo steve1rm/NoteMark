@@ -6,11 +6,9 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
@@ -18,6 +16,8 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
@@ -29,7 +29,6 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Popup
-import androidx.compose.ui.window.PopupProperties
 import me.androidbox.core.presentation.designsystem.theming.NoteMarkTheme
 import me.androidbox.core.presentation.designsystem.theming.spaceGrotesk
 import me.androidbox.settings.presentation.components.IntervalItem
@@ -47,7 +46,8 @@ import org.jetbrains.compose.ui.tooling.preview.Preview
 fun SettingsScreen(
     modifier: Modifier = Modifier,
     state: SettingsScreenUiState,
-    onAction: (settingsAction: SettingsAction) -> Unit
+    onAction: (settingsAction: SettingsAction) -> Unit,
+    snackState: SnackbarHostState
 ) {
     Scaffold(
         topBar = {
@@ -220,7 +220,8 @@ fun SettingsScreen(
                     )
                 }
             }
-        }
+        },
+        snackbarHost = { SnackbarHost(snackState) }
     )
 }
 
@@ -231,7 +232,8 @@ fun SettingsScreenPreview() {
     NoteMarkTheme {
         SettingsScreen(
             state = SettingsScreenUiState(),
-            onAction = {}
+            onAction = {},
+            snackState = SnackbarHostState()
         )
     }
 }
