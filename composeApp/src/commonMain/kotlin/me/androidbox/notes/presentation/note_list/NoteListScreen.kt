@@ -28,6 +28,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -44,7 +45,9 @@ import me.androidbox.notes.presentation.components.AvatarIcon
 import me.androidbox.notes.presentation.components.DeleteNoteDialog
 import me.androidbox.notes.presentation.components.NoteItem
 import notemark.composeapp.generated.resources.Res
+import notemark.composeapp.generated.resources.ic_cloud_off
 import notemark.composeapp.generated.resources.settings
+import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.vectorResource
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -119,6 +122,15 @@ fun NoteListScreen(
                     color = MaterialTheme.colorScheme.onSurface,
                     style = MaterialTheme.typography.titleMedium
                 )
+
+                if (!state.isConnected) {
+                    Icon(
+                        painter = painterResource(Res.drawable.ic_cloud_off),
+                        contentDescription = "You are in offline mode",
+                        modifier = Modifier.padding(horizontal = 8.dp),
+                        tint = MaterialTheme.colorScheme.onSurface.copy(alpha = .4f)
+                    )
+                }
 
                 Spacer(modifier = Modifier.weight(1f))
 

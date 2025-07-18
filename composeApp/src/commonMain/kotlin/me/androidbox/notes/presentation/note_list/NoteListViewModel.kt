@@ -2,24 +2,29 @@ package me.androidbox.notes.presentation.note_list
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import me.androidbox.ConnectivityManager
 import me.androidbox.notes.domain.usecases.DeleteNoteUseCase
 import me.androidbox.notes.domain.usecases.FetchNotesUseCase
 import me.androidbox.notes.domain.usecases.SaveNoteUseCase
 import me.androidbox.notes.presentation.note_list.NoteListEvents.OnNavigateToEditNote
 
+@OptIn(FlowPreview::class)
 class NoteListViewModel(
     private val fetchNotesUseCase: FetchNotesUseCase,
-    private val saveNoteUseCase: SaveNoteUseCase,
     private val deleteNoteUseCase: DeleteNoteUseCase,
+    private val connectivityManager: ConnectivityManager
 ) : ViewModel() {
     private var hasFetched = false
 
@@ -36,6 +41,21 @@ class NoteListViewModel(
             started = SharingStarted.WhileSubscribed(5_000L),
             initialValue = NoteListUiState()
         )
+
+    init {
+        fetchConnectivityStatus()
+    }
+
+    private fun fetchConnectivityStatus() {
+        viewModelScope.launch {
+            connectivityManager
+                .isConnected()
+                .distinctUntilChanged()
+                .collect { connected ->
+                    _state.update { it.copy(isConnected = connected) }
+                }
+        }
+    }
 
     private val _events = Channel<NoteListEvents>()
     val events = _events.receiveAsFlow()
