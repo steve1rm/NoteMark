@@ -25,6 +25,8 @@ class NotesRepositoryImp(
         /** Save locally to Room */
         val localResult = notesLocalDataSource.saveNote(noteItem.toNoteItemEntity())
 
+        /** Failed to insert note into DB i.e. disk could be full,
+         *  so nothing to add to the remote */
         if (localResult is Right) {
             return localResult
         }
@@ -59,6 +61,7 @@ class NotesRepositoryImp(
             return localResult
         }
 
+        /** Delete is remotely */
         val result = applicationScope.async {
             val remoteRemote = notesRemoteDataSource.deleteNote(noteItem.id)
 
@@ -100,7 +103,26 @@ class NotesRepositoryImp(
         return notesLocalDataSource.nukeAllNotes()
     }
 
+    /** Fetches all notes from the remote data source
+     *  and inserts them into the local database */
     override suspend fun fetchAllNotes(): Either<List<NoteItem>, DataError> {
-        TODO("Not yet implemented")
+        val result = notesRemoteDataSource.fetchNotes(0, 0)
+
+        when(result) {
+            is Left -> {
+                val notes = result.left.notes
+                    .map { note -> note.toNoteItem() }
+                    .map { noteItem -> noteItem.toNoteItemEntity() }
+
+                applicationScope.async {
+                    notesLocalDataSource.saveAllNotes(notes)
+                }.await()
+            }
+            is Right -> {
+                Right(result.right.errorMessage)
+            }
+        }
+
+        TODO()
     }
 }
