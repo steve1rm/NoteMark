@@ -8,6 +8,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
@@ -62,17 +64,25 @@ class NoteListViewModel(
 
     private fun fetchNotes() {
         viewModelScope.launch {
-            fetchNotesUseCase.execute()
+            /*fetchNotesUseCase.execute()
                 .collect { listOfNoteItems ->
                     _state.update { noteListUiState ->
                         noteListUiState.copy(
                             notesList = listOfNoteItems
                         )
                     }
-                }
-        }
+                }*/
 
-        viewModelScope.launch {
+            fetchNotesUseCase.execute()
+                .onEach { listOfNoteItems ->
+                    _state.update { noteListUiState ->
+                        noteListUiState.copy(
+                            notesList = listOfNoteItems
+                        )
+                    }
+                }.launchIn(viewModelScope)
+
+            /** We fetch all remote notes save them to the db and fetched locally */
             fetchAllNotesUseCase.execute()
         }
     }

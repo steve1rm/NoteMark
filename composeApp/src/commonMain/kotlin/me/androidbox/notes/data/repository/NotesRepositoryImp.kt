@@ -53,11 +53,35 @@ class NotesRepositoryImp(
         return result.await()
     }
 
+    override suspend fun updateNote(noteItem: NoteItem): Either<Unit, DataError> {
+        /** save the updated note locally */
+        val localResult = notesLocalDataSource.saveNote(noteItem.toNoteItemEntity())
+
+        /** Failed to save locally, nothing to update remotely */
+        if(localResult is Right) {
+            return localResult
+        }
+
+        /** Update the note remotely */
+        return applicationScope.async {
+            val remoteResult = notesRemoteDataSource.updateNote(noteItem.toNoteItemDto())
+
+            when(remoteResult) {
+                is Left -> {
+                    return@async Left(Unit)
+                }
+                is Right -> {
+                    return@async Right(remoteResult.right)
+                }
+            }
+        }.await()
+    }
+
     override suspend fun deleteNote(noteItem: NoteItem): Either<Unit, DataError> {
         /** Delete it locally */
         val localResult = notesLocalDataSource.deleteNote(noteItem.toNoteItemEntity())
 
-        if (localResult is Left) {
+        if (localResult is Right) {
             return localResult
         }
 

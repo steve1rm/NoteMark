@@ -35,12 +35,14 @@ import me.androidbox.notes.domain.usecases.FetchNotesUseCase
 import me.androidbox.notes.domain.usecases.GetProfilePictureUseCase
 import me.androidbox.notes.domain.usecases.NukeAllNotesUseCase
 import me.androidbox.notes.domain.usecases.SaveNoteUseCase
+import me.androidbox.notes.domain.usecases.UpdateNoteUseCase
 import me.androidbox.notes.domain.usecases.imp.DeleteNoteUseCaseImp
 import me.androidbox.notes.domain.usecases.imp.FetchAllNotesUseCaseImp
 import me.androidbox.notes.domain.usecases.imp.FetchNoteUseCaseImp
 import me.androidbox.notes.domain.usecases.imp.FetchNotesUseCaseImp
 import me.androidbox.notes.domain.usecases.imp.NukeAllNotesUseCaseImp
 import me.androidbox.notes.domain.usecases.imp.SaveNoteUseCaseImp
+import me.androidbox.notes.domain.usecases.imp.UpdateNoteUseCaseImp
 import me.androidbox.notes.presentation.note_details.NoteDetailsViewModel
 import me.androidbox.notes.presentation.note_list.NoteListViewModel
 import me.androidbox.settings.presentation.SettingsViewModel
@@ -66,6 +68,7 @@ val noteMarkModule = module {
      *  UseCases
      **/
     factory { SaveNoteUseCaseImp(get<NotesRepository>()) }.bind(SaveNoteUseCase::class)
+    factory { UpdateNoteUseCaseImp(get<NotesRepository>()) }.bind(UpdateNoteUseCase::class)
     factory { DeleteNoteUseCaseImp(get<NotesRepository>()) }.bind(DeleteNoteUseCase::class)
     factory { FetchNotesUseCaseImp(get<NotesRepository>()) }.bind(FetchNotesUseCase::class)
     factory { FetchAllNotesUseCaseImp(get<NotesRepository>()) }.bind(FetchAllNotesUseCase::class)

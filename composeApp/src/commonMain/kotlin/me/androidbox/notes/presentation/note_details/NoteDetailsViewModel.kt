@@ -15,15 +15,17 @@ import kotlinx.datetime.Clock
 import me.androidbox.generateUUID
 import me.androidbox.notes.domain.model.NoteItem
 import me.androidbox.notes.domain.usecases.FetchNoteUseCase
-import me.androidbox.notes.domain.usecases.SaveNoteUseCase
-import me.androidbox.notes.presentation.note_details.NoteDetailsEvents.*
+import me.androidbox.notes.domain.usecases.UpdateNoteUseCase
+import me.androidbox.notes.presentation.note_details.NoteDetailsEvents.OnDiscardNoteDetails
+import me.androidbox.notes.presentation.note_details.NoteDetailsEvents.OnFailureMessage
+import me.androidbox.notes.presentation.note_details.NoteDetailsEvents.OnSaveNoteDetailsSuccess
 import me.androidbox.notes.presentation.note_details.model.NoteDetailsMode
 import me.androidbox.notes.presentation.note_details.utils.NoteDetailsTimeFormatter
 import net.orandja.either.Left
 import net.orandja.either.Right
 
 class NoteDetailsViewModel(
-    private val saveNoteUseCase: SaveNoteUseCase,
+    private val updateNoteUseCase: UpdateNoteUseCase,
     private val fetchNoteUseCase: FetchNoteUseCase
 ) : ViewModel() {
     private val _state = MutableStateFlow(NoteDetailsUiState())
@@ -50,7 +52,7 @@ class NoteDetailsViewModel(
                         "Saving the note ${state.value.inputTitle}"
                     }
 
-                    val result = saveNoteUseCase.execute(
+                    val result = updateNoteUseCase.execute(
                         NoteItem(
                             id = _state.value.noteId ?: generateUUID(),
                             title = _state.value.inputTitle,
