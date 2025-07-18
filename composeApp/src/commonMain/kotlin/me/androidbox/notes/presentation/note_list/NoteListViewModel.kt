@@ -50,7 +50,6 @@ class NoteListViewModel(
         viewModelScope.launch {
             connectivityManager
                 .isConnected()
-                .debounce(1000)
                 .distinctUntilChanged()
                 .collect { connected ->
                     _state.update { it.copy(isConnected = connected) }
