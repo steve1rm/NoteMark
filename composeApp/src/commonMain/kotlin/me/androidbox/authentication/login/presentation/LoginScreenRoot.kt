@@ -17,7 +17,7 @@ import org.koin.compose.viewmodel.koinViewModel
 @Composable
 fun LoginScreenRoot(
     onNavigateToRegister: () -> Unit,
-    onNavigateToBlankScreen : (username: String) -> Unit
+    onNavigateToNoteListScreen : (username: String) -> Unit
 ) {
     val viewModel: LoginViewModel = koinViewModel()
     val state by viewModel.state.collectAsState()
@@ -29,7 +29,7 @@ fun LoginScreenRoot(
             }
 
             is AuthenticationEvents.OnAuthenticationSuccess -> {
-                onNavigateToBlankScreen(event.username)
+                onNavigateToNoteListScreen(event.username)
             }
         }
     }

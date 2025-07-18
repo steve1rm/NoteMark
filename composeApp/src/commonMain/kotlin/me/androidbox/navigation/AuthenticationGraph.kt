@@ -17,7 +17,7 @@ fun NavGraphBuilder.authenticationGraph(navController: NavController) {
                 onNavigateToRegister = {
                     navController.navigate(NavGraph.AuthenticationGraph.RegisterScreen)
                 },
-                onNavigateToBlankScreen = { username ->
+                onNavigateToNoteListScreen = { username ->
                     Logger.d {
                         "username $username"
                     }
