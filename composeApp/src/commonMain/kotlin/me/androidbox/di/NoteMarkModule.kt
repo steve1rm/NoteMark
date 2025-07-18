@@ -29,12 +29,14 @@ import me.androidbox.notes.data.datasources.imp.NotesRemoteDataSourceImp
 import me.androidbox.notes.data.repository.NotesRepositoryImp
 import me.androidbox.notes.domain.NotesRepository
 import me.androidbox.notes.domain.usecases.DeleteNoteUseCase
+import me.androidbox.notes.domain.usecases.FetchAllNotesUseCase
 import me.androidbox.notes.domain.usecases.FetchNoteUseCase
 import me.androidbox.notes.domain.usecases.FetchNotesUseCase
 import me.androidbox.notes.domain.usecases.GetProfilePictureUseCase
 import me.androidbox.notes.domain.usecases.NukeAllNotesUseCase
 import me.androidbox.notes.domain.usecases.SaveNoteUseCase
 import me.androidbox.notes.domain.usecases.imp.DeleteNoteUseCaseImp
+import me.androidbox.notes.domain.usecases.imp.FetchAllNotesUseCaseImp
 import me.androidbox.notes.domain.usecases.imp.FetchNoteUseCaseImp
 import me.androidbox.notes.domain.usecases.imp.FetchNotesUseCaseImp
 import me.androidbox.notes.domain.usecases.imp.NukeAllNotesUseCaseImp
@@ -66,8 +68,10 @@ val noteMarkModule = module {
     factory { SaveNoteUseCaseImp(get<NotesRepository>()) }.bind(SaveNoteUseCase::class)
     factory { DeleteNoteUseCaseImp(get<NotesRepository>()) }.bind(DeleteNoteUseCase::class)
     factory { FetchNotesUseCaseImp(get<NotesRepository>()) }.bind(FetchNotesUseCase::class)
+    factory { FetchAllNotesUseCaseImp(get<NotesRepository>()) }.bind(FetchAllNotesUseCase::class)
     factory { FetchNoteUseCaseImp(get<NotesRepository>()) }.bind(FetchNoteUseCase::class)
     factory { NukeAllNotesUseCaseImp(get<NotesRepository>())}.bind(NukeAllNotesUseCase::class)
+
     factory {
         LoginUseCaseV2Imp(
             get<AuthorizationRepository>()

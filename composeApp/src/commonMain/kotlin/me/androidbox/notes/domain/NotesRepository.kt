@@ -12,5 +12,5 @@ interface NotesRepository {
     suspend fun getNoteById(noteId: String): Either<NoteItem, DataError.Local>
     suspend fun nukeAllNotes(): Either<Unit, DataError.Local>
 
-    suspend fun fetchAllNotes(): Either<List<NoteItem>, DataError>
+    suspend fun fetchAllNotes(): Either<Unit, DataError>
 }

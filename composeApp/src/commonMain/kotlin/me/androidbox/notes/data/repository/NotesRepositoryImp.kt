@@ -105,10 +105,10 @@ class NotesRepositoryImp(
 
     /** Fetches all notes from the remote data source
      *  and inserts them into the local database */
-    override suspend fun fetchAllNotes(): Either<List<NoteItem>, DataError> {
-        val result = notesRemoteDataSource.fetchNotes(0, 0)
+    override suspend fun fetchAllNotes(): Either<Unit, DataError> {
+        val result = notesRemoteDataSource.fetchNotes(-1, 0)
 
-        when(result) {
+        return when(result) {
             is Left -> {
                 val notes = result.left.notes
                     .map { note -> note.toNoteItem() }
@@ -116,13 +116,12 @@ class NotesRepositoryImp(
 
                 applicationScope.async {
                     notesLocalDataSource.saveAllNotes(notes)
+                    Left(Unit)
                 }.await()
             }
             is Right -> {
-                Right(result.right.errorMessage)
+                Right(result.right)
             }
         }
-
-        TODO()
     }
 }
