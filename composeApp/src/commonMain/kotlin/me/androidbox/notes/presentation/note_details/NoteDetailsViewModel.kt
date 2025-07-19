@@ -15,6 +15,7 @@ import kotlinx.datetime.Clock
 import me.androidbox.generateUUID
 import me.androidbox.notes.domain.model.NoteItem
 import me.androidbox.notes.domain.usecases.FetchNoteUseCase
+import me.androidbox.notes.domain.usecases.SaveNoteUseCase
 import me.androidbox.notes.domain.usecases.UpdateNoteUseCase
 import me.androidbox.notes.presentation.note_details.NoteDetailsEvents.OnDiscardNoteDetails
 import me.androidbox.notes.presentation.note_details.NoteDetailsEvents.OnFailureMessage
@@ -26,6 +27,7 @@ import net.orandja.either.Right
 
 class NoteDetailsViewModel(
     private val updateNoteUseCase: UpdateNoteUseCase,
+    private val saveNoteUseCase: SaveNoteUseCase,
     private val fetchNoteUseCase: FetchNoteUseCase
 ) : ViewModel() {
     private val _state = MutableStateFlow(NoteDetailsUiState())
@@ -52,30 +54,45 @@ class NoteDetailsViewModel(
                         "Saving the note ${state.value.inputTitle}"
                     }
 
-                    val result = updateNoteUseCase.execute(
-                        NoteItem(
-                            id = _state.value.noteId ?: generateUUID(),
-                            title = _state.value.inputTitle,
-                            content = _state.value.inputContent,
-                            createdAt = _state.value.noteCreatedDateMillis ?: Clock.System.now()
-                                .toEpochMilliseconds(),
-                            lastEditedAt = Clock.System.now().toEpochMilliseconds()
-                        )
+                    val noteItem = NoteItem(
+                        id = _state.value.noteId ?: generateUUID(),
+                        title = _state.value.inputTitle,
+                        content = _state.value.inputContent,
+                        createdAt = _state.value.noteCreatedDateMillis ?: Clock.System.now()
+                            .toEpochMilliseconds(),
+                        lastEditedAt = Clock.System.now().toEpochMilliseconds()
                     )
 
-                    when (result) {
-                        is Left -> {
-                            Logger.d {
-                                "Saved to the local database and updated the remote"
-                            }
-                            _events.send(OnSaveNoteDetailsSuccess)
+                    val result = when (state.value.noteDetailsMode) {
+                        NoteDetailsMode.EDIT_MODE -> {
+                            updateNoteUseCase.execute(noteItem = noteItem)
                         }
 
-                        is Right -> {
-                            Logger.e {
-                                "Failed to upload the note ${result.right}"
+                        NoteDetailsMode.VIEWER_MODE -> {
+                            saveNoteUseCase.execute(noteItem = noteItem)
+                        }
+
+                        NoteDetailsMode.READER_MODE -> {
+                            /** no-op in viewer mode */
+                            null
+                        }
+                    }
+
+                    if (result != null) {
+                        when (result) {
+                            is Left -> {
+                                Logger.d {
+                                    "Saved to the local database and updated the remote"
+                                }
+                                _events.send(OnSaveNoteDetailsSuccess)
                             }
-                            _events.send(OnFailureMessage(result.right.toString()))
+
+                            is Right -> {
+                                Logger.e {
+                                    "Failed to upload the note ${result.right}"
+                                }
+                                _events.send(OnFailureMessage(result.right.toString()))
+                            }
                         }
                     }
                 }
