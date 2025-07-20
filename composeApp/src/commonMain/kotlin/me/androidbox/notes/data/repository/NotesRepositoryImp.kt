@@ -1,17 +1,23 @@
 package me.androidbox.notes.data.repository
 
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.IO
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import me.androidbox.core.models.DataError
 import me.androidbox.notes.data.datasources.NotesLocalDataSource
 import me.androidbox.notes.data.datasources.NotesRemoteDataSource
 import me.androidbox.notes.data.mappers.toNoteItem
 import me.androidbox.notes.data.mappers.toNoteItemDto
 import me.androidbox.notes.data.mappers.toNoteItemEntity
+import me.androidbox.notes.data.models.NoteMarkPendingSyncDao
 import me.androidbox.notes.domain.NotesRepository
 import me.androidbox.notes.domain.model.NoteItem
+import me.androidbox.user.data.UserLocalDataSource
 import net.orandja.either.Either
 import net.orandja.either.Left
 import net.orandja.either.Right
@@ -19,7 +25,10 @@ import net.orandja.either.Right
 class NotesRepositoryImp(
     private val notesRemoteDataSource: NotesRemoteDataSource,
     private val notesLocalDataSource: NotesLocalDataSource,
-    private val applicationScope: CoroutineScope
+    private val applicationScope: CoroutineScope,
+    private val userLocalDataSource: UserLocalDataSource,
+    private val noteMarkPendingSyncDao: NoteMarkPendingSyncDao,
+    private val dispatcher: Dispatchers
 ) : NotesRepository {
     override suspend fun saveNote(noteItem: NoteItem): Either<Unit, DataError> {
         /** Save locally to Room */
@@ -145,6 +154,71 @@ class NotesRepositoryImp(
             }
             is Right -> {
                 Right(result.right)
+            }
+        }
+    }
+
+    override suspend fun syncPendingNotes() {
+        withContext(dispatcher.IO) {
+            val user = when(val userResult = userLocalDataSource.fetchUser()) {
+                is Left -> {
+                    userResult.left
+                }
+                is Right -> {
+                    return@withContext
+                }
+            }
+
+            val createdNotes = async {
+                noteMarkPendingSyncDao.getAllNoteMarkPendingSyncEntities(user.userName)
+            }
+
+            val deletedNotes = async {
+                noteMarkPendingSyncDao.getAllDeletedNoteMarkSyncEntities(user.userName)
+            }
+
+            val createdNoteJobs = createdNotes
+                .await()
+                .map { noteMarkPendingSyncEntity ->
+                    launch {
+                        val noteItem = noteMarkPendingSyncEntity.noteMark.toNoteItem()
+
+                        when(notesRemoteDataSource.createNote(noteItem.toNoteItemDto())) {
+                            is Left -> {
+                                applicationScope.launch {
+                                    noteMarkPendingSyncDao.deleteNoteMarkPendingSyncEntity(noteItem.id)
+                                }.join()
+                            }
+                            is Right -> {
+                                Right(Unit)
+                            }
+                        }
+                    }
+                }
+
+            val deletedNotesJob = deletedNotes
+                .await()
+                .map { deletedNoteMarkSyncEntity ->
+                    launch {
+                        when(notesRemoteDataSource.deleteNote(user.userName)) {
+                            is Left -> {
+                                applicationScope.launch {
+                                    noteMarkPendingSyncDao.deleteNoteMarkPendingSyncEntity(user.userName)
+                                }.join()
+                            }
+                            is Right -> {
+                                Right(Unit)
+                            }
+                        }
+                    }
+                }
+
+            createdNoteJobs.forEach { job ->
+                job.join()
+            }
+
+            deletedNotesJob.forEach { job ->
+                job.join()
             }
         }
     }

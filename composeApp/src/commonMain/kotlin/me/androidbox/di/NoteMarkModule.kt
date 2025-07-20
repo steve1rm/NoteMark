@@ -26,6 +26,7 @@ import me.androidbox.notes.data.datasources.NotesLocalDataSource
 import me.androidbox.notes.data.datasources.NotesRemoteDataSource
 import me.androidbox.notes.data.datasources.imp.NotesLocalDataSourceImp
 import me.androidbox.notes.data.datasources.imp.NotesRemoteDataSourceImp
+import me.androidbox.notes.data.models.NoteMarkPendingSyncDao
 import me.androidbox.notes.data.repository.NotesRepositoryImp
 import me.androidbox.notes.domain.NotesRepository
 import me.androidbox.notes.domain.usecases.DeleteNoteUseCase
@@ -117,7 +118,10 @@ val noteMarkModule = module {
         NotesRepositoryImp(
             notesLocalDataSource = get<NotesLocalDataSource>(),
             notesRemoteDataSource = get<NotesRemoteDataSource>(),
-            applicationScope = get<CoroutineScope>()
+            applicationScope = get<CoroutineScope>(),
+            userLocalDataSource = get<UserLocalDataSource>(),
+            noteMarkPendingSyncDao = get<NoteMarkPendingSyncDao>(),
+            dispatcher = Dispatchers
         )
     }.bind(NotesRepository::class)
 
@@ -155,6 +159,10 @@ val noteMarkModule = module {
 
     single<NoteMarkDao> {
         get<NoteMarkDatabase>().noteMarkDao()
+    }
+
+    single<NoteMarkPendingSyncDao> {
+        get<NoteMarkDatabase>().noteMarkPendingSyncDao()
     }
 
     single<HttpClient> {
