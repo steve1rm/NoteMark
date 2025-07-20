@@ -42,6 +42,8 @@ class NoteDetailsViewModel(
         when (action) {
             is NoteDetailsActions.OnContentChange -> {
                 _state.update { it.copy(inputContent = action.content) }
+
+
             }
 
             is NoteDetailsActions.OnTitleChange -> {
