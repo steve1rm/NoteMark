@@ -78,7 +78,8 @@ kotlin {
             implementation(libs.koin.android)
             implementation(libs.koin.compose)
             implementation(libs.androidx.core.splashscreen)
-            implementation("androidx.work:work-runtime:2.10.2")
+            implementation(libs.androidx.work.runtime)
+            implementation(libs.koin.androidx.workmanager)
         }
 
         iosMain.dependencies {

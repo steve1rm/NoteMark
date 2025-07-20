@@ -35,15 +35,18 @@ room = "2.7.2"
 ksp = "2.2.0-2.0.2"
 sqlite = "2.5.2"
 kotzilla = "1.1.0"
+workRuntime = "2.10.2"
 
 [libraries]
 androidx-core-splashscreen = { module = "androidx.core:core-splashscreen", version.ref = "coreSplashscreen" }
 androidx-lifecycle-viewmodel-compose = { module = "androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "lifecycleViewmodelCompose" }
 androidx-window-core = { module = "androidx.window:window-core", version.ref = "windowCore" }
 androidx-window = { module = "androidx.window:window", version.ref = "window" }
+androidx-work-runtime = { module = "androidx.work:work-runtime", version.ref = "workRuntime" }
 either = { module = "net.orandja.kt:either", version.ref = "either" }
 kermit = { module = "co.touchlab:kermit", version.ref = "kermit" }
 kermit-v205 = { module = "co.touchlab:kermit", version.ref = "kermitVersion" }
+koin-androidx-workmanager = { module = "io.insert-koin:koin-androidx-workmanager", version.ref = "koin" }
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
 kotlin-testJunit = { module = "org.jetbrains.kotlin:kotlin-test-junit", version.ref = "kotlin" }
 junit = { module = "junit:junit", version.ref = "junit" }

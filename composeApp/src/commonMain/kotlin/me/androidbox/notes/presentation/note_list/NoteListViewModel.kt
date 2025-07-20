@@ -83,6 +83,7 @@ class NoteListViewModel(
                 }.launchIn(viewModelScope)
 
             /** We fetch all remote notes save them to the db and fetched locally */
+
             fetchAllNotesUseCase.execute()
         }
     }

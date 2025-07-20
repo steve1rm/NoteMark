@@ -4,7 +4,11 @@ import androidx.room.Room
 import androidx.sqlite.driver.bundled.BundledSQLiteDriver
 import kotlinx.coroutines.Dispatchers
 import me.androidbox.core.data.NoteMarkDatabase
+import me.androidbox.data.CreateNoteWorker
+import me.androidbox.data.DeleteNoteWorker
+import me.androidbox.data.FetchNotesWorker
 import org.koin.android.ext.koin.androidContext
+import org.koin.androidx.workmanager.dsl.workerOf
 import org.koin.dsl.module
 
 val androidSpecificModule = module {
@@ -32,4 +36,9 @@ val androidSpecificModule = module {
             .setQueryCoroutineContext(Dispatchers.IO)
             .build()
     }
+
+    /** Workers */
+    workerOf(::FetchNotesWorker)
+    workerOf(::DeleteNoteWorker)
+    workerOf(::CreateNoteWorker)
 }

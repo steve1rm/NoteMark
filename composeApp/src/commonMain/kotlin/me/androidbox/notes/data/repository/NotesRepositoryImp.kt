@@ -94,6 +94,17 @@ class NotesRepositoryImp(
             return localResult
         }
 
+        /**
+         * Edge case where the note is created in offine-mode,
+         * and then deleted in offline-mode as well. In that case,
+         * we don't want to sync anything
+         * */
+        val isPendingSync = noteMarkPendingSyncDao.getNoteMarkPendingSyncEntity(noteItem.id)
+        if(isPendingSync !=null) {
+            noteMarkPendingSyncDao.deleteDeletedNoteMarkSyncEntity(noteItem.id)
+            return Left(Unit)
+        }
+        
         /** Delete is remotely */
         val result = applicationScope.async {
             val remoteRemote = notesRemoteDataSource.deleteNote(noteItem.id)
