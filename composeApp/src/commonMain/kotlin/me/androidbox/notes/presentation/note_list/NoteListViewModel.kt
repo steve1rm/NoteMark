@@ -16,17 +16,20 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import me.androidbox.ConnectivityManager
+import me.androidbox.core.domain.SyncNoteScheduler
 import me.androidbox.notes.domain.usecases.DeleteNoteUseCase
 import me.androidbox.notes.domain.usecases.FetchAllNotesUseCase
 import me.androidbox.notes.domain.usecases.FetchNotesUseCase
 import me.androidbox.notes.presentation.note_list.NoteListEvents.OnNavigateToEditNote
+import kotlin.time.Duration.Companion.minutes
 
 @OptIn(FlowPreview::class)
 class NoteListViewModel(
     private val fetchNotesUseCase: FetchNotesUseCase,
     private val fetchAllNotesUseCase: FetchAllNotesUseCase,
     private val deleteNoteUseCase: DeleteNoteUseCase,
-    private val connectivityManager: ConnectivityManager
+    private val connectivityManager: ConnectivityManager,
+    private val syncNoteScheduler: SyncNoteScheduler
 ) : ViewModel() {
     private var hasFetched = false
 
@@ -45,6 +48,12 @@ class NoteListViewModel(
         )
 
     init {
+        viewModelScope.launch {
+            syncNoteScheduler.scheduleSync(SyncNoteScheduler.SyncTypes.FetchNotes(
+                interval = 15.minutes
+            ))
+        }
+
         fetchConnectivityStatus()
     }
 

@@ -8,6 +8,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import me.androidbox.core.domain.SyncNoteScheduler
 import me.androidbox.core.models.DataError
 import me.androidbox.notes.data.datasources.NotesLocalDataSource
 import me.androidbox.notes.data.datasources.NotesRemoteDataSource
@@ -28,6 +29,7 @@ class NotesRepositoryImp(
     private val applicationScope: CoroutineScope,
     private val userLocalDataSource: UserLocalDataSource,
     private val noteMarkPendingSyncDao: NoteMarkPendingSyncDao,
+    private val syncNoteScheduler: SyncNoteScheduler,
     private val dispatcher: Dispatchers
 ) : NotesRepository {
     override suspend fun saveNote(noteItem: NoteItem): Either<Unit, DataError> {
@@ -54,7 +56,11 @@ class NotesRepositoryImp(
                 }
 
                 is Right -> {
-                    return@async networkResult
+                    syncNoteScheduler.scheduleSync(SyncNoteScheduler.SyncTypes.CreateNote(
+                        noteItem
+                    ))
+
+                    return@async Left(Unit)
                 }
             }
         }
@@ -80,7 +86,14 @@ class NotesRepositoryImp(
                     return@async Left(Unit)
                 }
                 is Right -> {
-                    return@async Right(remoteResult.right)
+                    applicationScope.launch {
+                        syncNoteScheduler.scheduleSync(
+                            syncTypes = SyncNoteScheduler.SyncTypes.CreateNote(
+                                noteItem = noteItem
+                            )
+                        )
+                    }.join()
+                    return@async Left(Unit)
                 }
             }
         }.await()
@@ -115,12 +128,22 @@ class NotesRepositoryImp(
                 }
 
                 is Right -> {
-                    remoteRemote
+                    return@async Right(remoteRemote.right)
                 }
             }
+        }.await()
+
+        if(result is Right) {
+            applicationScope.launch {
+                syncNoteScheduler.scheduleSync(
+                    syncTypes = SyncNoteScheduler.SyncTypes.DeleteNote(
+                        noteId = noteItem.id
+                    )
+                )
+            }.join()
         }
 
-        return result.await()
+        return result
     }
 
     override suspend fun fetchNotes(
