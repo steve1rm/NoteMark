@@ -16,7 +16,7 @@ class DeleteNoteWorker(
 ) : CoroutineWorker(context, workerParameters) {
 
     companion object {
-        private const val NOTE_ID = "note_id"
+        const val NOTE_ID = "note_id"
     }
 
     override suspend fun doWork(): Result {
