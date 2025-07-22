@@ -57,7 +57,7 @@ class NoteDetailsViewModel(
                             .toEpochMilliseconds(),
                         lastEditedAt = Clock.System.now().toEpochMilliseconds()
                     )
-                    saveNoteUseCase.execute(noteItem)
+                    updateNoteUseCase.execute(noteItem)
                 }
             }
 
@@ -75,7 +75,7 @@ class NoteDetailsViewModel(
                             .toEpochMilliseconds(),
                         lastEditedAt = Clock.System.now().toEpochMilliseconds()
                     )
-                    saveNoteUseCase.execute(noteItem)
+                    updateNoteUseCase.execute(noteItem)
                 }
             }
 
