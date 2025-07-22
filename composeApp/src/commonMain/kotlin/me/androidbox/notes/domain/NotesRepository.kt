@@ -14,4 +14,5 @@ interface NotesRepository {
     suspend fun nukeAllNotes(): Either<Unit, DataError.Local>
     suspend fun fetchAllNotes(): Either<Unit, DataError>
     suspend fun syncPendingNotes()
+    suspend fun logout(): Either<Unit, DataError.Network>
 }

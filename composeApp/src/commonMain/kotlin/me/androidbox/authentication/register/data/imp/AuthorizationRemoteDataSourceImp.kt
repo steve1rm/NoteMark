@@ -50,6 +50,8 @@ class AuthorizationRemoteDataSourceImp(
             response
         }
 
+       // For some reason it can't find providers httpClient.plugin(Auth).providers
+
         return safeResult
     }
 

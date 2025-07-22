@@ -17,6 +17,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import me.androidbox.ConnectivityManager
 import me.androidbox.core.domain.SyncNoteScheduler
+import me.androidbox.notes.domain.NotesRepository
 import me.androidbox.notes.domain.usecases.DeleteNoteUseCase
 import me.androidbox.notes.domain.usecases.FetchAllNotesUseCase
 import me.androidbox.notes.domain.usecases.FetchNotesUseCase
@@ -29,7 +30,8 @@ class NoteListViewModel(
     private val fetchAllNotesUseCase: FetchAllNotesUseCase,
     private val deleteNoteUseCase: DeleteNoteUseCase,
     private val connectivityManager: ConnectivityManager,
-    private val syncNoteScheduler: SyncNoteScheduler
+    private val syncNoteScheduler: SyncNoteScheduler,
+    private val notesRepository: NotesRepository
 ) : ViewModel() {
     private var hasFetched = false
 
@@ -37,6 +39,7 @@ class NoteListViewModel(
     val state = _state.asStateFlow()
         .onStart {
             if (!hasFetched) {
+                notesRepository.syncPendingNotes()
                 fetchNotes()
                 hasFetched = true
             }

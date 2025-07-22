@@ -8,6 +8,9 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import me.androidbox.NoteMarkPreferences
+import me.androidbox.authentication.login.domain.model.LogoutRequest
+import me.androidbox.authentication.login.domain.use_case.LogoutUseCase
 import me.androidbox.core.domain.SyncNoteScheduler
 import me.androidbox.core.models.DataError
 import me.androidbox.notes.data.datasources.NotesLocalDataSource
@@ -29,7 +32,9 @@ class NotesRepositoryImp(
     private val applicationScope: CoroutineScope,
     private val userLocalDataSource: UserLocalDataSource,
     private val noteMarkPendingSyncDao: NoteMarkPendingSyncDao,
+    private val logoutUseCase: LogoutUseCase,
     private val syncNoteScheduler: SyncNoteScheduler,
+    private val noteMarkPreferences: NoteMarkPreferences,
     private val dispatcher: Dispatchers
 ) : NotesRepository {
     override suspend fun saveNote(noteItem: NoteItem): Either<Unit, DataError> {
@@ -255,5 +260,16 @@ class NotesRepositoryImp(
                 job.join()
             }
         }
+    }
+
+    /** May not use this as we have a logout usecase, so will do that in there */
+    override suspend fun logout(): Either<Unit, DataError.Network> {
+        val refreshToken = noteMarkPreferences.getRefreshToken()
+
+        if(refreshToken != null) {
+            logoutUseCase.execute(LogoutRequest(refreshToken = refreshToken))
+        }
+
+        TODO()
     }
 }

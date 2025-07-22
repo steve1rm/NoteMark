@@ -2,6 +2,7 @@ package me.androidbox.settings.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -15,17 +16,18 @@ import me.androidbox.ConnectivityManager
 import me.androidbox.NoteMarkPreferences
 import me.androidbox.authentication.login.domain.model.LogoutRequest
 import me.androidbox.authentication.login.domain.use_case.LogoutUseCase
+import me.androidbox.core.domain.SyncNoteScheduler
 import me.androidbox.notes.domain.usecases.NukeAllNotesUseCase
 import me.androidbox.settings.presentation.SettingsEvent.logoutSuccess
 import me.androidbox.settings.presentation.SettingsEvent.onShowMessage
-import net.orandja.either.Left
-import net.orandja.either.Right
 
 class SettingsViewModel(
     private val logoutUseCase: LogoutUseCase,
     private val nukeAllNotesUseCase: NukeAllNotesUseCase,
     private val noteMarkPreferences: NoteMarkPreferences,
-    private val connectivityManager: ConnectivityManager
+    private val syncNoteScheduler: SyncNoteScheduler,
+    private val applicationScope: CoroutineScope,
+    connectivityManager: ConnectivityManager,
 ) : ViewModel() {
     private val _state = MutableStateFlow(SettingsScreenUiState())
     val state = _state.asStateFlow()
@@ -50,22 +52,18 @@ class SettingsViewModel(
                             val refreshToken = noteMarkPreferences.getRefreshToken()
 
                             if (refreshToken != null) {
-                                val result = logoutUseCase.execute(
-                                    logoutRequest = LogoutRequest(
-                                        refreshToken = refreshToken
+                                applicationScope.launch {
+                                    /** We don't care about the result, as we just want to logout
+                                     *  and clear the cache and navigate back to the login screen */
+                                    syncNoteScheduler.cancelAllSyncs()
+                                    noteMarkPreferences.deleteAllPreferences()
+                                    nukeAllNotesUseCase.execute()
+                                    logoutUseCase.execute(
+                                        logoutRequest = LogoutRequest(
+                                            refreshToken = refreshToken
+                                        )
                                     )
-                                )
-
-                                when (result) {
-                                    is Left -> {
-                                        noteMarkPreferences.deleteAllPreferences()
-                                        nukeAllNotesUseCase.execute()
-                                        _settingsEvent.send(logoutSuccess(isSuccess = true))
-                                    }
-
-                                    is Right -> {
-                                        _settingsEvent.send(logoutSuccess(isSuccess = false))
-                                    }
+                                    _settingsEvent.send(logoutSuccess(isSuccess = true))
                                 }
                             }
                         } else {

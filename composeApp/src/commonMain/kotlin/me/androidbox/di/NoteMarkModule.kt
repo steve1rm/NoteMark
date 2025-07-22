@@ -123,6 +123,8 @@ val noteMarkModule = module {
             userLocalDataSource = get<UserLocalDataSource>(),
             noteMarkPendingSyncDao = get<NoteMarkPendingSyncDao>(),
             syncNoteScheduler = get<SyncNoteScheduler>(),
+            logoutUseCase = get<LogoutUseCase>(),
+            noteMarkPreferences = get<NoteMarkPreferences>(),
             dispatcher = Dispatchers
         )
     }.bind(NotesRepository::class)
