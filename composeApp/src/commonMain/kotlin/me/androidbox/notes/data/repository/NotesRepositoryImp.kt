@@ -5,6 +5,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -12,7 +13,9 @@ import me.androidbox.NoteMarkPreferences
 import me.androidbox.authentication.login.domain.model.LogoutRequest
 import me.androidbox.authentication.login.domain.use_case.LogoutUseCase
 import me.androidbox.core.domain.SyncNoteScheduler
+import me.androidbox.core.domain.SyncNoteScheduler.SyncTypes.DeleteNote
 import me.androidbox.core.models.DataError
+import me.androidbox.core.presentation.utils.Previews.noteItem
 import me.androidbox.notes.data.datasources.NotesLocalDataSource
 import me.androidbox.notes.data.datasources.NotesRemoteDataSource
 import me.androidbox.notes.data.mappers.toNoteItem
@@ -172,7 +175,38 @@ class NotesRepositoryImp(
     }
 
     override suspend fun nukeAllNotes(): Either<Unit, DataError.Local> {
-        return notesLocalDataSource.nukeAllNotes()
+        val listOfNotesIds = notesLocalDataSource.getAllNotes()
+            .map { notes ->
+                notes.map { note ->
+                    note.id
+                }
+            }.firstOrNull() ?: emptyList()
+
+        notesLocalDataSource.nukeAllNotes()
+
+        applicationScope.async {
+            listOfNotesIds.forEach {  noteId ->
+                val remoteRemote = notesRemoteDataSource.deleteNote(noteId)
+
+                when (remoteRemote) {
+                    is Right -> {
+                        applicationScope.launch {
+                            syncNoteScheduler.scheduleSync(
+                                syncTypes = DeleteNote(
+                                    noteId = noteItem.id
+                                )
+                            )
+                        }.join()
+                    }
+
+                    is Left -> {
+                        /** no-op */
+                    }
+                }
+            }
+        }.await()
+
+        return Left(Unit)
     }
 
     /** Fetches all notes from the remote data source

@@ -76,15 +76,6 @@ class NoteListViewModel(
 
     private fun fetchNotes() {
         viewModelScope.launch {
-            /*fetchNotesUseCase.execute()
-                .collect { listOfNoteItems ->
-                    _state.update { noteListUiState ->
-                        noteListUiState.copy(
-                            notesList = listOfNoteItems
-                        )
-                    }
-                }*/
-
             fetchNotesUseCase.execute()
                 .onEach { listOfNoteItems ->
                     _state.update { noteListUiState ->
@@ -95,7 +86,6 @@ class NoteListViewModel(
                 }.launchIn(viewModelScope)
 
             /** We fetch all remote notes save them to the db and fetched locally */
-
             fetchAllNotesUseCase.execute()
         }
     }
@@ -109,6 +99,7 @@ class NoteListViewModel(
             is NoteListActions.OnDeleteNote -> {
                 viewModelScope.launch {
                     deleteNoteUseCase.execute(action.noteItem)
+
                 }
                 _state.update {
                     it.copy(
