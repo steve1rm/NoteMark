@@ -8,7 +8,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
@@ -42,7 +41,7 @@ class SettingsViewModel(
         .isConnected()
         .stateIn(
             viewModelScope,
-            SharingStarted.WhileSubscribed(5000),
+            SharingStarted.Eagerly,
             false
         )
 
@@ -50,32 +49,30 @@ class SettingsViewModel(
         when (settingsAction) {
             SettingsAction.OnLogout -> {
                 viewModelScope.launch {
-                    isConnected.collectLatest { connected ->
-                        if (connected) {
-                            val refreshToken = noteMarkPreferences.getRefreshToken()
+                    if (isConnected.value) {
+                        val refreshToken = noteMarkPreferences.getRefreshToken()
 
-                            if (refreshToken != null) {
-                                applicationScope.launch {
-                                    /** We don't care about the result, as we just want to logout
-                                     *  and clear the cache and navigate back to the login screen */
-                                    syncNoteScheduler.cancelAllSyncs()
-                                    noteMarkPreferences.deleteAllPreferences()
-                                    nukeAllNotesUseCase.execute()
-                                    logoutUseCase.execute(
-                                        logoutRequest = LogoutRequest(
-                                            refreshToken = refreshToken
-                                        )
+                        if (refreshToken != null) {
+                            applicationScope.launch {
+                                /** We don't care about the result, as we just want to logout
+                                 *  and clear the cache and navigate back to the login screen */
+                                syncNoteScheduler.cancelAllSyncs()
+                                noteMarkPreferences.deleteAllPreferences()
+                                nukeAllNotesUseCase.execute()
+                                logoutUseCase.execute(
+                                    logoutRequest = LogoutRequest(
+                                        refreshToken = refreshToken
                                     )
-                                    _settingsEvent.send(logoutSuccess(isSuccess = true))
-                                }
-                            }
-                        } else {
-                            _settingsEvent.trySend(
-                                onShowMessage(
-                                    message = "You need an internet connection to log out."
                                 )
-                            )
+                                _settingsEvent.send(logoutSuccess(isSuccess = true))
+                            }
                         }
+                    } else {
+                        _settingsEvent.trySend(
+                            onShowMessage(
+                                message = "You need an internet connection to log out."
+                            )
+                        )
                     }
                 }
             }
