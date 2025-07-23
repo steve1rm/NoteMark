@@ -4,12 +4,15 @@ package me.androidbox.settings.presentation
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -72,151 +75,162 @@ fun SettingsScreen(
             )
         },
         content = { paddingValues ->
-            Column(
-                modifier = modifier
-                    .fillMaxWidth()
-                    .padding(paddingValues)
-                    .padding(horizontal = 8.dp),
-            ) {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = 8.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically
+            Box(modifier = modifier.fillMaxWidth(),
+                contentAlignment = Alignment.Center) {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(paddingValues)
+                            .padding(horizontal = 8.dp),
                     ) {
-                        IconButton(
-                            onClick = { },
-                            content = {
-                                Icon(
-                                    modifier = Modifier.size(20.dp),
-                                    imageVector = vectorResource(Res.drawable.ic_clock),
-                                    contentDescription = "Clock",
-                                    tint = MaterialTheme.colorScheme.onSurfaceVariant
-                                )
-                            }
-                        )
-
-                        Text(
-                            text = "Sync interval",
-                            style = MaterialTheme.typography.titleSmall,
-                            color = MaterialTheme.colorScheme.onSurface
-                        )
-                    }
-
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Text(
-                            text = state.selectedSyncInterval.text,
-                            style = MaterialTheme.typography.titleSmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                        )
-                        IconButton(
-                            onClick = {
-                                onAction(SettingsAction.OnSyncIntervalOptionClicked)
-                            },
-                            content = {
-                                Icon(
-                                    modifier = Modifier.size(20.dp),
-                                    imageVector = vectorResource(Res.drawable.ic_chevron_right),
-                                    contentDescription = "Show intervals popup",
-                                    tint = MaterialTheme.colorScheme.onSurfaceVariant
-                                )
-                            }
-                        )
-
-                        if (state.isSyncIntervalPopupVisible) {
-                            Popup(
-                                offset = IntOffset(x = 0, y = 120)
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(vertical = 8.dp),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically
                             ) {
-                                Column(
-                                    modifier = Modifier
-                                        .clip(RoundedCornerShape(16.dp))
-                                        .background(MaterialTheme.colorScheme.surfaceContainerLowest)
-                                ) {
-                                    SyncInterval.entries.forEach { syncInterval ->
-                                        IntervalItem(
-                                            interval = syncInterval,
-                                            selected = state.selectedSyncInterval == syncInterval,
-                                            onItemClick = {
-                                                onAction(
-                                                    SettingsAction.OnSyncIntervalSelected(
-                                                        syncInterval
-                                                    )
+                                IconButton(
+                                    onClick = { },
+                                    content = {
+                                        Icon(
+                                            modifier = Modifier.size(20.dp),
+                                            imageVector = vectorResource(Res.drawable.ic_clock),
+                                            contentDescription = "Clock",
+                                            tint = MaterialTheme.colorScheme.onSurfaceVariant
+                                        )
+                                    }
+                                )
+
+                                Text(
+                                    text = "Sync interval",
+                                    style = MaterialTheme.typography.titleSmall,
+                                    color = MaterialTheme.colorScheme.onSurface
+                                )
+                            }
+
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Text(
+                                    text = state.selectedSyncInterval.text,
+                                    style = MaterialTheme.typography.titleSmall,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                                )
+                                IconButton(
+                                    onClick = {
+                                        onAction(SettingsAction.OnSyncIntervalOptionClicked)
+                                    },
+                                    content = {
+                                        Icon(
+                                            modifier = Modifier.size(20.dp),
+                                            imageVector = vectorResource(Res.drawable.ic_chevron_right),
+                                            contentDescription = "Show intervals popup",
+                                            tint = MaterialTheme.colorScheme.onSurfaceVariant
+                                        )
+                                    }
+                                )
+
+                                if (state.isSyncIntervalPopupVisible) {
+                                    Popup(
+                                        offset = IntOffset(x = 0, y = 120)
+                                    ) {
+                                        Column(
+                                            modifier = Modifier
+                                                .clip(RoundedCornerShape(16.dp))
+                                                .background(MaterialTheme.colorScheme.surfaceContainerLowest)
+                                        ) {
+                                            SyncInterval.entries.forEach { syncInterval ->
+                                                IntervalItem(
+                                                    interval = syncInterval,
+                                                    selected = state.selectedSyncInterval == syncInterval,
+                                                    onItemClick = {
+                                                        onAction(
+                                                            SettingsAction.OnSyncIntervalSelected(
+                                                                syncInterval
+                                                            )
+                                                        )
+                                                    }
                                                 )
                                             }
-                                        )
+                                        }
                                     }
                                 }
                             }
                         }
-                    }
-                }
 
-                HorizontalDivider()
+                        HorizontalDivider()
 
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = 8.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-                    IconButton(
-                        onClick = { },
-                        content = {
-                            Icon(
-                                modifier = Modifier.size(20.dp),
-                                imageVector = vectorResource(Res.drawable.ic_refresh),
-                                contentDescription = "Clock",
-                                tint = MaterialTheme.colorScheme.onSurfaceVariant
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(vertical = 8.dp),
+                            verticalAlignment = Alignment.CenterVertically,
+                        ) {
+                            IconButton(
+                                onClick = {
+                                    onAction(SettingsAction.OnSyncDataNow)
+                                },
+                                content = {
+                                    Icon(
+                                        modifier = Modifier.size(20.dp),
+                                        imageVector = vectorResource(Res.drawable.ic_refresh),
+                                        contentDescription = "Clock",
+                                        tint = MaterialTheme.colorScheme.onSurfaceVariant
+                                    )
+                                }
+                            )
+
+                            Column {
+                                Text(
+                                    text = "Sync Data",
+                                    style = MaterialTheme.typography.titleSmall,
+                                    color = MaterialTheme.colorScheme.onSurface
+                                )
+                                Text(
+                                    text = "Last sync: ${state.lastSyncTime} min ago",
+                                    style = MaterialTheme.typography.bodySmall,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                                )
+                            }
+                        }
+
+                        HorizontalDivider()
+
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(vertical = 8.dp),
+                            verticalAlignment = Alignment.CenterVertically,
+                        ) {
+                            IconButton(
+                                onClick = {
+                                    onAction(SettingsAction.OnLogout)
+                                },
+                                content = {
+                                    Icon(
+                                        modifier = Modifier.size(20.dp),
+                                        imageVector = vectorResource(Res.drawable.logout),
+                                        contentDescription = "Log out",
+                                        tint = MaterialTheme.colorScheme.error
+                                    )
+                                }
+                            )
+
+                            Text(
+                                text = "Log out",
+                                style = MaterialTheme.typography.titleSmall,
+                                color = MaterialTheme.colorScheme.error
                             )
                         }
-                    )
-
-                    Column {
-                        Text(
-                            text = "Sync Data",
-                            style = MaterialTheme.typography.titleSmall,
-                            color = MaterialTheme.colorScheme.onSurface
-                        )
-                        Text(
-                            text = "Last sync: ${state.lastSyncTime} min ago",
-                            style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                        )
                     }
-                }
 
-                HorizontalDivider()
-
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = 8.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-                    IconButton(
-                        onClick = {
-                            onAction(SettingsAction.OnLogout)
-                        },
-                        content = {
-                            Icon(
-                                modifier = Modifier.size(20.dp),
-                                imageVector = vectorResource(Res.drawable.logout),
-                                contentDescription = "Log out",
-                                tint = MaterialTheme.colorScheme.error
-                            )
-                        }
-                    )
-
-                    Text(
-                        text = "Log out",
-                        style = MaterialTheme.typography.titleSmall,
-                        color = MaterialTheme.colorScheme.error
+                if(state.isLoadingSync) {
+                    CircularProgressIndicator(
+                        modifier = Modifier.align(Alignment.Center)
                     )
                 }
             }

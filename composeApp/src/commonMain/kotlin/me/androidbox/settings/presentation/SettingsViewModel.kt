@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
@@ -17,6 +18,7 @@ import me.androidbox.NoteMarkPreferences
 import me.androidbox.authentication.login.domain.model.LogoutRequest
 import me.androidbox.authentication.login.domain.use_case.LogoutUseCase
 import me.androidbox.core.domain.SyncNoteScheduler
+import me.androidbox.notes.domain.NotesRepository
 import me.androidbox.notes.domain.usecases.NukeAllNotesUseCase
 import me.androidbox.settings.presentation.SettingsEvent.logoutSuccess
 import me.androidbox.settings.presentation.SettingsEvent.onShowMessage
@@ -26,6 +28,7 @@ class SettingsViewModel(
     private val nukeAllNotesUseCase: NukeAllNotesUseCase,
     private val noteMarkPreferences: NoteMarkPreferences,
     private val syncNoteScheduler: SyncNoteScheduler,
+    private val notesRepository: NotesRepository,
     private val applicationScope: CoroutineScope,
     connectivityManager: ConnectivityManager,
 ) : ViewModel() {
@@ -91,6 +94,27 @@ class SettingsViewModel(
                         selectedSyncInterval = settingsAction.syncInterval,
                         isSyncIntervalPopupVisible = false
                     )
+                }
+            }
+
+            SettingsAction.OnSyncDataNow -> {
+                viewModelScope.launch {
+                    _state.update { uiState ->
+                        uiState.copy(
+                            isLoadingSync = true
+                        )
+                    }
+
+                    /** Small delay to show indicator, remove this later */
+                    delay(300)
+
+                    notesRepository.syncPendingNotes()
+
+                    _state.update { uiState ->
+                        uiState.copy(
+                            isLoadingSync = false
+                        )
+                    }
                 }
             }
         }
