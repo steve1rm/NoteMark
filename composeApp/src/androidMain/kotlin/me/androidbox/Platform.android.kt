@@ -10,6 +10,7 @@ import android.net.Network
 import android.net.NetworkCapabilities
 import android.os.Build
 import android.util.Patterns
+import androidx.activity.compose.BackHandler
 import androidx.activity.compose.LocalActivity
 import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
@@ -42,6 +43,11 @@ actual fun getPlatform(): Platform = AndroidPlatform()
 
 actual fun generateUUID(): String {
     return UUID.randomUUID().toString()
+}
+
+@Composable
+actual fun registerBackHandler(onBackPressed: () -> Unit) {
+    BackHandler(enabled = true, onBack = onBackPressed)
 }
 
 @Composable

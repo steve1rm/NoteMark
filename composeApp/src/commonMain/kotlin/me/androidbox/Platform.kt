@@ -28,6 +28,9 @@ expect fun Long.formattedDateString() : String
 
 expect fun emailValid(email: String) : Boolean
 
+@Composable
+expect fun registerBackHandler(onBackPressed : () -> Unit)
+
 interface NoteMarkPreferences {
     fun setRefreshToken(value: String)
     fun getRefreshToken(): String?

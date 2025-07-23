@@ -14,6 +14,7 @@ import kotlinx.coroutines.launch
 import kotlinx.datetime.Clock
 import me.androidbox.generateUUID
 import me.androidbox.notes.domain.model.NoteItem
+import me.androidbox.notes.domain.usecases.DeleteNoteUseCase
 import me.androidbox.notes.domain.usecases.FetchNoteUseCase
 import me.androidbox.notes.domain.usecases.SaveNoteUseCase
 import me.androidbox.notes.domain.usecases.UpdateNoteUseCase
@@ -28,7 +29,8 @@ import net.orandja.either.Right
 class NoteDetailsViewModel(
     private val updateNoteUseCase: UpdateNoteUseCase,
     private val saveNoteUseCase: SaveNoteUseCase,
-    private val fetchNoteUseCase: FetchNoteUseCase
+    private val fetchNoteUseCase: FetchNoteUseCase,
+    private val deleteNoteUseCase: DeleteNoteUseCase
 ) : ViewModel() {
     private val _state = MutableStateFlow(NoteDetailsUiState())
     val state = _state.asStateFlow()
@@ -142,7 +144,7 @@ class NoteDetailsViewModel(
                 }
             }
 
-            NoteDetailsActions.OnKeepEditingClick -> {
+            NoteDetailsActions.OnDialogKeepEditingClick -> {
                 _state.update { it.copy(showDiscardDialog = false) }
             }
 
@@ -245,6 +247,42 @@ class NoteDetailsViewModel(
                     }
                 }
             }
+
+            NoteDetailsActions.OnBackPressed -> {
+                validateNoteContents()
+            }
+
+            NoteDetailsActions.OnDialogDiscardClick -> {
+                validateNoteContents()
+            }
         }
     }
+
+    private fun validateNoteContents() {
+        viewModelScope.launch {
+            if (_state.value.inputContent.isBlank() && _state.value.inputTitle.isBlank()) {
+                val noteItem = NoteItem(
+                    id = _state.value.noteId!!,
+                    title = _state.value.inputTitle,
+                    content = _state.value.inputContent,
+                    createdAt = _state.value.noteCreatedDateMillis ?: Clock.System.now()
+                        .toEpochMilliseconds(),
+                    lastEditedAt = Clock.System.now().toEpochMilliseconds()
+                )
+                val result = deleteNoteUseCase.execute(noteItem)
+                when (result) {
+                    is Left -> {
+                        _events.send(NoteDetailsEvents.OnDeleteNoteSuccess)
+                    }
+
+                    is Right -> {
+                        _events.send(OnFailureMessage("Failed to delete note"))
+                    }
+                }
+            } else {
+                _events.send(NoteDetailsEvents.OnDeleteNoteSuccess)
+            }
+        }
+    }
+
 }
