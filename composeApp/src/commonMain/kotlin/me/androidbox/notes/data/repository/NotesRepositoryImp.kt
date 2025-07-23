@@ -175,16 +175,16 @@ class NotesRepositoryImp(
     }
 
     override suspend fun nukeAllNotes(): Either<Unit, DataError.Local> {
-        val listOfNotesIds = notesLocalDataSource.getAllNotes()
+      /*  val listOfNotesIds = notesLocalDataSource.getAllNotes()
             .map { notes ->
                 notes.map { note ->
                     note.id
                 }
-            }.firstOrNull() ?: emptyList()
+            }.firstOrNull() ?: emptyList()*/
 
         notesLocalDataSource.nukeAllNotes()
 
-        applicationScope.async {
+        /*applicationScope.async {
             listOfNotesIds.forEach {  noteId ->
                 val remoteRemote = notesRemoteDataSource.deleteNote(noteId)
 
@@ -200,11 +200,11 @@ class NotesRepositoryImp(
                     }
 
                     is Left -> {
-                        /** no-op */
+                        *//** no-op *//*
                     }
                 }
             }
-        }.await()
+        }.await()*/
 
         return Left(Unit)
     }
