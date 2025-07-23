@@ -1,6 +1,5 @@
 package me.androidbox.notes.presentation.note_details
 
-import kotlinx.datetime.Clock
 import me.androidbox.notes.presentation.note_details.model.NoteDetailsMode
 
 data class NoteDetailsUiState(

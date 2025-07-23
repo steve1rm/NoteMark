@@ -1,6 +1,5 @@
 package me.androidbox.notes.presentation.note_details
 
-import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -25,6 +24,7 @@ import me.androidbox.notes.presentation.note_details.mode_screens.NoteDetailsRea
 import me.androidbox.notes.presentation.note_details.mode_screens.NoteDetailsViewerModeLandscape
 import me.androidbox.notes.presentation.note_details.mode_screens.NoteDetailsViewerModePortrait
 import me.androidbox.notes.presentation.note_details.model.NoteDetailsMode
+import me.androidbox.registerBackHandler
 import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
@@ -54,7 +54,15 @@ fun EditNoteScreenRoot(
             NoteDetailsEvents.OnDiscardNoteDetails -> {
                 onNavigateBack()
             }
+
+            NoteDetailsEvents.OnDeleteNoteSuccess -> {
+                onNavigateBack()
+            }
         }
+    }
+
+    registerBackHandler {
+        viewModel.onAction(NoteDetailsActions.OnBackPressed)
     }
 
     val screenOrientation = getOrientation()
@@ -149,9 +157,11 @@ fun EditNoteScreenRoot(
 
     if (state.showDiscardDialog) {
         DiscardNoteDialog(
-            onDiscardNoteClick = onNavigateBack,
+            onDiscardNoteClick = {
+                viewModel.onAction(NoteDetailsActions.OnDialogDiscardClick)
+            },
             onKeepEditingClick = {
-                viewModel.onAction(NoteDetailsActions.OnKeepEditingClick)
+                viewModel.onAction(NoteDetailsActions.OnDialogKeepEditingClick)
             }
         )
     }
