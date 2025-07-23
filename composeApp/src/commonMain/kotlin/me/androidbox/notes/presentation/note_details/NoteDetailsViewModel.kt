@@ -38,16 +38,45 @@ class NoteDetailsViewModel(
 
     private var actionsVisibilityJob: Job? = null
 
+    private var noteTitleSaverJob: Job? = null
+    private var noteContentSaverJob: Job? = null
+
     fun onAction(action: NoteDetailsActions) {
         when (action) {
+            is NoteDetailsActions.OnTitleChange -> {
+                _state.update { it.copy(inputTitle = action.title) }
+
+                noteTitleSaverJob?.cancel()
+                noteTitleSaverJob = viewModelScope.launch {
+                    delay(700)
+                    val noteItem = NoteItem(
+                        id = _state.value.noteId ?: generateUUID(),
+                        title = action.title,
+                        content = _state.value.inputContent,
+                        createdAt = _state.value.noteCreatedDateMillis ?: Clock.System.now()
+                            .toEpochMilliseconds(),
+                        lastEditedAt = Clock.System.now().toEpochMilliseconds()
+                    )
+                    updateNoteUseCase.execute(noteItem)
+                }
+            }
+
             is NoteDetailsActions.OnContentChange -> {
                 _state.update { it.copy(inputContent = action.content) }
 
-
-            }
-
-            is NoteDetailsActions.OnTitleChange -> {
-                _state.update { it.copy(inputTitle = action.title) }
+                noteContentSaverJob?.cancel()
+                noteContentSaverJob = viewModelScope.launch {
+                    delay(700)
+                    val noteItem = NoteItem(
+                        id = _state.value.noteId ?: generateUUID(),
+                        title = _state.value.inputTitle,
+                        content = action.content,
+                        createdAt = _state.value.noteCreatedDateMillis ?: Clock.System.now()
+                            .toEpochMilliseconds(),
+                        lastEditedAt = Clock.System.now().toEpochMilliseconds()
+                    )
+                    updateNoteUseCase.execute(noteItem)
+                }
             }
 
             is NoteDetailsActions.OnSaveNote -> {

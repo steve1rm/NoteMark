@@ -29,7 +29,7 @@ object SettingsTimeFormatter {
     }
 
     private fun formatDateWeekly(timeInMillis: Long): String {
-        val timeZone = TimeZone.currentSystemDefault()
+        val timeZone = TimeZone.UTC
         val instant = Instant.fromEpochMilliseconds(timeInMillis)
         val currentInstant = Clock.System.now()
 
@@ -45,7 +45,7 @@ object SettingsTimeFormatter {
 
     private fun formatDateFull(timeInMillis: Long): String {
         val instant = Instant.fromEpochMilliseconds(timeInMillis)
-        val date = instant.toLocalDateTime(TimeZone.currentSystemDefault())
+        val date = instant.toLocalDateTime(TimeZone.UTC)
 
         val day = date.dayOfMonth
         val month = date.month.name.uppercase().take(3)

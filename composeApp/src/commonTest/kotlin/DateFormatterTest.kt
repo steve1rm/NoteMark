@@ -1,10 +1,12 @@
 import kotlinx.datetime.Clock
+import kotlinx.datetime.Instant
 import me.androidbox.settings.presentation.utils.SettingsTimeFormatter
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.time.Duration.Companion.days
 import kotlin.time.Duration.Companion.hours
 import kotlin.time.Duration.Companion.minutes
+import kotlin.time.Duration.Companion.seconds
 
 class DateFormatterTest {
 
@@ -40,10 +42,24 @@ class DateFormatterTest {
 
     @Test
     fun `Testing Setting's Time formatter (1 month ago)`() {
-        // ITS HARDCODED AND I DONT LIKE IT PLEASE GIVE SOME FEEDBACK
-        val timeInMillis = Clock.System.now().minus(30.days).toEpochMilliseconds()
+        val timeInMillis = Instant
+            .fromEpochMilliseconds(CURR_TIME_IN_MILLIS)
+            .toEpochMilliseconds()
+
         val formattedDate = SettingsTimeFormatter.formatDate(timeInMillis)
-        assertEquals("20 JUN 2025, 16:49", formattedDate)
+        assertEquals("20 JUN 2025, 19:40", formattedDate)
+    }
+
+    @Test
+    fun `Testing Setting's Time formatter (1 week and second)`() {
+        val timeInMillis = Clock.System.now().minus(1.seconds).toEpochMilliseconds()
+
+        val formattedDate = SettingsTimeFormatter.formatDate(timeInMillis)
+        assertEquals("6 days", formattedDate)
+    }
+
+    companion object {
+        const val CURR_TIME_IN_MILLIS = 1750448400000
     }
 
 }
