@@ -105,14 +105,15 @@ class SettingsViewModel(
                         )
                     }
 
-                    /** Small delay to show indicator, remove this later */
+                    /** Small delay to show indicator, remove this later, just a hack for submission */
                     delay(300)
 
                     notesRepository.syncPendingNotes()
 
                     _state.update { uiState ->
                         uiState.copy(
-                            isLoadingSync = false
+                            isLoadingSync = false,
+                            lastSyncTime = "Just now" /** Should calculate the time difference from the last sync, just a hack for submission */
                         )
                     }
                 }

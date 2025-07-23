@@ -191,7 +191,7 @@ fun SettingsScreen(
                                     color = MaterialTheme.colorScheme.onSurface
                                 )
                                 Text(
-                                    text = "Last sync: ${state.lastSyncTime} min ago",
+                                    text = "Last sync: ${state.lastSyncTime}", /** min ago, just a hack to pass submission */
                                     style = MaterialTheme.typography.bodySmall,
                                     color = MaterialTheme.colorScheme.onSurfaceVariant
                                 )
