@@ -52,7 +52,7 @@ class NoteDetailsViewModel(
                 noteTitleSaverJob = viewModelScope.launch {
                     delay(700)
                     val noteItem = NoteItem(
-                        id = _state.value.noteId ?: generateUUID(),
+                        id = _state.value.updatingId!!,
                         title = action.title,
                         content = _state.value.inputContent,
                         createdAt = _state.value.noteCreatedDateMillis ?: Clock.System.now()
@@ -60,6 +60,10 @@ class NoteDetailsViewModel(
                         lastEditedAt = Clock.System.now().toEpochMilliseconds()
                     )
                     updateNoteUseCase.execute(noteItem)
+
+                    Logger.d {
+                        noteItem.toString()
+                    }
                 }
             }
 
@@ -70,7 +74,7 @@ class NoteDetailsViewModel(
                 noteContentSaverJob = viewModelScope.launch {
                     delay(700)
                     val noteItem = NoteItem(
-                        id = _state.value.noteId ?: generateUUID(),
+                        id = _state.value.updatingId!!,
                         title = _state.value.inputTitle,
                         content = action.content,
                         createdAt = _state.value.noteCreatedDateMillis ?: Clock.System.now()
@@ -78,6 +82,10 @@ class NoteDetailsViewModel(
                         lastEditedAt = Clock.System.now().toEpochMilliseconds()
                     )
                     updateNoteUseCase.execute(noteItem)
+
+                    Logger.d {
+                        noteItem.toString()
+                    }
                 }
             }
 
@@ -154,6 +162,7 @@ class NoteDetailsViewModel(
                     if (action.noteId == null) {
                         _state.update { state ->
                             state.copy(
+                                updatingId = generateUUID(),
                                 inputTitle = "Note title",
                                 inputContent = "",
                                 noteTitle = "Note title",
@@ -177,6 +186,7 @@ class NoteDetailsViewModel(
                                     )
                                 _state.update { state ->
                                     state.copy(
+                                        updatingId = _state.value.noteId,
                                         inputTitle = noteTitle,
                                         inputContent = noteContent,
                                         noteTitle = noteTitle,
