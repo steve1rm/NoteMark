@@ -1,5 +1,6 @@
 package me.androidbox.notes.data.repository
 
+import co.touchlab.kermit.Logger
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
@@ -85,15 +86,26 @@ class NotesRepositoryImp(
             return localResult
         }
 
+        Logger.d {
+            "Sucessfully saved to db"
+        }
+
         /** Update the note remotely */
         return applicationScope.async {
             val remoteResult = notesRemoteDataSource.updateNote(noteItem.toNoteItemDto())
 
             when(remoteResult) {
                 is Left -> {
+                    Logger.d {
+                        "Sucessfully saved in BE"
+                    }
+
                     return@async Left(Unit)
                 }
                 is Right -> {
+                    Logger.d {
+                        "Error while saving in BE"
+                    }
                     applicationScope.launch {
                         syncNoteScheduler.scheduleSync(
                             syncTypes = SyncNoteScheduler.SyncTypes.CreateNote(

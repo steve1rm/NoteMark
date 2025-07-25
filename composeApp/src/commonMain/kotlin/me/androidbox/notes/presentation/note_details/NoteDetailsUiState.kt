@@ -4,6 +4,7 @@ import me.androidbox.notes.presentation.note_details.model.NoteDetailsMode
 
 data class NoteDetailsUiState(
     val noteId: String? = null,
+    val updatingId: String? = null,
     val inputTitle: String = "Note title",
     val inputContent: String = "",
     val noteTitle: String = "Note title",
