@@ -17,6 +17,7 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -38,6 +39,7 @@ fun NoteDetailsEditModePortrait(
     state: NoteDetailsUiState,
     onAction: (NoteDetailsActions) -> Unit,
     modifier: Modifier = Modifier,
+    snackState: SnackbarHostState,
 ) {
     NoteMarkLayout(
         toolBar = {
@@ -62,10 +64,9 @@ fun NoteDetailsEditModePortrait(
                     )
                 }
                 TextButton(
+                    // This is only for taking place (PLACEHOLDER)
                     text = "SAVE NOTE",
-                    onClick = {
-                        onAction(NoteDetailsActions.OnSaveNote)
-                    },
+                    onClick = {},
                     textStyle = TextStyle(
                         fontFamily = spaceGrotesk,
                         fontWeight = FontWeight.Bold,
@@ -135,6 +136,7 @@ fun NoteDetailsEditModePortrait(
         },
         modifier = modifier
             .fillMaxSize()
-            .background(MaterialTheme.colorScheme.surfaceContainerLowest)
+            .background(MaterialTheme.colorScheme.surfaceContainerLowest),
+        snackState = snackState
     )
 }

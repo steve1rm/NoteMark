@@ -1,19 +1,16 @@
 package me.androidbox.notes.presentation.note_details.mode_screens
 
+import androidx.compose.animation.core.snap
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.text.BasicTextField
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.unit.dp
 import me.androidbox.core.presentation.designsystem.NoteMarkLayout
 import me.androidbox.core.presentation.designsystem.theming.NoteMarkTheme
@@ -26,6 +23,7 @@ fun NoteDetailsViewerModeLandscape(
     state: NoteDetailsUiState,
     onAction: (NoteDetailsActions) -> Unit,
     modifier: Modifier = Modifier,
+    snackState: SnackbarHostState,
 ) {
     NoteMarkLayout(
         content = { innerPadding ->
@@ -73,7 +71,11 @@ fun NoteDetailsViewerModeLandscape(
                                     .padding(horizontal = 16.dp)
                             )
 
-                            HorizontalDivider(Modifier, DividerDefaults.Thickness, DividerDefaults.color)
+                            HorizontalDivider(
+                                Modifier,
+                                DividerDefaults.Thickness,
+                                DividerDefaults.color
+                            )
 
                             Row(
                                 modifier = Modifier
@@ -111,7 +113,11 @@ fun NoteDetailsViewerModeLandscape(
                                 }
                             }
 
-                            HorizontalDivider(Modifier, DividerDefaults.Thickness, DividerDefaults.color)
+                            HorizontalDivider(
+                                Modifier,
+                                DividerDefaults.Thickness,
+                                DividerDefaults.color
+                            )
 
                             Text(
                                 text = state.noteContent,
@@ -129,7 +135,8 @@ fun NoteDetailsViewerModeLandscape(
         },
         modifier = modifier
             .fillMaxWidth()
-            .background(MaterialTheme.colorScheme.surfaceContainerLowest)
+            .background(MaterialTheme.colorScheme.surfaceContainerLowest),
+        snackState = snackState
     )
 }
 
@@ -140,6 +147,7 @@ fun NoteDetailsViewerModeLandscapePreview() {
         NoteDetailsViewerModeLandscape(
             state = NoteDetailsUiState(),
             onAction = {},
+            snackState = SnackbarHostState()
         )
     }
 }
