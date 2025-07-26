@@ -16,11 +16,10 @@ import me.androidbox.generateUUID
 import me.androidbox.notes.domain.model.NoteItem
 import me.androidbox.notes.domain.usecases.DeleteNoteUseCase
 import me.androidbox.notes.domain.usecases.FetchNoteUseCase
-import me.androidbox.notes.domain.usecases.SaveNoteUseCase
 import me.androidbox.notes.domain.usecases.UpdateNoteUseCase
-import me.androidbox.notes.presentation.note_details.NoteDetailsEvents.OnDiscardNoteDetails
+import me.androidbox.notes.presentation.note_details.NoteDetailsEvents.OnDeleteNoteSuccess
+import me.androidbox.notes.presentation.note_details.NoteDetailsEvents.OnQuitScreen
 import me.androidbox.notes.presentation.note_details.NoteDetailsEvents.OnFailureMessage
-import me.androidbox.notes.presentation.note_details.NoteDetailsEvents.OnSaveNoteDetailsSuccess
 import me.androidbox.notes.presentation.note_details.model.NoteDetailsMode
 import me.androidbox.notes.presentation.note_details.utils.NoteDetailsTimeFormatter
 import net.orandja.either.Left
@@ -28,7 +27,6 @@ import net.orandja.either.Right
 
 class NoteDetailsViewModel(
     private val updateNoteUseCase: UpdateNoteUseCase,
-    private val saveNoteUseCase: SaveNoteUseCase,
     private val fetchNoteUseCase: FetchNoteUseCase,
     private val deleteNoteUseCase: DeleteNoteUseCase
 ) : ViewModel() {
@@ -51,15 +49,7 @@ class NoteDetailsViewModel(
                 noteTitleSaverJob?.cancel()
                 noteTitleSaverJob = viewModelScope.launch {
                     delay(700)
-                    val noteItem = NoteItem(
-                        id = _state.value.noteId ?: generateUUID(),
-                        title = action.title,
-                        content = _state.value.inputContent,
-                        createdAt = _state.value.noteCreatedDateMillis ?: Clock.System.now()
-                            .toEpochMilliseconds(),
-                        lastEditedAt = Clock.System.now().toEpochMilliseconds()
-                    )
-                    updateNoteUseCase.execute(noteItem)
+                    updateNote()
                 }
             }
 
@@ -67,86 +57,20 @@ class NoteDetailsViewModel(
                 _state.update { it.copy(inputContent = action.content) }
 
                 noteContentSaverJob?.cancel()
+
                 noteContentSaverJob = viewModelScope.launch {
                     delay(700)
-                    val noteItem = NoteItem(
-                        id = _state.value.noteId ?: generateUUID(),
-                        title = _state.value.inputTitle,
-                        content = action.content,
-                        createdAt = _state.value.noteCreatedDateMillis ?: Clock.System.now()
-                            .toEpochMilliseconds(),
-                        lastEditedAt = Clock.System.now().toEpochMilliseconds()
-                    )
-                    updateNoteUseCase.execute(noteItem)
-                }
-            }
 
-            is NoteDetailsActions.OnSaveNote -> {
-                viewModelScope.launch {
-                    Logger.d {
-                        "Saving the note ${state.value.inputTitle}"
-                    }
-
-                    val noteItem = NoteItem(
-                        id = _state.value.noteId ?: generateUUID(),
-                        title = _state.value.inputTitle,
-                        content = _state.value.inputContent,
-                        createdAt = _state.value.noteCreatedDateMillis ?: Clock.System.now()
-                            .toEpochMilliseconds(),
-                        lastEditedAt = Clock.System.now().toEpochMilliseconds()
-                    )
-
-                    val result = when (state.value.noteDetailsMode) {
-                        NoteDetailsMode.EDIT_MODE -> {
-                            updateNoteUseCase.execute(noteItem = noteItem)
-                        }
-
-                        NoteDetailsMode.VIEWER_MODE -> {
-                            saveNoteUseCase.execute(noteItem = noteItem)
-                        }
-
-                        NoteDetailsMode.READER_MODE -> {
-                            /** no-op in viewer mode */
-                            null
-                        }
-                    }
-
-                    if (result != null) {
-                        when (result) {
-                            is Left -> {
-                                Logger.d {
-                                    "Saved to the local database and updated the remote"
-                                }
-                                _events.send(OnSaveNoteDetailsSuccess)
-                            }
-
-                            is Right -> {
-                                Logger.e {
-                                    "Failed to upload the note ${result.right}"
-                                }
-                                _events.send(OnFailureMessage(result.right.toString()))
-                            }
-                        }
-                    }
+                    updateNote()
                 }
             }
 
             NoteDetailsActions.OnCloseClick -> {
-                if (
-                    _state.value.inputTitle != _state.value.noteTitle ||
-                    _state.value.inputContent != _state.value.noteContent
-                ) {
-                    _state.update { it.copy(showDiscardDialog = true) }
-                } else {
-                    viewModelScope.launch {
-                        _events.send(OnDiscardNoteDetails)
-                    }
+                viewModelScope.launch {
+                    validateNoteContents()
                 }
             }
 
-            NoteDetailsActions.OnDialogKeepEditingClick -> {
-                _state.update { it.copy(showDiscardDialog = false) }
-            }
 
             is NoteDetailsActions.OnLoadContent -> {
                 viewModelScope.launch {
@@ -154,6 +78,7 @@ class NoteDetailsViewModel(
                     if (action.noteId == null) {
                         _state.update { state ->
                             state.copy(
+                                updatingId = generateUUID(),
                                 inputTitle = "Note title",
                                 inputContent = "",
                                 noteTitle = "Note title",
@@ -177,6 +102,7 @@ class NoteDetailsViewModel(
                                     )
                                 _state.update { state ->
                                     state.copy(
+                                        updatingId = _state.value.noteId,
                                         inputTitle = noteTitle,
                                         inputContent = noteContent,
                                         noteTitle = noteTitle,
@@ -251,10 +177,6 @@ class NoteDetailsViewModel(
             NoteDetailsActions.OnBackPressed -> {
                 validateNoteContents()
             }
-
-            NoteDetailsActions.OnDialogDiscardClick -> {
-                validateNoteContents()
-            }
         }
     }
 
@@ -272,7 +194,7 @@ class NoteDetailsViewModel(
                 val result = deleteNoteUseCase.execute(noteItem)
                 when (result) {
                     is Left -> {
-                        _events.send(NoteDetailsEvents.OnDeleteNoteSuccess)
+                        _events.send(OnDeleteNoteSuccess)
                     }
 
                     is Right -> {
@@ -280,7 +202,44 @@ class NoteDetailsViewModel(
                     }
                 }
             } else {
-                _events.send(NoteDetailsEvents.OnDeleteNoteSuccess)
+                _events.send(OnQuitScreen)
+            }
+        }
+    }
+
+    private suspend fun updateNote() {
+        val currentTimestamp = Clock.System.now().toEpochMilliseconds()
+        val formattedTime by lazy {
+            NoteDetailsTimeFormatter.toFormattedDateString(currentTimestamp)
+        }
+
+        val state = _state.value
+
+        val noteItem = NoteItem(
+            id = state.updatingId!!,
+            title = state.inputTitle,
+            content = state.inputContent,
+            createdAt = state.noteCreatedDateMillis ?: currentTimestamp,
+            lastEditedAt = currentTimestamp
+        )
+
+        val result = updateNoteUseCase.execute(noteItem)
+
+        when (result) {
+            is Left -> {
+                _state.update {
+                    it.copy(
+                        noteTitle = state.inputTitle,
+                        noteContent = state.inputContent,
+                        noteEditedDateFormatted = formattedTime
+                    )
+                }
+            }
+
+            is Right -> {
+                viewModelScope.launch {
+                    _events.send(OnFailureMessage("Failed to update note"))
+                }
             }
         }
     }

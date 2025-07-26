@@ -4,16 +4,11 @@ import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.text.BasicTextField
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
-import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -21,17 +16,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.SolidColor
-import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import me.androidbox.core.presentation.designsystem.NoteMarkLayout
-import me.androidbox.core.presentation.designsystem.buttons.TextButton
-import me.androidbox.core.presentation.designsystem.theming.NoteMarkTheme
-import me.androidbox.core.presentation.designsystem.theming.spaceGrotesk
 import me.androidbox.notes.presentation.note_details.NoteDetailsActions
 import me.androidbox.notes.presentation.note_details.NoteDetailsUiState
 
@@ -40,6 +26,7 @@ fun NoteDetailsReaderModeLandscape(
     state: NoteDetailsUiState,
     onAction: (NoteDetailsActions) -> Unit,
     modifier: Modifier = Modifier,
+    snackState: SnackbarHostState,
 ) {
     val animatedActionAlpha by animateFloatAsState(
         targetValue = if (state.showActionItems) 1f else 0f,
@@ -164,6 +151,7 @@ fun NoteDetailsReaderModeLandscape(
                 interactionSource = remember { MutableInteractionSource() }
             ) {
                 onAction(NoteDetailsActions.OnReaderScreenClick)
-            }
+            },
+        snackState = snackState
     )
 }

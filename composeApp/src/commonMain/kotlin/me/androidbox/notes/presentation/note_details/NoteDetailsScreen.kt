@@ -3,20 +3,22 @@ package me.androidbox.notes.presentation.note_details
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import co.touchlab.kermit.Logger
+import kotlinx.coroutines.launch
 import me.androidbox.OnChangeOrientation
 import me.androidbox.core.models.Orientation
 import me.androidbox.core.presentation.utils.ObserveAsEvents
 import me.androidbox.getOrientation
-import me.androidbox.notes.presentation.components.DiscardNoteDialog
 import me.androidbox.notes.presentation.note_details.components.NoteDetailsActionButtons
 import me.androidbox.notes.presentation.note_details.mode_screens.NoteDetailsEditModeLandscape
 import me.androidbox.notes.presentation.note_details.mode_screens.NoteDetailsEditModePortrait
@@ -34,6 +36,8 @@ fun EditNoteScreenRoot(
 ) {
     val viewModel = koinViewModel<NoteDetailsViewModel>()
     val state by viewModel.state.collectAsStateWithLifecycle()
+    val snackState = remember { SnackbarHostState() }
+    val scope = rememberCoroutineScope()
 
     LaunchedEffect(noteId) {
         viewModel.onAction(NoteDetailsActions.OnLoadContent(noteId))
@@ -41,17 +45,22 @@ fun EditNoteScreenRoot(
 
     ObserveAsEvents(viewModel.events) { event ->
         when (event) {
+            is NoteDetailsEvents.OnFailureMessage -> {
+                scope.launch {
+                    snackState.showSnackbar(event.message)
+                }
+
+                Logger.e {
+                    event.message
+                }
+            }
+
             NoteDetailsEvents.OnSaveNoteDetailsSuccess -> {
                 onNavigateBack()
             }
 
-            is NoteDetailsEvents.OnFailureMessage -> {
-                Logger.e {
-                    "Failed to save note"
-                }
-            }
 
-            NoteDetailsEvents.OnDiscardNoteDetails -> {
+            NoteDetailsEvents.OnQuitScreen -> {
                 onNavigateBack()
             }
 
@@ -66,8 +75,9 @@ fun EditNoteScreenRoot(
     }
 
     val screenOrientation = getOrientation()
-    val isScreenPortraitMode =
-        remember(screenOrientation) { screenOrientation == Orientation.PORTRAIT }
+    val isScreenPortraitMode = remember(screenOrientation) {
+        screenOrientation == Orientation.PORTRAIT
+    }
 
     Box(
         modifier = Modifier.fillMaxSize()
@@ -80,11 +90,13 @@ fun EditNoteScreenRoot(
                         NoteDetailsViewerModePortrait(
                             state = state,
                             onAction = viewModel::onAction,
+                            snackState = snackState
                         )
                     } else {
                         NoteDetailsViewerModeLandscape(
                             state = state,
                             onAction = viewModel::onAction,
+                            snackState = snackState
                         )
                     }
                 }
@@ -95,11 +107,13 @@ fun EditNoteScreenRoot(
                         NoteDetailsEditModePortrait(
                             state = state,
                             onAction = viewModel::onAction,
+                            snackState = snackState
                         )
                     } else {
                         NoteDetailsEditModeLandscape(
                             state = state,
                             onAction = viewModel::onAction,
+                            snackState = snackState
                         )
                     }
                 }
@@ -109,6 +123,7 @@ fun EditNoteScreenRoot(
                     NoteDetailsReaderModeLandscape(
                         state = state,
                         onAction = viewModel::onAction,
+                        snackState = snackState
                     )
                 }
             }
@@ -145,24 +160,15 @@ fun EditNoteScreenRoot(
                 NoteDetailsEditModePortrait(
                     state = state,
                     onAction = viewModel::onAction,
+                    snackState = snackState
                 )
             } else {
                 NoteDetailsEditModeLandscape(
                     state = state,
                     onAction = viewModel::onAction,
+                    snackState = snackState
                 )
             }
         }
-    }
-
-    if (state.showDiscardDialog) {
-        DiscardNoteDialog(
-            onDiscardNoteClick = {
-                viewModel.onAction(NoteDetailsActions.OnDialogDiscardClick)
-            },
-            onKeepEditingClick = {
-                viewModel.onAction(NoteDetailsActions.OnDialogKeepEditingClick)
-            }
-        )
     }
 }

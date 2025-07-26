@@ -26,12 +26,14 @@ fun NoteDetailsEditModeLandscape(
     state: NoteDetailsUiState,
     onAction: (NoteDetailsActions) -> Unit,
     modifier: Modifier = Modifier,
+    snackState: SnackbarHostState,
 ) {
     NoteMarkTheme {
         Scaffold(
             modifier = modifier
                 .fillMaxSize(),
-            containerColor = Color.Transparent
+            containerColor = Color.Transparent,
+            snackbarHost = { SnackbarHost(hostState = snackState) }
         ) { innerPadding ->
             Row(
                 modifier = Modifier
@@ -110,10 +112,9 @@ fun NoteDetailsEditModeLandscape(
 
 
                 TextButton(
+                    // This is only for taking place (PLACEHOLDER)
                     text = "SAVE NOTE",
-                    onClick = {
-                        onAction(NoteDetailsActions.OnSaveNote)
-                    },
+                    onClick = {  },
                     textStyle = TextStyle(
                         fontFamily = spaceGrotesk,
                         fontWeight = FontWeight.Bold,
