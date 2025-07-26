@@ -167,6 +167,7 @@ class NotesRepositoryImp(
                     .map { noteItem -> noteItem.toNoteItemEntity() }
 
                 applicationScope.async {
+                    notesLocalDataSource.nukeAllNotes()
                     notesLocalDataSource.saveAllNotes(notes)
                     Left(Unit)
                 }.await()
