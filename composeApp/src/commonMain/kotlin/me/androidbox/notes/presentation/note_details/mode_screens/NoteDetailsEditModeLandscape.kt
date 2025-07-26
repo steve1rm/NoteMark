@@ -1,4 +1,4 @@
-package me.androidbox.notes.presentation.edit_note
+package me.androidbox.notes.presentation.note_details.mode_screens
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.BasicTextField
@@ -8,6 +8,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.text.TextStyle
@@ -17,19 +18,22 @@ import androidx.compose.ui.unit.sp
 import me.androidbox.core.presentation.designsystem.buttons.TextButton
 import me.androidbox.core.presentation.designsystem.theming.NoteMarkTheme
 import me.androidbox.core.presentation.designsystem.theming.spaceGrotesk
+import me.androidbox.notes.presentation.note_details.NoteDetailsActions
+import me.androidbox.notes.presentation.note_details.NoteDetailsUiState
 
 @Composable
-fun EdiNoteScreenLandscape(
-    state: EditNoteUiState,
-    onAction: (EditNoteActions) -> Unit,
+fun NoteDetailsEditModeLandscape(
+    state: NoteDetailsUiState,
+    onAction: (NoteDetailsActions) -> Unit,
     modifier: Modifier = Modifier,
-    noteId: String?,
+    snackState: SnackbarHostState,
 ) {
     NoteMarkTheme {
         Scaffold(
             modifier = modifier
                 .fillMaxSize(),
-            containerColor = Color.Transparent
+            containerColor = Color.Transparent,
+            snackbarHost = { SnackbarHost(hostState = snackState) }
         ) { innerPadding ->
             Row(
                 modifier = Modifier
@@ -40,7 +44,7 @@ fun EdiNoteScreenLandscape(
             ) {
                 IconButton(
                     onClick = {
-                        onAction(EditNoteActions.OnCloseClick)
+                        onAction(NoteDetailsActions.OnCloseClick)
                     }
                 ) {
                     Icon(
@@ -59,7 +63,7 @@ fun EdiNoteScreenLandscape(
                     BasicTextField(
                         value = state.inputTitle,
                         onValueChange = {
-                            onAction(EditNoteActions.OnTitleChange(it))
+                            onAction(NoteDetailsActions.OnTitleChange(it))
                         },
                         textStyle = MaterialTheme.typography.titleLarge.copy(
                             color = MaterialTheme.colorScheme.onSurface
@@ -84,7 +88,7 @@ fun EdiNoteScreenLandscape(
                     BasicTextField(
                         value = state.inputContent,
                         onValueChange = {
-                            onAction(EditNoteActions.OnContentChange(it))
+                            onAction(NoteDetailsActions.OnContentChange(it))
                         },
                         textStyle = MaterialTheme.typography.bodyLarge.copy(
                             color = MaterialTheme.colorScheme.onSurfaceVariant
@@ -108,15 +112,15 @@ fun EdiNoteScreenLandscape(
 
 
                 TextButton(
+                    // This is only for taking place (PLACEHOLDER)
                     text = "SAVE NOTE",
-                    onClick = {
-                        onAction(EditNoteActions.OnSaveNote(noteId))
-                    },
+                    onClick = {  },
                     textStyle = TextStyle(
                         fontFamily = spaceGrotesk,
                         fontWeight = FontWeight.Bold,
                         fontSize = 16.sp
-                    )
+                    ),
+                    modifier = Modifier.alpha(0f)
                 )
             }
         }

@@ -64,9 +64,10 @@ kotlin {
             implementation(compose.materialIconsExtended)
             implementation(libs.kotlinx.datetime)
 //            implementation("androidx.compose.material:material-icons-extended:1.8.2")
-            implementation("co.touchlab:kermit:2.0.5")
+            implementation(libs.kermit.v205)
+            implementation("org.jetbrains.kotlinx:kotlinx-collections-immutable:0.3.7")
 //            implementation("io.kotzilla:kotzilla-sdk-ktor3:1.1.0")
-            implementation("io.kotzilla:kotzilla-sdk:1.0.1")
+            implementation(libs.kotzilla.sdk)
         }
 
         androidMain.dependencies {
@@ -78,6 +79,8 @@ kotlin {
             implementation(libs.koin.android)
             implementation(libs.koin.compose)
             implementation(libs.androidx.core.splashscreen)
+            implementation(libs.androidx.work.runtime)
+            implementation(libs.koin.androidx.workmanager)
         }
 
         iosMain.dependencies {

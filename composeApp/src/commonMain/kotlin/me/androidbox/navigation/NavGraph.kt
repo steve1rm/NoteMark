@@ -16,10 +16,13 @@ sealed interface NavGraph {
     }
 
     @Serializable
-    data class NotesScreen(val username: String) : NavGraph
+    data class NotesListScreen(val username: String) : NavGraph
 
     @Serializable
-    data class NoteEditScreen(
+    data class NoteDetailsScreen(
         val noteId: String?
     ) : NavGraph
+
+    @Serializable
+    data object SettingsScreen : NavGraph
 }

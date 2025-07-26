@@ -7,7 +7,12 @@ import net.orandja.either.Either
 
 interface NotesRepository {
     suspend fun saveNote(noteItem: NoteItem): Either<Unit, DataError>
+    suspend fun updateNote(noteItem: NoteItem): Either<Unit, DataError>
     suspend fun deleteNote(noteItem: NoteItem): Either<Unit, DataError>
     suspend fun fetchNotes(page: Int, size: Int): Flow<List<NoteItem>>
     suspend fun getNoteById(noteId: String): Either<NoteItem, DataError.Local>
+    suspend fun nukeAllNotes(): Either<Unit, DataError.Local>
+    suspend fun fetchAllNotes(): Either<Unit, DataError>
+    suspend fun syncPendingNotes()
+    suspend fun logout(): Either<Unit, DataError.Network>
 }

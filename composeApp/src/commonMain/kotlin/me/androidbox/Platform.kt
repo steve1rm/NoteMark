@@ -1,6 +1,7 @@
 package me.androidbox
 
 import androidx.compose.runtime.Composable
+import kotlinx.coroutines.flow.Flow
 import me.androidbox.core.models.Orientation
 
 interface Platform {
@@ -15,6 +16,9 @@ expect fun generateUUID(): String
 expect fun getOrientation(): Orientation
 
 @Composable
+expect fun OnChangeOrientation(orientation: Orientation)
+
+@Composable
 expect fun isAtLeastMedium(): Boolean
 
 expect fun isTablet() : Boolean
@@ -24,12 +28,28 @@ expect fun Long.formattedDateString() : String
 
 expect fun emailValid(email: String) : Boolean
 
+@Composable
+expect fun registerBackHandler(onBackPressed : () -> Unit)
+
 interface NoteMarkPreferences {
     fun setRefreshToken(value: String)
     fun getRefreshToken(): String?
 
     fun setAccessToken(value: String)
     fun getAccessToken(): String?
+
+    fun setUserName(value: String)
+    fun getUserName(): String?
+
+    fun deleteAllPreferences()
+}
+
+interface ConnectivityManager {
+    fun isConnected() : Flow<Boolean>
+}
+
+expect class AndroidConnectivityManager : ConnectivityManager {
+    override fun isConnected(): Flow<Boolean>
 }
 
 expect class NoteMarkPreferencesImp : NoteMarkPreferences {
@@ -37,4 +57,8 @@ expect class NoteMarkPreferencesImp : NoteMarkPreferences {
     override fun getRefreshToken(): String?
     override fun setAccessToken(value: String)
     override fun getAccessToken(): String?
+    override fun deleteAllPreferences()
+
+    override fun setUserName(value: String)
+    override fun getUserName(): String?
 }

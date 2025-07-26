@@ -6,11 +6,16 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import me.androidbox.core.presentation.designsystem.theming.NoteMarkTheme
-import me.androidbox.navigation.AppNavigation
-import me.androidbox.notes.presentation.edit_note.EditNoteScreenRoot
+import me.androidbox.notes.presentation.note_details.EditNoteScreenRoot
+import me.androidbox.notes.presentation.note_details.NoteDetailsUiState
+import me.androidbox.notes.presentation.note_details.mode_screens.NoteDetailsViewerModeLandscape
+import me.androidbox.notes.presentation.note_details.mode_screens.NoteDetailsViewerModePortrait
+import me.androidbox.settings.presentation.SettingsScreen
+import me.androidbox.settings.presentation.SettingsScreenUiState
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -27,18 +32,16 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
 
         setContent {
-            AppNavigation()
+            App()
         }
 
     }
 }
 
-@PreviewScreenSizes
+@Preview
 @Composable
 fun AppAndroidPreview() {
     NoteMarkTheme {
-        EditNoteScreenRoot(
-            "", {}
-        )
+        App()
     }
 }

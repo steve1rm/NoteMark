@@ -5,8 +5,9 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
-import me.androidbox.notes.presentation.edit_note.EditNoteScreenRoot
+import me.androidbox.notes.presentation.note_details.EditNoteScreenRoot
 import me.androidbox.notes.presentation.note_list.NoteListScreenRoot
+import me.androidbox.settings.presentation.SettingsScreenRoot
 import me.androidbox.startup.presentation.LandingScreen
 
 @Composable
@@ -30,21 +31,34 @@ fun AppNavigation(
 
         this.authenticationGraph(navController = navHostController)
 
-        composable<NavGraph.NotesScreen> {
-            val username = it.toRoute<NavGraph.NotesScreen>().username
+        composable<NavGraph.NotesListScreen> {
+            val username = it.toRoute<NavGraph.NotesListScreen>().username
             NoteListScreenRoot(
                 username = username,
                 onNavigateToEditNote = { noteId ->
-                    navHostController.navigate(NavGraph.NoteEditScreen(noteId))
+                    navHostController.navigate(NavGraph.NoteDetailsScreen(noteId))
+                },
+                onNavigateToSettings = {
+                    navHostController.navigate(NavGraph.SettingsScreen)
                 })
         }
 
-        composable<NavGraph.NoteEditScreen> { backStackEntry ->
-            val args = backStackEntry.toRoute<NavGraph.NoteEditScreen>()
+        composable<NavGraph.NoteDetailsScreen> { backStackEntry ->
+            val args = backStackEntry.toRoute<NavGraph.NoteDetailsScreen>()
             EditNoteScreenRoot(
                 noteId = args.noteId,
                 onNavigateBack = {
                     navHostController.popBackStack()
+                }
+            )
+        }
+
+        composable<NavGraph.SettingsScreen> {
+            SettingsScreenRoot(
+                onLogoutClicked = {
+                    navHostController.navigate(route = NavGraph.AuthenticationGraph) {
+                        this.popUpTo(navHostController.graph.id)
+                    }
                 }
             )
         }

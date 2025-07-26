@@ -1,4 +1,4 @@
-package me.androidbox.notes.presentation.edit_note
+package me.androidbox.notes.presentation.note_details.mode_screens
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -17,10 +17,12 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -29,13 +31,15 @@ import androidx.compose.ui.unit.sp
 import me.androidbox.core.presentation.designsystem.NoteMarkLayout
 import me.androidbox.core.presentation.designsystem.buttons.TextButton
 import me.androidbox.core.presentation.designsystem.theming.spaceGrotesk
+import me.androidbox.notes.presentation.note_details.NoteDetailsActions
+import me.androidbox.notes.presentation.note_details.NoteDetailsUiState
 
 @Composable
-fun EditNoteScreenPortrait(
-    state: EditNoteUiState,
-    onAction: (EditNoteActions) -> Unit,
+fun NoteDetailsEditModePortrait(
+    state: NoteDetailsUiState,
+    onAction: (NoteDetailsActions) -> Unit,
     modifier: Modifier = Modifier,
-    noteId: String?,
+    snackState: SnackbarHostState,
 ) {
     NoteMarkLayout(
         toolBar = {
@@ -49,7 +53,7 @@ fun EditNoteScreenPortrait(
             ) {
                 IconButton(
                     onClick = {
-                        onAction(EditNoteActions.OnCloseClick)
+                        onAction(NoteDetailsActions.OnCloseClick)
                     }
                 ) {
                     Icon(
@@ -60,15 +64,15 @@ fun EditNoteScreenPortrait(
                     )
                 }
                 TextButton(
+                    // This is only for taking place (PLACEHOLDER)
                     text = "SAVE NOTE",
-                    onClick = {
-                        onAction(EditNoteActions.OnSaveNote(noteId))
-                    },
+                    onClick = {},
                     textStyle = TextStyle(
                         fontFamily = spaceGrotesk,
                         fontWeight = FontWeight.Bold,
                         fontSize = 16.sp
-                    )
+                    ),
+                    modifier = Modifier.alpha(0f)
                 )
             }
         },
@@ -82,7 +86,7 @@ fun EditNoteScreenPortrait(
                 BasicTextField(
                     value = state.inputTitle,
                     onValueChange = {
-                        onAction(EditNoteActions.OnTitleChange(it))
+                        onAction(NoteDetailsActions.OnTitleChange(it))
                     },
                     textStyle = MaterialTheme.typography.titleLarge.copy(
                         color = MaterialTheme.colorScheme.onSurface
@@ -107,7 +111,7 @@ fun EditNoteScreenPortrait(
                 BasicTextField(
                     value = state.inputContent,
                     onValueChange = {
-                        onAction(EditNoteActions.OnContentChange(it))
+                        onAction(NoteDetailsActions.OnContentChange(it))
                     },
                     textStyle = MaterialTheme.typography.bodyLarge.copy(
                         color = MaterialTheme.colorScheme.onSurfaceVariant
@@ -132,6 +136,7 @@ fun EditNoteScreenPortrait(
         },
         modifier = modifier
             .fillMaxSize()
-            .background(MaterialTheme.colorScheme.surfaceContainerLowest)
+            .background(MaterialTheme.colorScheme.surfaceContainerLowest),
+        snackState = snackState
     )
 }

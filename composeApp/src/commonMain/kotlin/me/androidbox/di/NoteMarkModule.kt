@@ -1,16 +1,23 @@
 package me.androidbox.di
 
-import io.ktor.client.*
-import kotlinx.coroutines.*
+import io.ktor.client.HttpClient
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.IO
+import kotlinx.coroutines.SupervisorJob
 import me.androidbox.NoteMarkPreferences
 import me.androidbox.authentication.login.domain.use_case.LoginUseCase
 import me.androidbox.authentication.login.domain.use_case.LoginUseCaseV2
+import me.androidbox.authentication.login.domain.use_case.LogoutUseCase
 import me.androidbox.authentication.login.domain.use_case.imp.LoginUseCaseV2Imp
+import me.androidbox.authentication.login.domain.use_case.imp.LogoutUseCaseImp
 import me.androidbox.authentication.login.presentation.LoginViewModel
 import me.androidbox.authentication.register.data.AuthorizationRemoteDataSource
 import me.androidbox.authentication.register.data.imp.AuthorizationRemoteDataSourceImp
 import me.androidbox.authentication.register.data.imp.AuthorizationRepositoryImp
 import me.androidbox.authentication.register.domain.AuthorizationRepository
+import me.androidbox.authentication.register.domain.use_case.FetchUserByUserNameUseCaseImp
 import me.androidbox.authentication.register.domain.use_case.RegisterUseCase
 import me.androidbox.authentication.register.presentation.RegisterViewModel
 import me.androidbox.core.data.NoteMarkDatabase
@@ -20,19 +27,27 @@ import me.androidbox.notes.data.datasources.NotesLocalDataSource
 import me.androidbox.notes.data.datasources.NotesRemoteDataSource
 import me.androidbox.notes.data.datasources.imp.NotesLocalDataSourceImp
 import me.androidbox.notes.data.datasources.imp.NotesRemoteDataSourceImp
+import me.androidbox.notes.data.models.NoteMarkPendingSyncDao
 import me.androidbox.notes.data.repository.NotesRepositoryImp
 import me.androidbox.notes.domain.NotesRepository
 import me.androidbox.notes.domain.usecases.DeleteNoteUseCase
+import me.androidbox.notes.domain.usecases.FetchAllNotesUseCase
 import me.androidbox.notes.domain.usecases.FetchNoteUseCase
 import me.androidbox.notes.domain.usecases.FetchNotesUseCase
 import me.androidbox.notes.domain.usecases.GetProfilePictureUseCase
+import me.androidbox.notes.domain.usecases.NukeAllNotesUseCase
 import me.androidbox.notes.domain.usecases.SaveNoteUseCase
+import me.androidbox.notes.domain.usecases.UpdateNoteUseCase
 import me.androidbox.notes.domain.usecases.imp.DeleteNoteUseCaseImp
+import me.androidbox.notes.domain.usecases.imp.FetchAllNotesUseCaseImp
 import me.androidbox.notes.domain.usecases.imp.FetchNoteUseCaseImp
 import me.androidbox.notes.domain.usecases.imp.FetchNotesUseCaseImp
+import me.androidbox.notes.domain.usecases.imp.NukeAllNotesUseCaseImp
 import me.androidbox.notes.domain.usecases.imp.SaveNoteUseCaseImp
-import me.androidbox.notes.presentation.edit_note.EditNoteViewModel
+import me.androidbox.notes.domain.usecases.imp.UpdateNoteUseCaseImp
+import me.androidbox.notes.presentation.note_details.NoteDetailsViewModel
 import me.androidbox.notes.presentation.note_list.NoteListViewModel
+import me.androidbox.settings.presentation.SettingsViewModel
 import me.androidbox.user.data.UserLocalDataSource
 import me.androidbox.user.data.imp.UserLocalDataSourceImp
 import me.androidbox.user.data.imp.UserRepositoryImp
@@ -47,22 +62,34 @@ val noteMarkModule = module {
      **/
     viewModelOf(::RegisterViewModel)
     viewModelOf(::LoginViewModel)
-    viewModelOf(::EditNoteViewModel)
+    viewModelOf(::NoteDetailsViewModel)
     viewModelOf(::NoteListViewModel)
+    viewModelOf(::SettingsViewModel)
 
     /**
      *  UseCases
      **/
     factory { SaveNoteUseCaseImp(get<NotesRepository>()) }.bind(SaveNoteUseCase::class)
+    factory { UpdateNoteUseCaseImp(get<NotesRepository>()) }.bind(UpdateNoteUseCase::class)
     factory { DeleteNoteUseCaseImp(get<NotesRepository>()) }.bind(DeleteNoteUseCase::class)
     factory { FetchNotesUseCaseImp(get<NotesRepository>()) }.bind(FetchNotesUseCase::class)
+    factory { FetchAllNotesUseCaseImp(get<NotesRepository>()) }.bind(FetchAllNotesUseCase::class)
     factory { FetchNoteUseCaseImp(get<NotesRepository>()) }.bind(FetchNoteUseCase::class)
+    factory { NukeAllNotesUseCaseImp(get<NotesRepository>())}.bind(NukeAllNotesUseCase::class)
+    factory { FetchUserByUserNameUseCaseImp(
+        get<NoteMarkPreferences>(),
+        get<UserLocalDataSource>()
+    ) }
     factory {
         LoginUseCaseV2Imp(
             get<AuthorizationRepository>()
         )
-    }
-        .bind(LoginUseCaseV2::class)
+    }.bind(LoginUseCaseV2::class)
+    factory {
+        LogoutUseCaseImp(
+            get<AuthorizationRepository>()
+        )
+    }.bind(LogoutUseCase::class)
 
     factory {
         LoginUseCase(
@@ -95,7 +122,12 @@ val noteMarkModule = module {
         NotesRepositoryImp(
             notesLocalDataSource = get<NotesLocalDataSource>(),
             notesRemoteDataSource = get<NotesRemoteDataSource>(),
-            applicationScope = get<CoroutineScope>()
+            applicationScope = get<CoroutineScope>(),
+            noteMarkPendingSyncDao = get<NoteMarkPendingSyncDao>(),
+            logoutUseCase = get<LogoutUseCase>(),
+            noteMarkPreferences = get<NoteMarkPreferences>(),
+            fetchUserByUserNameUseCaseImp = get<FetchUserByUserNameUseCaseImp>(),
+            dispatcher = Dispatchers
         )
     }.bind(NotesRepository::class)
 
@@ -133,6 +165,10 @@ val noteMarkModule = module {
 
     single<NoteMarkDao> {
         get<NoteMarkDatabase>().noteMarkDao()
+    }
+
+    single<NoteMarkPendingSyncDao> {
+        get<NoteMarkDatabase>().noteMarkPendingSyncDao()
     }
 
     single<HttpClient> {

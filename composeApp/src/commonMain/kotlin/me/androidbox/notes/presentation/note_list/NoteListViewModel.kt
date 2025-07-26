@@ -2,61 +2,84 @@ package me.androidbox.notes.presentation.note_list
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import kotlinx.collections.immutable.toPersistentList
+import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlinx.datetime.Clock
-import me.androidbox.generateUUID
-import me.androidbox.notes.domain.model.NoteItem
+import me.androidbox.ConnectivityManager
+import me.androidbox.core.domain.SyncNoteScheduler
+import me.androidbox.notes.domain.NotesRepository
 import me.androidbox.notes.domain.usecases.DeleteNoteUseCase
+import me.androidbox.notes.domain.usecases.FetchAllNotesUseCase
 import me.androidbox.notes.domain.usecases.FetchNotesUseCase
-import me.androidbox.notes.domain.usecases.SaveNoteUseCase
-import me.androidbox.notes.presentation.note_list.NoteListEvents.*
-import net.orandja.either.Left
-import net.orandja.either.Right
+import me.androidbox.notes.presentation.note_list.NoteListEvents.OnNavigateToEditNote
+import kotlin.time.Duration.Companion.minutes
 
+@OptIn(FlowPreview::class)
 class NoteListViewModel(
     private val fetchNotesUseCase: FetchNotesUseCase,
-    private val saveNoteUseCase: SaveNoteUseCase,
+    private val fetchAllNotesUseCase: FetchAllNotesUseCase,
     private val deleteNoteUseCase: DeleteNoteUseCase,
+    private val connectivityManager: ConnectivityManager,
+    private val syncNoteScheduler: SyncNoteScheduler,
+    private val notesRepository: NotesRepository
 ) : ViewModel() {
-    private var hasFetched = false
 
     private val _state = MutableStateFlow(NoteListUiState())
     val state = _state.asStateFlow()
-        .onStart {
-            if (!hasFetched) {
-                fetchNotes()
-                hasFetched = true
-            }
-        }
-        .stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(5_000L),
-            initialValue = NoteListUiState()
-        )
 
-    private val _events = Channel<NoteListEvents>()
-    val events = _events.receiveAsFlow()
+    init {
+        viewModelScope.launch {
+            syncNoteScheduler.scheduleSync(SyncNoteScheduler.SyncTypes.FetchNotes(
+                interval = 15.minutes
+            ))
+        }
+
+        fetchNotes()
+
+        fetchConnectivityStatus()
+    }
 
     private fun fetchNotes() {
         viewModelScope.launch {
             fetchNotesUseCase.execute()
-                .collect { listOfNoteItems ->
+                .onEach { listOfNoteItems ->
                     _state.update { noteListUiState ->
                         noteListUiState.copy(
-                            notesList = listOfNoteItems
+                            notesList = listOfNoteItems.toPersistentList()
                         )
                     }
                 }
+                .launchIn(viewModelScope)
+            fetchAllNotesUseCase.execute()
         }
     }
+
+    private fun fetchConnectivityStatus() {
+        viewModelScope.launch {
+            connectivityManager
+                .isConnected()
+                .distinctUntilChanged()
+                .collect { connected ->
+                    _state.update { it.copy(isConnected = connected) }
+                }
+        }
+    }
+
+    private val _events = Channel<NoteListEvents>()
+    val events = _events.receiveAsFlow()
+
 
     fun onAction(action: NoteListActions) {
         when (action) {
@@ -67,6 +90,7 @@ class NoteListViewModel(
             is NoteListActions.OnDeleteNote -> {
                 viewModelScope.launch {
                     deleteNoteUseCase.execute(action.noteItem)
+
                 }
                 _state.update {
                     it.copy(
@@ -93,8 +117,12 @@ class NoteListViewModel(
 
             is NoteListActions.OnNavigateToEditNoteWithNoteId -> {
                 viewModelScope.launch {
-                    _events.send(NoteListEvents.OnNavigateToEditNote(action.noteId))
+                    _events.send(OnNavigateToEditNote(action.noteId))
                 }
+            }
+
+            NoteListActions.OnSettingsClicked -> {
+                /** no-op handle in navigation */
             }
         }
     }

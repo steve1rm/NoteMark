@@ -25,7 +25,7 @@ import me.androidbox.notes.domain.model.NoteItem
 @Composable
 fun NoteItem(
     noteItem: NoteItem,
-    onLongClick: () -> Unit,
+    onLongClick: (noteToDelete: NoteItem) -> Unit,
     onClick : () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -40,6 +40,7 @@ fun NoteItem(
         MaterialTheme.typography.titleMedium
     val contentStyle = if (isTablet) MaterialTheme.typography.bodyLarge else
         MaterialTheme.typography.bodySmall
+
     Column(
         modifier = modifier
             .fillMaxWidth()
@@ -54,7 +55,7 @@ fun NoteItem(
             .pointerInput(Unit) {
                 detectTapGestures(
                     onLongPress = {
-                        onLongClick()
+                        onLongClick(noteItem)
                     },
                     onTap = {
                         onClick()

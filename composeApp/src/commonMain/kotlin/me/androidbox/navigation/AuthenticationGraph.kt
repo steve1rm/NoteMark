@@ -17,11 +17,11 @@ fun NavGraphBuilder.authenticationGraph(navController: NavController) {
                 onNavigateToRegister = {
                     navController.navigate(NavGraph.AuthenticationGraph.RegisterScreen)
                 },
-                onNavigateToBlankScreen = { username ->
+                onNavigateToNoteListScreen = { username ->
                     Logger.d {
                         "username $username"
                     }
-                    navController.navigate(NavGraph.NotesScreen(username), {
+                    navController.navigate(NavGraph.NotesListScreen(username), {
                         popUpTo(0) { // Pop everything from back stack, e.g (Startup, login, register)
                             inclusive = true
                         }

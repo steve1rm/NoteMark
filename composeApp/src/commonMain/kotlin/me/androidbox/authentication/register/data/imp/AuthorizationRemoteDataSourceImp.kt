@@ -1,9 +1,11 @@
 package me.androidbox.authentication.register.data.imp
 
-import io.ktor.client.*
-import io.ktor.client.request.*
+import io.ktor.client.HttpClient
+import io.ktor.client.request.post
+import io.ktor.client.request.setBody
 import me.androidbox.authentication.login.data.LoginRequestDto
 import me.androidbox.authentication.login.data.LoginResponseDto
+import me.androidbox.authentication.login.data.LogoutRequestDto
 import me.androidbox.authentication.register.data.AuthorizationRemoteDataSource
 import me.androidbox.authentication.register.data.RegisterDto
 import me.androidbox.core.data.Routes
@@ -43,6 +45,21 @@ class AuthorizationRemoteDataSourceImp(
             val response = httpClient
                 .post(Routes.LOGIN) {
                     this.setBody(loginRequestDto)
+                }
+
+            response
+        }
+
+       // For some reason it can't find providers httpClient.plugin(Auth).providers
+
+        return safeResult
+    }
+
+    override suspend fun logoutUser(logoutRequestDto: LogoutRequestDto): Either<Unit, DataError.Network> {
+        val safeResult = safeApiRequest<Unit> {
+            val response = httpClient
+                .post(Routes.LOGOUT) {
+                    this.setBody(logoutRequestDto)
                 }
 
             response
