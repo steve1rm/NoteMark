@@ -12,7 +12,6 @@ import me.androidbox.NoteMarkPreferences
 import me.androidbox.authentication.login.domain.model.LogoutRequest
 import me.androidbox.authentication.login.domain.use_case.LogoutUseCase
 import me.androidbox.authentication.register.domain.use_case.FetchUserByUserNameUseCaseImp
-import me.androidbox.core.domain.SyncNoteScheduler
 import me.androidbox.core.models.DataError
 import me.androidbox.notes.data.datasources.NotesLocalDataSource
 import me.androidbox.notes.data.datasources.NotesRemoteDataSource
@@ -24,7 +23,6 @@ import me.androidbox.notes.data.models.NoteMarkPendingSyncDao
 import me.androidbox.notes.data.models.NoteMarkPendingSyncEntity
 import me.androidbox.notes.domain.NotesRepository
 import me.androidbox.notes.domain.model.NoteItem
-import me.androidbox.user.data.UserLocalDataSource
 import net.orandja.either.Either
 import net.orandja.either.Left
 import net.orandja.either.Right
@@ -33,10 +31,8 @@ class NotesRepositoryImp(
     private val notesRemoteDataSource: NotesRemoteDataSource,
     private val notesLocalDataSource: NotesLocalDataSource,
     private val applicationScope: CoroutineScope,
-    private val userLocalDataSource: UserLocalDataSource,
     private val noteMarkPendingSyncDao: NoteMarkPendingSyncDao,
     private val logoutUseCase: LogoutUseCase,
-    private val syncNoteScheduler: SyncNoteScheduler,
     private val noteMarkPreferences: NoteMarkPreferences,
     private val fetchUserByUserNameUseCaseImp: FetchUserByUserNameUseCaseImp,
     private val dispatcher: Dispatchers
@@ -117,19 +113,16 @@ class NotesRepositoryImp(
             return Left(Unit)
         }
 
-        val userId = fetchUserByUserNameUseCaseImp.execute()
+        val userName = fetchUserByUserNameUseCaseImp.execute()
 
-        if(userId != null) {
+        if(userName != null) {
             val deleteItem = DeletedNoteMarkSyncEntity(
                 id = noteItem.id,
-                userId = userId
+                userId = userName
             )
             noteMarkPendingSyncDao.upsertDeletedNoteMarkEntity(
                 deletedNoteMarkSyncEntity = deleteItem
             )
-
-            val items = noteMarkPendingSyncDao.getAllDeletedNoteMarkSyncEntities("username")
-            println(items.count())
 
             return Left(Unit)
         }
@@ -159,38 +152,7 @@ class NotesRepositoryImp(
     }
 
     override suspend fun nukeAllNotes(): Either<Unit, DataError.Local> {
-        notesLocalDataSource.nukeAllNotes()
-
-      /*  val listOfNotesIds = notesLocalDataSource.getAllNotes()
-            .map { notes ->
-                notes.map { note ->
-                    note.id
-                }
-            }.firstOrNull() ?: emptyList()*/
-
-        /*applicationScope.async {
-            listOfNotesIds.forEach {  noteId ->
-                val remoteRemote = notesRemoteDataSource.deleteNote(noteId)
-
-                when (remoteRemote) {
-                    is Right -> {
-                        applicationScope.launch {
-                            syncNoteScheduler.scheduleSync(
-                                syncTypes = DeleteNote(
-                                    noteId = noteItem.id
-                                )
-                            )
-                        }.join()
-                    }
-
-                    is Left -> {
-                        *//** no-op *//*
-                    }
-                }
-            }
-        }.await()*/
-
-        return Left(Unit)
+        return notesLocalDataSource.nukeAllNotes()
     }
 
     /** Fetches all notes from the remote data source
@@ -218,15 +180,15 @@ class NotesRepositoryImp(
     override suspend fun syncPendingNotes() {
         // QUESTION: Is it ok to have this dispatcher.IO here?
         withContext(dispatcher.IO) {
-            val userId = fetchUserByUserNameUseCaseImp.execute()
+            val userName = fetchUserByUserNameUseCaseImp.execute()
 
-            if (userId != null) {
+            if (userName != null) {
                 val createdNotes = async {
-                    noteMarkPendingSyncDao.getNoteMarkPendingSyncEntitiesByUserId(userId)
+                    noteMarkPendingSyncDao.getNoteMarkPendingSyncEntitiesByUserId(userName)
                 }
 
                 val deletedNotes = async {
-                    noteMarkPendingSyncDao.getAllDeletedNoteMarkSyncEntities(userId)
+                    noteMarkPendingSyncDao.getAllDeletedNoteMarkSyncEntities(userName)
                 }
 
                 val createdNoteJobs = createdNotes
@@ -236,12 +198,12 @@ class NotesRepositoryImp(
                             val noteItem = noteMarkPendingSyncEntity.noteMark.toNoteItem()
 
                             if(notesRemoteDataSource.createNote(noteItem.toNoteItemDto()) is Left) {
-
                                 applicationScope.launch {
                                     notesRemoteDataSource.createNote(
                                         noteItem.toNoteItemDto()
                                     )
 
+                                    // QUESTION Is it ok to delete right after send not to remote
                                     noteMarkPendingSyncDao.deleteNoteMarkPendingSyncEntity(noteItem.id)
                                 }.join()
                             }
@@ -252,12 +214,12 @@ class NotesRepositoryImp(
                     .await()
                     .map { deletedNoteMarkSyncEntity ->
                         launch {
-                            if (notesRemoteDataSource.deleteNote("eee88105-fbd1-4b6c-b031-4f1cd42ac66a") is Left) {
-
-                                applicationScope.launch {
-                                    noteMarkPendingSyncDao.deleteNoteMarkPendingSyncEntity("eee88105-fbd1-4b6c-b031-4f1cd42ac66a")
-                                }.join()
-                            }
+                            applicationScope.launch {
+                                // Delete remotely
+                                notesRemoteDataSource.deleteNote(deletedNoteMarkSyncEntity.id)
+                                // Delete locally
+                                noteMarkPendingSyncDao.deleteNoteMarkPendingSyncEntity(deletedNoteMarkSyncEntity.id)
+                            }.join()
                         }
                     }
 
@@ -270,6 +232,7 @@ class NotesRepositoryImp(
                 }
 
                 // QUESTION: Is it ok to fetch here after syncing?
+                // Will it still suspend if the user clicks back button?
                 fetchAllNotes()
             }
         }
