@@ -2,7 +2,6 @@ package me.androidbox.notes.presentation.note_details
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import co.touchlab.kermit.Logger
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
@@ -18,8 +17,8 @@ import me.androidbox.notes.domain.usecases.DeleteNoteUseCase
 import me.androidbox.notes.domain.usecases.FetchNoteUseCase
 import me.androidbox.notes.domain.usecases.UpdateNoteUseCase
 import me.androidbox.notes.presentation.note_details.NoteDetailsEvents.OnDeleteNoteSuccess
-import me.androidbox.notes.presentation.note_details.NoteDetailsEvents.OnQuitScreen
 import me.androidbox.notes.presentation.note_details.NoteDetailsEvents.OnFailureMessage
+import me.androidbox.notes.presentation.note_details.NoteDetailsEvents.OnQuitScreen
 import me.androidbox.notes.presentation.note_details.model.NoteDetailsMode
 import me.androidbox.notes.presentation.note_details.utils.NoteDetailsTimeFormatter
 import net.orandja.either.Left
@@ -209,10 +208,7 @@ class NoteDetailsViewModel(
 
     private suspend fun updateNote() {
         val currentTimestamp = Clock.System.now().toEpochMilliseconds()
-        val formattedTime by lazy {
-            NoteDetailsTimeFormatter.toFormattedDateString(currentTimestamp)
-        }
-
+        val formattedTime = NoteDetailsTimeFormatter.toFormattedDateString(currentTimestamp)
         val state = _state.value
 
         val noteItem = NoteItem(

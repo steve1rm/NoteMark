@@ -19,7 +19,8 @@ import me.androidbox.authentication.login.domain.use_case.LoginUseCaseV2
 import me.androidbox.core.models.DataError
 import me.androidbox.emailValid
 import me.androidbox.notes.domain.usecases.GetProfilePictureUseCase
-import me.androidbox.user.data.UserLocalDataSource
+import me.androidbox.user.domain.User
+import me.androidbox.user.domain.UserRepository
 import net.orandja.either.Left
 import net.orandja.either.Right
 
@@ -27,7 +28,7 @@ class LoginViewModel(
     private val loginUseCaseV2: LoginUseCaseV2,
     private val profilePictureUseCase: GetProfilePictureUseCase,
     private val noteMarkPreferences: NoteMarkPreferences,
-    private val userLocalDataSource: UserLocalDataSource
+    private val userRepository: UserRepository
 ) : ViewModel() {
     private val _state = MutableStateFlow(LoginUiState())
     val state = _state.asStateFlow()
@@ -85,7 +86,11 @@ class LoginViewModel(
                                 noteMarkPreferences.setRefreshToken(result.left.refreshToken)
                                 noteMarkPreferences.setAccessToken(result.left.accessToken)
                                 noteMarkPreferences.setUserName(result.left.username)
-
+                                userRepository.saveUser(
+                                    User(
+                                        userName = result.left.username,
+                                    )
+                                )
                                 _events.send(AuthenticationEvents.OnAuthenticationSuccess(username = profileUsername))
                             }
 

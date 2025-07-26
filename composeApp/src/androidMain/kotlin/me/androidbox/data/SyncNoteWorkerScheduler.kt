@@ -15,10 +15,8 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import me.androidbox.authentication.register.domain.use_case.FetchUserByUserNameUseCaseImp
 import me.androidbox.core.domain.SyncNoteScheduler
-import me.androidbox.notes.data.mappers.toNoteItemEntity
 import me.androidbox.notes.data.models.DeletedNoteMarkSyncEntity
 import me.androidbox.notes.data.models.NoteMarkPendingSyncDao
-import me.androidbox.notes.data.models.NoteMarkPendingSyncEntity
 import me.androidbox.notes.domain.model.NoteItem
 import java.util.concurrent.TimeUnit
 import kotlin.time.Duration
@@ -100,12 +98,14 @@ class SyncNoteWorkerScheduler(
 
     private suspend fun scheduleCreateNoteWorker(noteItem: NoteItem, userId: String) {
 
+/*
         val pendingNote = NoteMarkPendingSyncEntity(
             noteMark = noteItem.toNoteItemEntity(),
             userId = userId
         )
 
         noteMarkPendingSyncDao.upsertNoteMarkPendingSyncEntity(pendingNote)
+*/
 
         val workRequest = OneTimeWorkRequestBuilder<CreateNoteWorker>()
             .addTag("create_work")
@@ -121,7 +121,7 @@ class SyncNoteWorkerScheduler(
             )
             .setInputData(
                 Data.Builder()
-                    .putString(CreateNoteWorker.NOTE_ID, pendingNote.noteMarkId)
+                    .putString(CreateNoteWorker.NOTE_ID, noteItem.id)
                     .build()
             )
             .build()

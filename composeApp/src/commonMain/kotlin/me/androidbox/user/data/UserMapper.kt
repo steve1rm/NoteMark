@@ -5,16 +5,12 @@ import me.androidbox.user.domain.User
 
 fun UserEntity.toUser(): User {
     return User(
-        userId = this.userId,
-        userName = this.userName,
-        email = this.email,
+        userName = this.userName
     )
 }
 
 fun User.toUserEntity(): UserEntity {
     return UserEntity(
-        userId = this.userId,
-        userName = this.userName,
-        email = this.email,
+        userName = this.userName
     )
 }

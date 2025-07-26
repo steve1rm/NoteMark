@@ -9,6 +9,5 @@ data class NoteMarkPendingSyncEntity(
     @Embedded val noteMark: NoteItemEntity,
 
     @PrimaryKey(autoGenerate = false)
-    val noteMarkId: String = noteMark.id,
-    val userId: String
+    val userName: String
 )

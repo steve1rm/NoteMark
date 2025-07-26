@@ -52,12 +52,12 @@ class NotesRepositoryImp(
         }
 
         /** Adds to the sync table to be either sync'ed manually or intervals */
-        val userId = fetchUserByUserNameUseCaseImp.execute()
+        val userName = fetchUserByUserNameUseCaseImp.execute()
 
-        if(userId != null) {
+        if(userName != null) {
             val pendingNote = NoteMarkPendingSyncEntity(
                 noteMark = noteItem.toNoteItemEntity(),
-                userId = userId
+                userName = userName
             )
 
             noteMarkPendingSyncDao.upsertNoteMarkPendingSyncEntity(pendingNote)
@@ -79,13 +79,12 @@ class NotesRepositoryImp(
         }
 
         /** Adds to the sync table to be either sync'ed manually or intervals */
-        val userId = fetchUserByUserNameUseCaseImp.execute()
+        val userName = fetchUserByUserNameUseCaseImp.execute()
 
-        if(userId != null) {
+        if(userName != null) {
             val pendingNote = NoteMarkPendingSyncEntity(
                 noteMark = noteItem.toNoteItemEntity(),
-                noteMarkId = noteItem.id,
-                userId = userId
+                userName = userName
             )
 
             noteMarkPendingSyncDao.upsertNoteMarkPendingSyncEntity(pendingNote)
@@ -104,7 +103,6 @@ class NotesRepositoryImp(
         if (localResult is Right) {
             return localResult
         }
-
 
         /**
          * Edge case where the note is created in offine-mode,
@@ -161,14 +159,14 @@ class NotesRepositoryImp(
     }
 
     override suspend fun nukeAllNotes(): Either<Unit, DataError.Local> {
+        notesLocalDataSource.nukeAllNotes()
+
       /*  val listOfNotesIds = notesLocalDataSource.getAllNotes()
             .map { notes ->
                 notes.map { note ->
                     note.id
                 }
             }.firstOrNull() ?: emptyList()*/
-
-        notesLocalDataSource.nukeAllNotes()
 
         /*applicationScope.async {
             listOfNotesIds.forEach {  noteId ->
@@ -219,67 +217,66 @@ class NotesRepositoryImp(
 
     override suspend fun syncPendingNotes() {
         withContext(dispatcher.IO) {
-/*
-            val user = when(val userResult = userLocalDataSource.fetchUser()) {
-                is Left -> {
-                    userResult.left
+            val userId = fetchUserByUserNameUseCaseImp.execute()
+
+            if (userId != null) {
+                val createdNotes = async {
+                    noteMarkPendingSyncDao.getNoteMarkPendingSyncEntitiesByUserId(userId)
                 }
-                is Right -> {
-                    return@withContext
+
+                val deletedNotes = async {
+                    noteMarkPendingSyncDao.getAllDeletedNoteMarkSyncEntities(userId)
                 }
-            }
-*/
 
-            val createdNotes = async {
-                noteMarkPendingSyncDao.getAllNoteMarkPendingSyncEntities("eee88105-fbd1-4b6c-b031-4f1cd42ac66a")
-            }
+                val createdNoteJobs = createdNotes
+                    .await()
+                    .map { noteMarkPendingSyncEntity ->
+                        launch {
+                            val noteItem = noteMarkPendingSyncEntity.noteMark.toNoteItem()
 
-            val deletedNotes = async {
-                noteMarkPendingSyncDao.getAllDeletedNoteMarkSyncEntities("eee88105-fbd1-4b6c-b031-4f1cd42ac66a")
-            }
+                            when (notesRemoteDataSource.createNote(noteItem.toNoteItemDto())) {
+                                is Left -> {
+                                    applicationScope.launch {
+                                        notesRemoteDataSource.createNote(
+                                            noteItem.toNoteItemDto()
+                                        )
 
-            val createdNoteJobs = createdNotes
-                .await()
-                .map { noteMarkPendingSyncEntity ->
-                    launch {
-                        val noteItem = noteMarkPendingSyncEntity.noteMark.toNoteItem()
+                                        noteMarkPendingSyncDao.deleteNoteMarkPendingSyncEntity(noteItem.id)
+                                    }.join()
+                                }
 
-                        when(notesRemoteDataSource.createNote(noteItem.toNoteItemDto())) {
-                            is Left -> {
-                                applicationScope.launch {
-                                    noteMarkPendingSyncDao.deleteNoteMarkPendingSyncEntity(noteItem.id)
-                                }.join()
-                            }
-                            is Right -> {
-                                Right(Unit)
+                                is Right -> {
+                                    Right(Unit)
+                                }
                             }
                         }
                     }
-                }
 
-            val deletedNotesJob = deletedNotes
-                .await()
-                .map { deletedNoteMarkSyncEntity ->
-                    launch {
-                        when(notesRemoteDataSource.deleteNote("eee88105-fbd1-4b6c-b031-4f1cd42ac66a")) {
-                            is Left -> {
-                                applicationScope.launch {
-                                    noteMarkPendingSyncDao.deleteNoteMarkPendingSyncEntity("eee88105-fbd1-4b6c-b031-4f1cd42ac66a")
-                                }.join()
-                            }
-                            is Right -> {
-                                Right(Unit)
+                val deletedNotesJob = deletedNotes
+                    .await()
+                    .map { deletedNoteMarkSyncEntity ->
+                        launch {
+                            when (notesRemoteDataSource.deleteNote("eee88105-fbd1-4b6c-b031-4f1cd42ac66a")) {
+                                is Left -> {
+                                    applicationScope.launch {
+                                        noteMarkPendingSyncDao.deleteNoteMarkPendingSyncEntity("eee88105-fbd1-4b6c-b031-4f1cd42ac66a")
+                                    }.join()
+                                }
+
+                                is Right -> {
+                                    Right(Unit)
+                                }
                             }
                         }
                     }
+
+                createdNoteJobs.forEach { job ->
+                    job.join()
                 }
 
-            createdNoteJobs.forEach { job ->
-                job.join()
-            }
-
-            deletedNotesJob.forEach { job ->
-                job.join()
+                deletedNotesJob.forEach { job ->
+                    job.join()
+                }
             }
         }
     }

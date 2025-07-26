@@ -8,17 +8,21 @@ import androidx.room.Upsert
 interface NoteMarkPendingSyncDao {
 
     /** Creating Note Mark */
-    @Query("SELECT * FROM NoteMarkPendingSyncEntity WHERE noteMarkId=:id")
+  /*  @Query("SELECT * FROM NoteMarkPendingSyncEntity WHERE noteMarkId=:id")
     suspend fun getAllNoteMarkPendingSyncEntities(id: String): List<NoteMarkPendingSyncEntity>
+*/
+    @Query("SELECT * FROM NoteMarkPendingSyncEntity WHERE userName=:userName")
+    suspend fun getNoteMarkPendingSyncEntity(userName: String): NoteMarkPendingSyncEntity?
 
-    @Query("SELECT * FROM NoteMarkPendingSyncEntity WHERE userId=:userId")
-    suspend fun getNoteMarkPendingSyncEntity(userId: String): NoteMarkPendingSyncEntity?
+    @Query("SELECT * FROM NoteMarkPendingSyncEntity WHERE userName=:userName")
+    suspend fun getNoteMarkPendingSyncEntitiesByUserId(userName: String): List<NoteMarkPendingSyncEntity>
+
 
     @Upsert
     suspend fun upsertNoteMarkPendingSyncEntity(noteMarkPendingSyncEntity: NoteMarkPendingSyncEntity)
 
-    @Query("DELETE FROM NoteMarkPendingSyncEntity WHERE noteMarkId=:id")
-    suspend fun deleteNoteMarkPendingSyncEntity(id: String)
+    @Query("DELETE FROM NoteMarkPendingSyncEntity WHERE id=:noteId")
+    suspend fun deleteNoteMarkPendingSyncEntity(noteId: String)
 
     /** Deleting Note Mark */
 

@@ -20,7 +20,7 @@ class FetchUserByUserNameUseCaseImp(
 
             return when(localResult) {
                 is Left -> {
-                    localResult.left.userId
+                    localResult.left.userName
                 }
                 is Right -> {
                    null
