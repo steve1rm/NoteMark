@@ -216,6 +216,7 @@ class NotesRepositoryImp(
     }
 
     override suspend fun syncPendingNotes() {
+        // QUESTION: Is it ok to have this dispatcher.IO here?
         withContext(dispatcher.IO) {
             val userId = fetchUserByUserNameUseCaseImp.execute()
 
@@ -234,20 +235,15 @@ class NotesRepositoryImp(
                         launch {
                             val noteItem = noteMarkPendingSyncEntity.noteMark.toNoteItem()
 
-                            when (notesRemoteDataSource.createNote(noteItem.toNoteItemDto())) {
-                                is Left -> {
-                                    applicationScope.launch {
-                                        notesRemoteDataSource.createNote(
-                                            noteItem.toNoteItemDto()
-                                        )
+                            if(notesRemoteDataSource.createNote(noteItem.toNoteItemDto()) is Left) {
 
-                                        noteMarkPendingSyncDao.deleteNoteMarkPendingSyncEntity(noteItem.id)
-                                    }.join()
-                                }
+                                applicationScope.launch {
+                                    notesRemoteDataSource.createNote(
+                                        noteItem.toNoteItemDto()
+                                    )
 
-                                is Right -> {
-                                    Right(Unit)
-                                }
+                                    noteMarkPendingSyncDao.deleteNoteMarkPendingSyncEntity(noteItem.id)
+                                }.join()
                             }
                         }
                     }
@@ -256,16 +252,11 @@ class NotesRepositoryImp(
                     .await()
                     .map { deletedNoteMarkSyncEntity ->
                         launch {
-                            when (notesRemoteDataSource.deleteNote("eee88105-fbd1-4b6c-b031-4f1cd42ac66a")) {
-                                is Left -> {
-                                    applicationScope.launch {
-                                        noteMarkPendingSyncDao.deleteNoteMarkPendingSyncEntity("eee88105-fbd1-4b6c-b031-4f1cd42ac66a")
-                                    }.join()
-                                }
+                            if (notesRemoteDataSource.deleteNote("eee88105-fbd1-4b6c-b031-4f1cd42ac66a") is Left) {
 
-                                is Right -> {
-                                    Right(Unit)
-                                }
+                                applicationScope.launch {
+                                    noteMarkPendingSyncDao.deleteNoteMarkPendingSyncEntity("eee88105-fbd1-4b6c-b031-4f1cd42ac66a")
+                                }.join()
                             }
                         }
                     }
@@ -277,6 +268,9 @@ class NotesRepositoryImp(
                 deletedNotesJob.forEach { job ->
                     job.join()
                 }
+
+                // QUESTION: Is it ok to fetch here after syncing?
+                fetchAllNotes()
             }
         }
     }
