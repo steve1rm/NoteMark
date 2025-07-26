@@ -29,9 +29,12 @@ interface NoteMarkDao {
     @Upsert
     suspend fun insertUser(userEntity: UserEntity): Long
 
-    @Query("SELECT * from UserEntity LIMIT 1")
-    suspend fun getUser(): UserEntity?
+    @Query("SELECT * from UserEntity WHERE userName = :userName LIMIT 1")
+    suspend fun getUser(userName: String): UserEntity?
 
+    @Query("DELETE FROM UserEntity")
+    suspend fun nukeAllUsers()
+    
     @Query("SELECT * from NoteItemEntity WHERE id = :noteId LIMIT 1")
     suspend fun getNoteById(noteId: String): NoteItemEntity?
 }

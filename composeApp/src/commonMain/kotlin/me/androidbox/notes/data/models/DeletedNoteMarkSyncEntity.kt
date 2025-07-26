@@ -6,5 +6,5 @@ import androidx.room.PrimaryKey
 data class DeletedNoteMarkSyncEntity(
     @PrimaryKey(autoGenerate = false)
     val id: String,
-    val userName: String
+    val userId: String
 )

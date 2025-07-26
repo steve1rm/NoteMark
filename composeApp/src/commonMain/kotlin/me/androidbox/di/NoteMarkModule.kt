@@ -17,6 +17,7 @@ import me.androidbox.authentication.register.data.AuthorizationRemoteDataSource
 import me.androidbox.authentication.register.data.imp.AuthorizationRemoteDataSourceImp
 import me.androidbox.authentication.register.data.imp.AuthorizationRepositoryImp
 import me.androidbox.authentication.register.domain.AuthorizationRepository
+import me.androidbox.authentication.register.domain.use_case.FetchUserByUserNameUseCaseImp
 import me.androidbox.authentication.register.domain.use_case.RegisterUseCase
 import me.androidbox.authentication.register.presentation.RegisterViewModel
 import me.androidbox.core.data.NoteMarkDatabase
@@ -76,7 +77,10 @@ val noteMarkModule = module {
     factory { FetchAllNotesUseCaseImp(get<NotesRepository>()) }.bind(FetchAllNotesUseCase::class)
     factory { FetchNoteUseCaseImp(get<NotesRepository>()) }.bind(FetchNoteUseCase::class)
     factory { NukeAllNotesUseCaseImp(get<NotesRepository>())}.bind(NukeAllNotesUseCase::class)
-
+    factory { FetchUserByUserNameUseCaseImp(
+        get<NoteMarkPreferences>(),
+        get<UserLocalDataSource>()
+    ) }
     factory {
         LoginUseCaseV2Imp(
             get<AuthorizationRepository>()
@@ -125,6 +129,7 @@ val noteMarkModule = module {
             syncNoteScheduler = get<SyncNoteScheduler>(),
             logoutUseCase = get<LogoutUseCase>(),
             noteMarkPreferences = get<NoteMarkPreferences>(),
+            fetchUserByUserNameUseCaseImp = get<FetchUserByUserNameUseCaseImp>(),
             dispatcher = Dispatchers
         )
     }.bind(NotesRepository::class)

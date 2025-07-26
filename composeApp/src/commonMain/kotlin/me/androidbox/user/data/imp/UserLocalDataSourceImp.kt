@@ -1,7 +1,6 @@
 package me.androidbox.user.data.imp
 
 import me.androidbox.authentication.register.data.UserEntity
-import me.androidbox.core.data.NoteMarkDatabase
 import me.androidbox.core.models.DataError
 import me.androidbox.notes.data.NoteMarkDao
 import me.androidbox.user.data.UserLocalDataSource
@@ -23,8 +22,8 @@ class UserLocalDataSourceImp(
         }
     }
 
-    override suspend fun fetchUser(): Either<UserEntity, DataError.Local> {
-        val userEntity = noteMarkDao.getUser()
+    override suspend fun fetchUserByUserName(userName: String): Either<UserEntity, DataError.Local> {
+        val userEntity = noteMarkDao.getUser(userName)
 
         return if(userEntity != null) {
             Left(userEntity)

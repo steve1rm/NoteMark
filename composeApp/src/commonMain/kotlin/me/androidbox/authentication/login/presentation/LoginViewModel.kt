@@ -78,12 +78,13 @@ class LoginViewModel(
                                 _state.update { loginUiState ->
                                     loginUiState.copy(isLoading = false)
                                 }
-                                noteMarkPreferences.setUserName(state.value.email)
+
                                 val profileUsername =
                                     profilePictureUseCase(username = result.left.username)
 
                                 noteMarkPreferences.setRefreshToken(result.left.refreshToken)
                                 noteMarkPreferences.setAccessToken(result.left.accessToken)
+                                noteMarkPreferences.setUserName(result.left.username)
 
                                 _events.send(AuthenticationEvents.OnAuthenticationSuccess(username = profileUsername))
                             }
@@ -92,8 +93,8 @@ class LoginViewModel(
                                 _state.update { loginUiState ->
                                     loginUiState.copy(isLoading = false)
                                 }
-                                _events.send(AuthenticationEvents.OnAuthenticationSuccess(username = "SM"))
-                               // _events.send(AuthenticationEvents.OnAuthenticationFail(result.right.errorMessage))
+
+                                _events.send(AuthenticationEvents.OnAuthenticationFail(result.right.errorMessage))
                             }
                         }
                     } catch (exception: Exception) {

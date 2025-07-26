@@ -11,8 +11,8 @@ interface NoteMarkPendingSyncDao {
     @Query("SELECT * FROM NoteMarkPendingSyncEntity WHERE noteMarkId=:id")
     suspend fun getAllNoteMarkPendingSyncEntities(id: String): List<NoteMarkPendingSyncEntity>
 
-    @Query("SELECT * FROM NoteMarkPendingSyncEntity WHERE userName=:userName")
-    suspend fun getNoteMarkPendingSyncEntity(userName: String): NoteMarkPendingSyncEntity?
+    @Query("SELECT * FROM NoteMarkPendingSyncEntity WHERE userId=:userId")
+    suspend fun getNoteMarkPendingSyncEntity(userId: String): NoteMarkPendingSyncEntity?
 
     @Upsert
     suspend fun upsertNoteMarkPendingSyncEntity(noteMarkPendingSyncEntity: NoteMarkPendingSyncEntity)
@@ -22,8 +22,8 @@ interface NoteMarkPendingSyncDao {
 
     /** Deleting Note Mark */
 
-    @Query("SELECT * FROM DeletedNoteMarkSyncEntity WHERE userName=:userName")
-    suspend fun getAllDeletedNoteMarkSyncEntities(userName: String): List<DeletedNoteMarkSyncEntity>
+    @Query("SELECT * FROM DeletedNoteMarkSyncEntity WHERE userId=:userId")
+    suspend fun getAllDeletedNoteMarkSyncEntities(userId: String): List<DeletedNoteMarkSyncEntity>
 
     @Upsert
     suspend fun upsertDeletedNoteMarkEntity(deletedNoteMarkSyncEntity: DeletedNoteMarkSyncEntity)

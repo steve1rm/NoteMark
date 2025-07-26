@@ -6,5 +6,5 @@ import net.orandja.either.Either
 
 interface UserLocalDataSource {
     suspend fun saveUser(userEntity: UserEntity) : Either<Long, DataError.Local>
-    suspend fun fetchUser() : Either<UserEntity, DataError.Local>
+    suspend fun fetchUserByUserName(userName: String) : Either<UserEntity, DataError.Local>
 }

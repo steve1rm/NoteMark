@@ -13,14 +13,13 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import me.androidbox.authentication.register.domain.use_case.FetchUserByUserNameUseCaseImp
 import me.androidbox.core.domain.SyncNoteScheduler
 import me.androidbox.notes.data.mappers.toNoteItemEntity
 import me.androidbox.notes.data.models.DeletedNoteMarkSyncEntity
 import me.androidbox.notes.data.models.NoteMarkPendingSyncDao
 import me.androidbox.notes.data.models.NoteMarkPendingSyncEntity
 import me.androidbox.notes.domain.model.NoteItem
-import me.androidbox.user.data.UserLocalDataSource
-import net.orandja.either.Left
 import java.util.concurrent.TimeUnit
 import kotlin.time.Duration
 import kotlin.time.toJavaDuration
@@ -28,24 +27,33 @@ import kotlin.time.toJavaDuration
 class SyncNoteWorkerScheduler(
     private val context: Context,
     private val noteMarkPendingSyncDao: NoteMarkPendingSyncDao,
-    private val userLocalDataSource: UserLocalDataSource,
+    private val fetchUserByUserNameUseCaseImp: FetchUserByUserNameUseCaseImp,
     private val applicationScope: CoroutineScope
 ) : SyncNoteScheduler {
 
     private val workManager = WorkManager.getInstance(context)
 
     override suspend fun scheduleSync(syncTypes: SyncNoteScheduler.SyncTypes) {
+
         when(syncTypes) {
             is SyncNoteScheduler.SyncTypes.FetchNotes -> {
                 scheduleFetchNotesWorker(syncTypes.interval)
             }
 
             is SyncNoteScheduler.SyncTypes.DeleteNote -> {
-                scheduleDeleteRunWorker(syncTypes.noteId)
+                val userId = fetchUserByUserNameUseCaseImp.execute()
+
+                if(userId != null) {
+                    scheduleDeleteRunWorker(syncTypes.noteId, userId)
+                }
             }
 
             is SyncNoteScheduler.SyncTypes.CreateNote -> {
-                scheduleCreateNoteWorker(syncTypes.noteItem)
+                val userId = fetchUserByUserNameUseCaseImp.execute()
+
+                if(userId != null) {
+                    scheduleCreateNoteWorker(syncTypes.noteItem, userId)
+                }
             }
         }
     }
@@ -56,78 +64,71 @@ class SyncNoteWorkerScheduler(
             .await()
     }
 
-    private suspend fun scheduleDeleteRunWorker(noteId: String) {
-        val result = userLocalDataSource.fetchUser()
+    private suspend fun scheduleDeleteRunWorker(noteId: String, userId: String) {
+        val entity = DeletedNoteMarkSyncEntity(
+            id = noteId,
+            userId = userId
+        )
 
-        if(result is Left) {
-            val entity = DeletedNoteMarkSyncEntity(
-                id = noteId,
-                userName = result.left.userName
+        noteMarkPendingSyncDao.upsertDeletedNoteMarkEntity(
+            deletedNoteMarkSyncEntity = entity
+        )
+
+        val workRequest = OneTimeWorkRequestBuilder<DeleteNoteWorker>()
+            .addTag("delete_work")
+            .setConstraints(
+                Constraints.Builder()
+                    .setRequiredNetworkType(NetworkType.CONNECTED)
+                    .build()
             )
-
-            noteMarkPendingSyncDao.upsertDeletedNoteMarkEntity(
-                deletedNoteMarkSyncEntity = entity
+            .setBackoffCriteria(
+                backoffPolicy = BackoffPolicy.EXPONENTIAL,
+                backoffDelay = 2_000L,
+                timeUnit = TimeUnit.MILLISECONDS
             )
+            .setInputData(
+                Data.Builder()
+                    .putString(DeleteNoteWorker.NOTE_ID, entity.id)
+                    .build()
+            )
+            .build()
 
-            val workRequest = OneTimeWorkRequestBuilder<DeleteNoteWorker>()
-                .addTag("delete_work")
-                .setConstraints(
-                    Constraints.Builder()
-                        .setRequiredNetworkType(NetworkType.CONNECTED)
-                        .build()
-                )
-                .setBackoffCriteria(
-                    backoffPolicy = BackoffPolicy.EXPONENTIAL,
-                    backoffDelay = 2_000L,
-                    timeUnit = TimeUnit.MILLISECONDS
-                )
-                .setInputData(
-                    Data.Builder()
-                        .putString(DeleteNoteWorker.NOTE_ID, entity.id)
-                        .build()
-                )
-                .build()
-
-            applicationScope.launch {
-                workManager.enqueue(workRequest)
-            }.join()
-        }
+        applicationScope.launch {
+            workManager.enqueue(workRequest)
+        }.join()
     }
 
-    private suspend fun scheduleCreateNoteWorker(noteItem: NoteItem) {
-        val result = userLocalDataSource.fetchUser()
+    private suspend fun scheduleCreateNoteWorker(noteItem: NoteItem, userId: String) {
 
-        if(result is Left) {
-            val pendingNote = NoteMarkPendingSyncEntity(
-                noteMark = noteItem.toNoteItemEntity(),
-                userName = result.left.userName
+        val pendingNote = NoteMarkPendingSyncEntity(
+            noteMark = noteItem.toNoteItemEntity(),
+            userId = userId
+        )
+
+        noteMarkPendingSyncDao.upsertNoteMarkPendingSyncEntity(pendingNote)
+
+        val workRequest = OneTimeWorkRequestBuilder<CreateNoteWorker>()
+            .addTag("create_work")
+            .setConstraints(
+                Constraints.Builder()
+                    .setRequiredNetworkType(NetworkType.CONNECTED)
+                    .build()
             )
+            .setBackoffCriteria(
+                backoffPolicy = BackoffPolicy.EXPONENTIAL,
+                backoffDelay = 2_000L,
+                timeUnit = TimeUnit.MILLISECONDS
+            )
+            .setInputData(
+                Data.Builder()
+                    .putString(CreateNoteWorker.NOTE_ID, pendingNote.noteMarkId)
+                    .build()
+            )
+            .build()
 
-            noteMarkPendingSyncDao.upsertNoteMarkPendingSyncEntity(pendingNote)
-
-            val workRequest = OneTimeWorkRequestBuilder<CreateNoteWorker>()
-                .addTag("create_work")
-                .setConstraints(
-                    Constraints.Builder()
-                        .setRequiredNetworkType(NetworkType.CONNECTED)
-                        .build()
-                )
-                .setBackoffCriteria(
-                    backoffPolicy = BackoffPolicy.EXPONENTIAL,
-                    backoffDelay = 2_000L,
-                    timeUnit = TimeUnit.MILLISECONDS
-                )
-                .setInputData(
-                    Data.Builder()
-                        .putString(CreateNoteWorker.NOTE_ID, pendingNote.noteMarkId)
-                        .build()
-                )
-                .build()
-
-            applicationScope.launch {
-                workManager.enqueue(workRequest)
-            }.join()
-        }
+        applicationScope.launch {
+            workManager.enqueue(workRequest)
+        }.join()
     }
 
     private suspend fun scheduleFetchNotesWorker(interval: Duration) {

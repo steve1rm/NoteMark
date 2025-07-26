@@ -17,8 +17,8 @@ class UserRepositoryImp(
         userLocalDataSource.saveUser(user.toUserEntity())
     }
 
-    override suspend fun fetchUser(): Either<User, DataError.Local> {
-        val result = userLocalDataSource.fetchUser()
+    override suspend fun fetchUser(userName: String): Either<User, DataError.Local> {
+        val result = userLocalDataSource.fetchUserByUserName(userName)
 
         return when(result) {
             is Left -> {
