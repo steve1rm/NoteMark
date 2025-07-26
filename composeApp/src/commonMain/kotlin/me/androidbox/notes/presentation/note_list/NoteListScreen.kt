@@ -24,11 +24,11 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -38,7 +38,6 @@ import me.androidbox.core.presentation.designsystem.NoteMarkLayout
 import me.androidbox.core.presentation.designsystem.buttons.GradientFAB
 import me.androidbox.core.presentation.designsystem.theming.bgGradient
 import me.androidbox.core.presentation.utils.ObserveAsEvents
-import me.androidbox.core.presentation.utils.Previews.noteItem
 import me.androidbox.getOrientation
 import me.androidbox.isTablet
 import me.androidbox.notes.presentation.components.AvatarIcon
@@ -63,7 +62,7 @@ fun NoteListScreenRoot(
     val coroutineScope = rememberCoroutineScope()
 
     ObserveAsEvents(viewModel.events) { event ->
-        when(event) {
+        when (event) {
             is NoteListEvents.OnNavigateToEditNote -> {
                 onNavigateToEditNote(event.noteId)
             }
@@ -80,10 +79,11 @@ fun NoteListScreenRoot(
         username = username,
         state = state,
         onAction = { noteListActions ->
-            when(noteListActions) {
+            when (noteListActions) {
                 NoteListActions.OnSettingsClicked -> {
                     onNavigateToSettings()
                 }
+
                 else -> {
                     viewModel.onAction(noteListActions)
                 }
@@ -142,7 +142,8 @@ fun NoteListScreen(
                         Icon(
                             modifier = Modifier.size(20.dp),
                             imageVector = vectorResource(Res.drawable.settings),
-                            contentDescription = "Open settings")
+                            contentDescription = "Open settings"
+                        )
                     }
                 )
 
@@ -166,7 +167,8 @@ fun NoteListScreen(
                         verticalItemSpacing = 16.dp,
                         modifier = Modifier.fillMaxSize()
                     ) {
-                        items(items = state.notesList,
+                        items(
+                            items = state.notesList,
                             key = { noteItem ->
                                 noteItem.id
                             }) { note ->

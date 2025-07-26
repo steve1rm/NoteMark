@@ -65,6 +65,7 @@ kotlin {
             implementation(libs.kotlinx.datetime)
 //            implementation("androidx.compose.material:material-icons-extended:1.8.2")
             implementation(libs.kermit.v205)
+            implementation("org.jetbrains.kotlinx:kotlinx-collections-immutable:0.3.7")
 //            implementation("io.kotzilla:kotzilla-sdk-ktor3:1.1.0")
             implementation(libs.kotzilla.sdk)
         }
