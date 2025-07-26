@@ -2,7 +2,9 @@ package me.androidbox.notes.presentation.note_list
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -33,22 +35,9 @@ class NoteListViewModel(
     private val syncNoteScheduler: SyncNoteScheduler,
     private val notesRepository: NotesRepository
 ) : ViewModel() {
-    private var hasFetched = false
 
     private val _state = MutableStateFlow(NoteListUiState())
     val state = _state.asStateFlow()
-        .onStart {
-            if (!hasFetched) {
-                notesRepository.syncPendingNotes()
-                fetchNotes()
-                hasFetched = true
-            }
-        }
-        .stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(5_000L),
-            initialValue = NoteListUiState()
-        )
 
     init {
         viewModelScope.launch {
@@ -57,7 +46,24 @@ class NoteListViewModel(
             ))
         }
 
+        fetchNotes()
+
         fetchConnectivityStatus()
+    }
+
+    private fun fetchNotes() {
+        viewModelScope.launch {
+            fetchNotesUseCase.execute()
+                .onEach { listOfNoteItems ->
+                    _state.update { noteListUiState ->
+                        noteListUiState.copy(
+                            notesList = listOfNoteItems.toPersistentList()
+                        )
+                    }
+                }
+                .launchIn(viewModelScope)
+            fetchAllNotesUseCase.execute()
+        }
     }
 
     private fun fetchConnectivityStatus() {
@@ -74,21 +80,6 @@ class NoteListViewModel(
     private val _events = Channel<NoteListEvents>()
     val events = _events.receiveAsFlow()
 
-    private fun fetchNotes() {
-        viewModelScope.launch {
-            fetchNotesUseCase.execute()
-                .onEach { listOfNoteItems ->
-                    _state.update { noteListUiState ->
-                        noteListUiState.copy(
-                            notesList = listOfNoteItems
-                        )
-                    }
-                }.launchIn(viewModelScope)
-
-            /** We fetch all remote notes save them to the db and fetched locally */
-            fetchAllNotesUseCase.execute()
-        }
-    }
 
     fun onAction(action: NoteListActions) {
         when (action) {
