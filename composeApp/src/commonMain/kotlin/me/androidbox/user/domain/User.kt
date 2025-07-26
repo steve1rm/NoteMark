@@ -1,7 +1,7 @@
 package me.androidbox.user.domain
 
 data class User(
-    val id: Int = 0,
+    val userId: String,
     val userName: String,
     val email: String
 )

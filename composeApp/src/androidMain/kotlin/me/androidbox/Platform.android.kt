@@ -11,7 +11,6 @@ import android.net.NetworkCapabilities
 import android.os.Build
 import android.util.Patterns
 import androidx.activity.compose.BackHandler
-import androidx.activity.compose.LocalActivity
 import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -28,6 +27,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import me.androidbox.core.models.LocalPreferences.ACCESS_TOKEN_KEY
 import me.androidbox.core.models.LocalPreferences.REFRESH_TOKEN_KEY
+import me.androidbox.core.models.LocalPreferences.USER_NAME_KEY
 import me.androidbox.core.models.Orientation
 import java.time.Instant
 import java.time.ZoneId
@@ -193,6 +193,14 @@ actual class NoteMarkPreferencesImp(context: Context) : NoteMarkPreferences {
 
     actual override fun getAccessToken(): String? {
         return store.string(forKey = ACCESS_TOKEN_KEY)
+    }
+
+    actual override fun setUserName(value: String) {
+        store.set(USER_NAME_KEY, value)
+    }
+
+    actual override fun getUserName(): String? {
+        return store.string(forKey = USER_NAME_KEY)
     }
 
     actual override fun deleteAllPreferences() {

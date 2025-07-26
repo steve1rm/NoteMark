@@ -15,6 +15,7 @@ import me.androidbox.authentication.register.domain.use_case.RegisterUseCase
 import me.androidbox.authentication.register.presentation.model.ValidationResult
 import me.androidbox.core.models.DataError
 import me.androidbox.emailValid
+import me.androidbox.generateUUID
 import me.androidbox.user.domain.User
 import me.androidbox.user.domain.UserRepository
 import net.orandja.either.Left
@@ -91,6 +92,7 @@ class RegisterViewModel(
                         }
                         userRepository.saveUser(
                             User(
+                                userId = generateUUID(),
                                 userName = state.value.username,
                                 email = state.value.email
                             )

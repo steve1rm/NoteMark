@@ -59,4 +59,12 @@ actual class NoteMarkPreferencesImp : NoteMarkPreferences {
     actual override fun deleteAllPreferences() {
         TODO("Not yet implemented")
     }
+
+    actual override fun setUserName(value: String) {
+        TODO("Not yet implemented")
+    }
+
+    actual override fun getUserName(): String? {
+        TODO("Not yet implemented")
+    }
 }

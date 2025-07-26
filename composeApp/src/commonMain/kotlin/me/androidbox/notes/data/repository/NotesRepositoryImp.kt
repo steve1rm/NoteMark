@@ -5,7 +5,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -13,15 +12,15 @@ import me.androidbox.NoteMarkPreferences
 import me.androidbox.authentication.login.domain.model.LogoutRequest
 import me.androidbox.authentication.login.domain.use_case.LogoutUseCase
 import me.androidbox.core.domain.SyncNoteScheduler
-import me.androidbox.core.domain.SyncNoteScheduler.SyncTypes.DeleteNote
 import me.androidbox.core.models.DataError
-import me.androidbox.core.presentation.utils.Previews.noteItem
 import me.androidbox.notes.data.datasources.NotesLocalDataSource
 import me.androidbox.notes.data.datasources.NotesRemoteDataSource
 import me.androidbox.notes.data.mappers.toNoteItem
 import me.androidbox.notes.data.mappers.toNoteItemDto
 import me.androidbox.notes.data.mappers.toNoteItemEntity
+import me.androidbox.notes.data.models.DeletedNoteMarkSyncEntity
 import me.androidbox.notes.data.models.NoteMarkPendingSyncDao
+import me.androidbox.notes.data.models.NoteMarkPendingSyncEntity
 import me.androidbox.notes.domain.NotesRepository
 import me.androidbox.notes.domain.model.NoteItem
 import me.androidbox.user.data.UserLocalDataSource
@@ -43,6 +42,7 @@ class NotesRepositoryImp(
     override suspend fun saveNote(noteItem: NoteItem): Either<Unit, DataError> {
         /** Save locally to Room */
         val localResult = notesLocalDataSource.saveNote(noteItem.toNoteItemEntity())
+        val localUserResult = userLocalDataSource.fetchUser().left
 
         /** Failed to insert note into DB i.e. disk could be full,
          *  so nothing to add to the remote */
@@ -50,12 +50,21 @@ class NotesRepositoryImp(
             return localResult
         }
 
+        /** Adds to the sync table to be either sync'ed manually or intervals */
+        val pendingNote = NoteMarkPendingSyncEntity(
+            noteMark = noteItem.toNoteItemEntity(),
+            userName = localUserResult.userId
+        )
+
+        noteMarkPendingSyncDao.upsertNoteMarkPendingSyncEntity(pendingNote)
+
+        return Left(Unit)
         /**
          * We have saved the note to the local database
          * Let's protect the following code from being canceled when the user
          * navigates away from the current screen
          */
-        val result = applicationScope.async {
+      /*  val result = applicationScope.async {
             val networkResult = notesRemoteDataSource.createNote(noteItem.toNoteItemDto())
 
             when (networkResult) {
@@ -73,7 +82,7 @@ class NotesRepositoryImp(
             }
         }
 
-        return result.await()
+        return result.await()*/
     }
 
     override suspend fun updateNote(noteItem: NoteItem): Either<Unit, DataError> {
@@ -85,8 +94,18 @@ class NotesRepositoryImp(
             return localResult
         }
 
+        /** Adds to the sync table to be either sync'ed manually or intervals */
+        val pendingNote = NoteMarkPendingSyncEntity(
+            noteMark = noteItem.toNoteItemEntity(),
+            userName = noteItem.id
+        )
+
+        noteMarkPendingSyncDao.upsertNoteMarkPendingSyncEntity(pendingNote)
+
+        return Left(Unit)
+
         /** Update the note remotely */
-        return applicationScope.async {
+     /*   return applicationScope.async {
             val remoteResult = notesRemoteDataSource.updateNote(noteItem.toNoteItemDto())
 
             when(remoteResult) {
@@ -104,7 +123,7 @@ class NotesRepositoryImp(
                     return@async Left(Unit)
                 }
             }
-        }.await()
+        }.await()*/
     }
 
     override suspend fun deleteNote(noteItem: NoteItem): Either<Unit, DataError> {
@@ -115,18 +134,33 @@ class NotesRepositoryImp(
             return localResult
         }
 
-        /**
+
+       /**
          * Edge case where the note is created in offine-mode,
          * and then deleted in offline-mode as well. In that case,
          * we don't want to sync anything
          * */
-        val isPendingSync = noteMarkPendingSyncDao.getNoteMarkPendingSyncEntity(noteItem.id)
+       /* val isPendingSync = noteMarkPendingSyncDao.getNoteMarkPendingSyncEntity(noteItem.id)
         if(isPendingSync !=null) {
             noteMarkPendingSyncDao.deleteDeletedNoteMarkSyncEntity(noteItem.id)
             return Left(Unit)
-        }
-        
+        }*/
+
+        val deleteItem = DeletedNoteMarkSyncEntity(
+            id = noteItem.id,
+            userName = "username"
+        )
+        noteMarkPendingSyncDao.upsertDeletedNoteMarkEntity(
+            deletedNoteMarkSyncEntity = deleteItem
+        )
+
+        val items = noteMarkPendingSyncDao.getAllDeletedNoteMarkSyncEntities("username")
+        println(items.count())
+
+        return Left(Unit)
+
         /** Delete is remotely */
+        /*
         val result = applicationScope.async {
             val remoteRemote = notesRemoteDataSource.deleteNote(noteItem.id)
 
@@ -151,7 +185,7 @@ class NotesRepositoryImp(
             }.join()
         }
 
-        return result
+        return result*/
     }
 
     override suspend fun fetchNotes(

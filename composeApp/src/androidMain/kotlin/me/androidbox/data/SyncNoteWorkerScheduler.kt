@@ -69,7 +69,7 @@ class SyncNoteWorkerScheduler(
                 deletedNoteMarkSyncEntity = entity
             )
 
-            val workRequest = OneTimeWorkRequestBuilder<CreateNoteWorker>()
+            val workRequest = OneTimeWorkRequestBuilder<DeleteNoteWorker>()
                 .addTag("delete_work")
                 .setConstraints(
                     Constraints.Builder()
