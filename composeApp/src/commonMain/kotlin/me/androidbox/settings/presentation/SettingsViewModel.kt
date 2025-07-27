@@ -4,7 +4,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
@@ -101,9 +100,6 @@ class SettingsViewModel(
                             isLoadingSync = true
                         )
                     }
-
-                    /** Small delay to show indicator, remove this later, just a hack for submission */
-                    delay(300)
 
                     notesRepository.syncPendingNotes()
 
