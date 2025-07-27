@@ -1,3 +1,5 @@
+@file:OptIn(ExperimentalTime::class)
+
 package me.androidbox.notes.presentation.note_details
 
 import androidx.lifecycle.ViewModel
@@ -10,7 +12,6 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlinx.datetime.Clock
 import me.androidbox.generateUUID
 import me.androidbox.notes.domain.model.NoteItem
 import me.androidbox.notes.domain.usecases.DeleteNoteUseCase
@@ -23,6 +24,7 @@ import me.androidbox.notes.presentation.note_details.model.NoteDetailsMode
 import me.androidbox.notes.presentation.note_details.utils.NoteDetailsTimeFormatter
 import net.orandja.either.Left
 import net.orandja.either.Right
+import kotlin.time.ExperimentalTime
 
 class NoteDetailsViewModel(
     private val updateNoteUseCase: UpdateNoteUseCase,
@@ -186,9 +188,9 @@ class NoteDetailsViewModel(
                     id = _state.value.noteId!!,
                     title = _state.value.inputTitle,
                     content = _state.value.inputContent,
-                    createdAt = _state.value.noteCreatedDateMillis ?: Clock.System.now()
+                    createdAt = _state.value.noteCreatedDateMillis ?: kotlin.time.Clock.System.now()
                         .toEpochMilliseconds(),
-                    lastEditedAt = Clock.System.now().toEpochMilliseconds()
+                    lastEditedAt = kotlin.time.Clock.System.now().toEpochMilliseconds()
                 )
                 val result = deleteNoteUseCase.execute(noteItem)
                 when (result) {
@@ -207,7 +209,7 @@ class NoteDetailsViewModel(
     }
 
     private suspend fun updateNote() {
-        val currentTimestamp = Clock.System.now().toEpochMilliseconds()
+        val currentTimestamp = kotlin.time.Clock.System.now().toEpochMilliseconds()
         val formattedTime = NoteDetailsTimeFormatter.toFormattedDateString(currentTimestamp)
         val state = _state.value
 

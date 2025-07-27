@@ -15,8 +15,10 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import me.androidbox.authentication.register.domain.use_case.FetchUserByUserNameUseCaseImp
 import me.androidbox.core.domain.SyncNoteScheduler
+import me.androidbox.notes.data.mappers.toNoteItemEntity
 import me.androidbox.notes.data.models.DeletedNoteMarkSyncEntity
 import me.androidbox.notes.data.models.NoteMarkPendingSyncDao
+import me.androidbox.notes.data.models.NoteMarkPendingSyncEntity
 import me.androidbox.notes.domain.model.NoteItem
 import java.util.concurrent.TimeUnit
 import kotlin.time.Duration
@@ -47,11 +49,15 @@ class SyncNoteWorkerScheduler(
             }
 
             is SyncNoteScheduler.SyncTypes.CreateNote -> {
-                val userId = fetchUserByUserNameUseCaseImp.execute()
+                val userName = fetchUserByUserNameUseCaseImp.execute()
 
-                if(userId != null) {
-                    scheduleCreateNoteWorker(syncTypes.noteItem, userId)
+                if(userName != null) {
+                    scheduleCreateNoteWorker(syncTypes.noteItem, userName)
                 }
+            }
+
+            is SyncNoteScheduler.SyncTypes.SyncAll -> {
+                scheduleSyncAllWorker()
             }
         }
     }
@@ -60,6 +66,26 @@ class SyncNoteWorkerScheduler(
         WorkManager.getInstance(context)
             .cancelAllWork()
             .await()
+    }
+
+    private suspend fun scheduleSyncAllWorker() {
+        val workRequest = OneTimeWorkRequestBuilder<SyncAllWorker>()
+            .addTag("syncAll_work")
+            .setConstraints(
+                Constraints.Builder()
+                    .setRequiredNetworkType(NetworkType.CONNECTED)
+                    .build()
+            )
+            .setBackoffCriteria(
+                backoffDelay = 2_000L,
+                backoffPolicy = BackoffPolicy.EXPONENTIAL,
+                timeUnit = TimeUnit.MILLISECONDS
+            )
+            .build()
+
+        applicationScope.launch {
+            workManager.enqueue(workRequest)
+        }.join()
     }
 
     private suspend fun scheduleDeleteRunWorker(noteId: String, userId: String) {
@@ -96,16 +122,13 @@ class SyncNoteWorkerScheduler(
         }.join()
     }
 
-    private suspend fun scheduleCreateNoteWorker(noteItem: NoteItem, userId: String) {
-
-/*
+    private suspend fun scheduleCreateNoteWorker(noteItem: NoteItem, userName: String) {
         val pendingNote = NoteMarkPendingSyncEntity(
             noteMark = noteItem.toNoteItemEntity(),
-            userId = userId
+            userName = userName
         )
 
         noteMarkPendingSyncDao.upsertNoteMarkPendingSyncEntity(pendingNote)
-*/
 
         val workRequest = OneTimeWorkRequestBuilder<CreateNoteWorker>()
             .addTag("create_work")
