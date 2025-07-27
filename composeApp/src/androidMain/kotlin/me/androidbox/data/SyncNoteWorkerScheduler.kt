@@ -1,12 +1,18 @@
 package me.androidbox.data
 
 import android.content.Context
-import androidx.work.*
+import androidx.work.BackoffPolicy
+import androidx.work.Constraints
+import androidx.work.NetworkType
+import androidx.work.PeriodicWorkRequestBuilder
+import androidx.work.WorkManager
+import androidx.work.await
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import me.androidbox.core.domain.SyncNoteScheduler
 import java.util.concurrent.TimeUnit
 import kotlin.time.Duration
+import kotlin.time.toJavaDuration
 
 class SyncNoteWorkerScheduler(
     private val context: Context,
@@ -28,7 +34,7 @@ class SyncNoteWorkerScheduler(
     }
 
     private suspend fun scheduleSyncAllWorker(interval: Duration) {
-        val workRequest = OneTimeWorkRequestBuilder<SyncAllWorker>()
+        val workRequest = PeriodicWorkRequestBuilder<SyncAllWorker>(interval.toJavaDuration())
             .addTag("syncAll_work")
             .setConstraints(
                 Constraints.Builder()
