@@ -17,3 +17,4 @@ Note take app, with a twist
 - [x] Reactive and responsive screen design
 - [x] Portrait, Landscape, and Tablet
 - [X] Work Manager
+- [X] Room DB
