@@ -1,16 +1,16 @@
+@file:OptIn(ExperimentalTime::class)
+
 package me.androidbox.notes.presentation.note_details.utils
 
-import kotlinx.datetime.Clock
-import kotlinx.datetime.Instant
 import kotlinx.datetime.TimeZone
-import kotlinx.datetime.toDateTimePeriod
 import kotlinx.datetime.toLocalDateTime
+import kotlin.time.ExperimentalTime
 
 object NoteDetailsTimeFormatter {
     const val FIVE_MINUTES_IN_MILLIS = 5 * 60 * 1000
     fun toFormattedDateString(timeMillis: Long): String {
-        val instant = Instant.fromEpochMilliseconds(timeMillis)
-        val currentTimeInstant = Clock.System.now()
+        val instant = kotlin.time.Instant.fromEpochMilliseconds(timeMillis)
+        val currentTimeInstant = kotlin.time.Clock.System.now()
         val date = instant.toLocalDateTime(TimeZone.currentSystemDefault())
 
         val subtractedTimeMillis = currentTimeInstant.minus(instant).inWholeMilliseconds

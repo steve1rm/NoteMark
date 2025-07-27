@@ -1,3 +1,5 @@
+@file:OptIn(ExperimentalTime::class)
+
 package me.androidbox.core.presentation.utils
 
 import co.touchlab.kermit.Logger
@@ -31,7 +33,7 @@ fun Long.toFormattedDate(): String {
 // reason":"1751065951816 is not a valid ISO timestamp in the format YYYY-MM-DDTHH:mm:ssZ.
 
 fun Long.toIsoFormat(): String {
-    val instant = Instant.fromEpochMilliseconds(this)
+    val instant = kotlin.time.Instant.fromEpochMilliseconds(this)
 
     Logger.d { "$this => $instant" }
 

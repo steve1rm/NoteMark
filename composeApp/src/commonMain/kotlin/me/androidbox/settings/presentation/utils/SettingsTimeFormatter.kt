@@ -1,11 +1,13 @@
+@file:OptIn(ExperimentalTime::class)
+
 package me.androidbox.settings.presentation.utils
 
-import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 import kotlin.time.Duration.Companion.days
 import kotlin.time.Duration.Companion.hours
+import kotlin.time.ExperimentalTime
 
 object SettingsTimeFormatter {
     fun formatDate(timeInMillis: Long?): String {
@@ -16,8 +18,8 @@ object SettingsTimeFormatter {
             return "Never synced"
         }
 
-        val instant = Instant.fromEpochMilliseconds(timeInMillis)
-        val currentTimeInstant = Clock.System.now()
+        val instant = kotlin.time.Instant.fromEpochMilliseconds(timeInMillis)
+        val currentTimeInstant = kotlin.time.Clock.System.now()
 
         val dateSubtractedInMillis = currentTimeInstant.minus(instant).inWholeMilliseconds
 
@@ -30,8 +32,8 @@ object SettingsTimeFormatter {
 
     private fun formatDateWeekly(timeInMillis: Long): String {
         val timeZone = TimeZone.UTC
-        val instant = Instant.fromEpochMilliseconds(timeInMillis)
-        val currentInstant = Clock.System.now()
+        val instant = kotlin.time.Instant.fromEpochMilliseconds(timeInMillis)
+        val currentInstant = kotlin.time.Clock.System.now()
 
         val duration = currentInstant - instant
 

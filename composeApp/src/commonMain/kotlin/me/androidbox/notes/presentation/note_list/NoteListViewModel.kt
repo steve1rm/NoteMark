@@ -4,27 +4,14 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.flow.onStart
-import kotlinx.coroutines.flow.receiveAsFlow
-import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import me.androidbox.ConnectivityManager
-import me.androidbox.core.domain.SyncNoteScheduler
-import me.androidbox.notes.domain.NotesRepository
 import me.androidbox.notes.domain.usecases.DeleteNoteUseCase
 import me.androidbox.notes.domain.usecases.FetchAllNotesUseCase
 import me.androidbox.notes.domain.usecases.FetchNotesUseCase
 import me.androidbox.notes.presentation.note_list.NoteListEvents.OnNavigateToEditNote
-import kotlin.time.Duration.Companion.minutes
 
 @OptIn(FlowPreview::class)
 class NoteListViewModel(
@@ -32,22 +19,13 @@ class NoteListViewModel(
     private val fetchAllNotesUseCase: FetchAllNotesUseCase,
     private val deleteNoteUseCase: DeleteNoteUseCase,
     private val connectivityManager: ConnectivityManager,
-    private val syncNoteScheduler: SyncNoteScheduler,
-    private val notesRepository: NotesRepository
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(NoteListUiState())
     val state = _state.asStateFlow()
 
     init {
-        viewModelScope.launch {
-            syncNoteScheduler.scheduleSync(SyncNoteScheduler.SyncTypes.FetchNotes(
-                interval = 15.minutes
-            ))
-        }
-
         fetchNotes()
-
         fetchConnectivityStatus()
     }
 

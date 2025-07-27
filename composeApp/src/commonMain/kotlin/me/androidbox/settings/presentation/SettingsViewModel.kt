@@ -4,7 +4,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
@@ -21,6 +20,8 @@ import me.androidbox.notes.domain.NotesRepository
 import me.androidbox.notes.domain.usecases.NukeAllNotesUseCase
 import me.androidbox.settings.presentation.SettingsEvent.logoutSuccess
 import me.androidbox.settings.presentation.SettingsEvent.onShowMessage
+import me.androidbox.settings.presentation.model.SyncInterval
+import kotlin.time.Duration.Companion.minutes
 
 class SettingsViewModel(
     private val logoutUseCase: LogoutUseCase,
@@ -92,6 +93,23 @@ class SettingsViewModel(
                         isSyncIntervalPopupVisible = false
                     )
                 }
+
+                viewModelScope.launch {
+                    when(settingsAction.syncInterval) {
+                        SyncInterval.MINUTES_15 -> {
+                            syncNoteScheduler.scheduleSync(syncTypes = SyncNoteScheduler.SyncTypes.SyncAll(interval = 15.minutes))
+                        }
+                        SyncInterval.MINUTES_30 -> {
+                            syncNoteScheduler.scheduleSync(syncTypes = SyncNoteScheduler.SyncTypes.SyncAll(interval = 30.minutes))
+                        }
+                        SyncInterval.MINUTES_60 -> {
+                            syncNoteScheduler.scheduleSync(syncTypes = SyncNoteScheduler.SyncTypes.SyncAll(interval = 60.minutes))
+                        }
+                        SyncInterval.MANUAL -> {
+                            /* no-op */
+                        }
+                    }
+                }
             }
 
             SettingsAction.OnSyncDataNow -> {
@@ -101,9 +119,6 @@ class SettingsViewModel(
                             isLoadingSync = true
                         )
                     }
-
-                    /** Small delay to show indicator, remove this later, just a hack for submission */
-                    delay(300)
 
                     notesRepository.syncPendingNotes()
 

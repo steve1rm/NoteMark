@@ -5,9 +5,7 @@ import androidx.sqlite.driver.bundled.BundledSQLiteDriver
 import kotlinx.coroutines.Dispatchers
 import me.androidbox.core.data.NoteMarkDatabase
 import me.androidbox.core.domain.SyncNoteScheduler
-import me.androidbox.data.CreateNoteWorker
-import me.androidbox.data.DeleteNoteWorker
-import me.androidbox.data.FetchNotesWorker
+import me.androidbox.data.SyncAllWorker
 import me.androidbox.data.SyncNoteWorkerScheduler
 import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.workmanager.dsl.workerOf
@@ -42,9 +40,18 @@ val androidSpecificModule = module {
     }
 
     /** Workers */
-    workerOf(::FetchNotesWorker)
-    workerOf(::DeleteNoteWorker)
-    workerOf(::CreateNoteWorker)
+  /*  single<WorkerFactory> {
+        KoinWorkerFactory()
+    }*/
+
+     workerOf(::SyncAllWorker)
+    /*worker { (context: Context, workerParameters: WorkerParameters) ->
+        SyncAllWorker(
+            context = context,
+            workerParameters = workerParameters,
+            notesRepository = get<NotesRepository>()
+        )
+    }*/
 
     singleOf(::SyncNoteWorkerScheduler).bind<SyncNoteScheduler>()
 }
