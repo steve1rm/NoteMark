@@ -16,3 +16,4 @@ Note take app, with a twist
 - [X] kermit for logging
 - [x] Reactive and responsive screen design
 - [x] Portrait, Landscape, and Tablet
+- [X] Work Manager
