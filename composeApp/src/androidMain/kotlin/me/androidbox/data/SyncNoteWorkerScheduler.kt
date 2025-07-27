@@ -4,16 +4,12 @@ import android.content.Context
 import androidx.work.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
-import me.androidbox.authentication.register.domain.use_case.FetchUserByUserNameUseCaseImp
 import me.androidbox.core.domain.SyncNoteScheduler
-import me.androidbox.notes.data.models.NoteMarkPendingSyncDao
 import java.util.concurrent.TimeUnit
 import kotlin.time.Duration
 
 class SyncNoteWorkerScheduler(
     private val context: Context,
-    private val noteMarkPendingSyncDao: NoteMarkPendingSyncDao,
-    private val fetchUserByUserNameUseCaseImp: FetchUserByUserNameUseCaseImp,
     private val applicationScope: CoroutineScope
 ) : SyncNoteScheduler {
 
