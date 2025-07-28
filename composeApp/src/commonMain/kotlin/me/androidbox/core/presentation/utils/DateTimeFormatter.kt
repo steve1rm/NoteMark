@@ -4,9 +4,16 @@ package me.androidbox.core.presentation.utils
 
 import co.touchlab.kermit.Logger
 import kotlinx.datetime.Instant
+import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
+import kotlinx.datetime.format
+import kotlinx.datetime.format.MonthNames
+import kotlinx.datetime.format.Padding
+import kotlinx.datetime.minus
 import kotlinx.datetime.toLocalDateTime
 import kotlin.time.Clock
+import kotlin.time.Duration.Companion.hours
+import kotlin.time.Duration.Companion.minutes
 import kotlin.time.ExperimentalTime
 
 @OptIn(ExperimentalTime::class)
@@ -57,4 +64,50 @@ fun String.toEpochMilliSeconds(): Long {
 
         throw IllegalArgumentException("Failed to convert to epoch millis seconds")
     }
+}
+
+fun Long.toSyncFormattedDateTime(): String {
+    val syncDateTimeResult = if(this == 0L) {
+        "Never synced"
+    }
+    else {
+        val syncDateTime = kotlin.time.Instant.fromEpochMilliseconds(this)
+            .toLocalDateTime(TimeZone.currentSystemDefault())
+
+        val currentDateTime = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
+        val period = syncDateTime.date.minus(currentDateTime.date)
+
+        if(syncDateTime.minute - currentDateTime.minute <= 5) {
+            "Just now"
+        }
+        else if(period.days <= 7) {
+            when  {
+                period.minutes <= 60.minutes.inWholeMinutes -> {
+                   "${period.minutes} minutes ago"
+                }
+                period.hours <= 24.hours.inWholeHours -> {
+                    "${period.hours} hours ago"
+                }
+                else -> {
+                    "${period.days} days ago"
+                }
+            }
+        }
+        else {
+            syncDateTime.format(
+                format = LocalDateTime.Format {
+                    this.day(Padding.NONE)
+                    this.chars(" ")
+                    this.monthName(MonthNames.ENGLISH_ABBREVIATED)
+                    this.chars(" ")
+                    this.year(Padding.NONE)
+                    this.minute(Padding.NONE)
+                    this.chars(":")
+                    this.hour(Padding.NONE)
+                }
+            )
+        }
+    }
+
+    return syncDateTimeResult
 }
