@@ -16,6 +16,7 @@ import me.androidbox.authentication.register.domain.use_case.RegisterUseCase
 import me.androidbox.authentication.register.presentation.model.ValidationResult
 import me.androidbox.core.models.DataError
 import me.androidbox.emailValid
+import me.androidbox.settings.presentation.model.SyncInterval
 import me.androidbox.user.domain.User
 import me.androidbox.user.domain.UserRepository
 import net.orandja.either.Left
@@ -93,7 +94,9 @@ class RegisterViewModel(
                         }
                         userRepository.saveUser(
                             User(
-                                userName = state.value.username
+                                userName = state.value.username,
+                                syncInterval = SyncInterval.MANUAL,
+                                syncTimeStamp = 0L
                             )
                         )
 

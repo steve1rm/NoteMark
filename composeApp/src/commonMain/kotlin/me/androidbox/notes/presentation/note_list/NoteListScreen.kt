@@ -18,13 +18,13 @@ import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.foundation.lazy.staggeredgrid.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
@@ -158,7 +158,8 @@ fun NoteListScreen(
                 modifier = Modifier
                     .background(MaterialTheme.colorScheme.surface)
                     .padding(innerPadding)
-                    .padding(all = 16.dp)
+                    .padding(all = 16.dp),
+                contentAlignment = Alignment.Center
             ) {
                 if (state.notesList.isNotEmpty()) {
                     LazyVerticalStaggeredGrid(
@@ -202,6 +203,10 @@ fun NoteListScreen(
                         )
                     }
                 }
+
+                if(state.isLoading) {
+                    CircularProgressIndicator()
+                }
             }
         },
         floatingActionButton = {
@@ -211,7 +216,6 @@ fun NoteListScreen(
                 onClick = {
                     onAction(NoteListActions.OnNavigateToEditNoteWithNewNote)
                 }
-
             )
         },
         modifier = modifier

@@ -5,7 +5,13 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import me.androidbox.ConnectivityManager
 import me.androidbox.notes.domain.usecases.DeleteNoteUseCase
@@ -24,22 +30,40 @@ class NoteListViewModel(
     private val _state = MutableStateFlow(NoteListUiState())
     val state = _state.asStateFlow()
 
+    private val _events = Channel<NoteListEvents>()
+    val events = _events.receiveAsFlow()
+
+
     init {
         fetchNotes()
         fetchConnectivityStatus()
     }
 
     private fun fetchNotes() {
+
+        // QUESTION: Should we have a try..catch here?
         viewModelScope.launch {
-            fetchNotesUseCase.execute()
-                .onEach { listOfNoteItems ->
-                    _state.update { noteListUiState ->
-                        noteListUiState.copy(
-                            notesList = listOfNoteItems.toPersistentList()
-                        )
+            _state.update { state ->
+                state.copy(isLoading = true)
+            }
+
+        //    launch {
+                println("UPDATE 1 ${state.value.isLoading}")
+                fetchNotesUseCase.execute()
+                    .onEach { listOfNoteItems ->
+                        _state.update { noteListUiState ->
+                            noteListUiState.copy(
+                                notesList = listOfNoteItems.toPersistentList(),
+                                isLoading = false
+                            )
+                        }
+
+                        println("UPDATE 2 ${state.value.isLoading}")
                     }
-                }
-                .launchIn(viewModelScope)
+                    .launchIn(viewModelScope)
+//            }
+
+
             fetchAllNotesUseCase.execute()
         }
     }
@@ -54,10 +78,6 @@ class NoteListViewModel(
                 }
         }
     }
-
-    private val _events = Channel<NoteListEvents>()
-    val events = _events.receiveAsFlow()
-
 
     fun onAction(action: NoteListActions) {
         when (action) {

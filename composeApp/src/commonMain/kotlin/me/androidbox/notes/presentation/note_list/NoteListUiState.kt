@@ -9,5 +9,6 @@ data class NoteListUiState(
     val notesList: ImmutableList<NoteItem> = persistentListOf(),
     val showDeleteDialog: Boolean = false,
     val currentSelectedNote: NoteItem? = null,
-    val isConnected: Boolean = false
+    val isConnected: Boolean = false,
+    val isLoading: Boolean = false
 )
