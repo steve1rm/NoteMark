@@ -1,4 +1,6 @@
 # NoteMark
+
+# In a Nutshell
 Note take app, with a twist
 
 # Libraries and tech stack
