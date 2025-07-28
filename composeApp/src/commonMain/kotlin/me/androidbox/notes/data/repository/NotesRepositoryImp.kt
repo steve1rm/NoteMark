@@ -144,7 +144,7 @@ class NotesRepositoryImp(
         val isPendingSync =
             noteMarkPendingSyncDao.getNoteMarkPendingSyncEntity(noteItem.id)
 
-        if(isPendingSync !=null) {
+        if(isPendingSync != null) {
             noteMarkPendingSyncDao.deleteDeletedNoteMarkSyncEntity(noteItem.id)
             return Left(Unit)
         }
@@ -155,7 +155,7 @@ class NotesRepositoryImp(
          * navigates away from the current screen and save remotely
          */
         val result = applicationScope.async {
-            val networkResult = notesRemoteDataSource.createNote(noteItem.toNoteItemDto())
+            val networkResult = notesRemoteDataSource.deleteNote(noteItem.id)
 
             when (networkResult) {
                 is Left -> {
