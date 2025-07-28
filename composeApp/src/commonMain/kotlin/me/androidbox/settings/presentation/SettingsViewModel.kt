@@ -1,3 +1,5 @@
+@file:OptIn(ExperimentalTime::class)
+
 package me.androidbox.settings.presentation
 
 import androidx.lifecycle.ViewModel
@@ -16,16 +18,23 @@ import me.androidbox.NoteMarkPreferences
 import me.androidbox.authentication.login.domain.model.LogoutRequest
 import me.androidbox.authentication.login.domain.use_case.LogoutUseCase
 import me.androidbox.core.domain.SyncNoteScheduler
+import me.androidbox.core.presentation.utils.toSyncFormattedDateTime
 import me.androidbox.notes.domain.NotesRepository
 import me.androidbox.notes.domain.usecases.NukeAllNotesUseCase
 import me.androidbox.settings.presentation.SettingsEvent.logoutSuccess
 import me.androidbox.settings.presentation.SettingsEvent.onShowMessage
 import me.androidbox.settings.presentation.model.SyncInterval
+import me.androidbox.user.domain.User
+import me.androidbox.user.domain.UserRepository
+import net.orandja.either.Left
+import kotlin.time.Clock
 import kotlin.time.Duration.Companion.minutes
+import kotlin.time.ExperimentalTime
 
 class SettingsViewModel(
     private val logoutUseCase: LogoutUseCase,
     private val nukeAllNotesUseCase: NukeAllNotesUseCase,
+    private val userRepository: UserRepository,
     private val noteMarkPreferences: NoteMarkPreferences,
     private val syncNoteScheduler: SyncNoteScheduler,
     private val notesRepository: NotesRepository,
@@ -45,6 +54,20 @@ class SettingsViewModel(
             SharingStarted.Eagerly,
             false
         )
+
+    init {
+        viewModelScope.launch {
+            val user = userRepository.fetchUser(noteMarkPreferences.getUserName()!!)
+
+            if(user is Left) {
+                _state.update { state ->
+                    state.copy(
+                        selectedSyncInterval = user.value.syncInterval,
+                        lastSyncTime = user.value.syncTimeStamp.toSyncFormattedDateTime())
+                }
+            }
+        }
+    }
 
     fun action(settingsAction: SettingsAction) {
         when (settingsAction) {
@@ -109,6 +132,14 @@ class SettingsViewModel(
                             /* no-op */
                         }
                     }
+
+                    userRepository.saveUser(
+                        User(
+                            userName = noteMarkPreferences.getUserName()!!,
+                            syncInterval = state.value.selectedSyncInterval,
+                            syncTimeStamp = Clock.System.now().toEpochMilliseconds()
+                        )
+                    )
                 }
             }
 
