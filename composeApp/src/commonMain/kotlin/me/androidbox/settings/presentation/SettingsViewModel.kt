@@ -153,15 +153,22 @@ class SettingsViewModel(
 
                     notesRepository.syncPendingNotes()
 
+                    userRepository.saveUser(
+                        User(
+                            userName = noteMarkPreferences.getUserName()!!,
+                            syncInterval = state.value.selectedSyncInterval,
+                            syncTimeStamp = Clock.System.now().toEpochMilliseconds()
+                        )
+                    )
+
                     _state.update { uiState ->
                         uiState.copy(
                             isLoadingSync = false,
-                            lastSyncTime = "Just now" /** Should calculate the time difference from the last sync, just a hack for submission */
+                            lastSyncTime = "Just now"
                         )
                     }
                 }
             }
-
         }
     }
 }
