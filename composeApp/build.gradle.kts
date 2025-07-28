@@ -80,6 +80,8 @@ kotlin {
             implementation(libs.androidx.core.splashscreen)
             implementation(libs.androidx.work.runtime)
             implementation(libs.koin.androidx.workmanager)
+            implementation("com.facebook.stetho:stetho:1.6.0")
+            implementation("com.facebook.stetho:stetho-okhttp3:1.6.0")
         }
 
         iosMain.dependencies {
