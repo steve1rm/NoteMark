@@ -223,6 +223,7 @@ class NotesRepositoryImp(
                     .map { noteItem -> noteItem.toNoteItemEntity() }
 
                 applicationScope.async {
+                    // QUESTION: Is it ok to clear all notes before fetching new one each time
                     notesLocalDataSource.nukeAllNotes()
                     notesLocalDataSource.saveAllNotes(notes)
                     Left(Unit)

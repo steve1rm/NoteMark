@@ -33,38 +33,41 @@ class NoteListViewModel(
     private val _events = Channel<NoteListEvents>()
     val events = _events.receiveAsFlow()
 
-
     init {
         fetchNotes()
         fetchConnectivityStatus()
     }
 
     private fun fetchNotes() {
-
         // QUESTION: Should we have a try..catch here?
         viewModelScope.launch {
             _state.update { state ->
                 state.copy(isLoading = true)
             }
 
-        //    launch {
-                println("UPDATE 1 ${state.value.isLoading}")
-                fetchNotesUseCase.execute()
-                    .onEach { listOfNoteItems ->
-                        _state.update { noteListUiState ->
-                            noteListUiState.copy(
-                                notesList = listOfNoteItems.toPersistentList(),
-                                isLoading = false
-                            )
-                        }
+            // Observe changes in the DB
+            observeChangesInDb()
 
-                        println("UPDATE 2 ${state.value.isLoading}")
-                    }
-                    .launchIn(viewModelScope)
-//            }
-
-
+            // Fetches and inserts into DB
             fetchAllNotesUseCase.execute()
+
+            _state.update { state ->
+                state.copy(isLoading = false)
+            }
+        }
+    }
+
+    private fun observeChangesInDb() {
+        viewModelScope.launch {
+            fetchNotesUseCase.execute()
+                .onEach { listOfNoteItems ->
+                    _state.update { noteListUiState ->
+                        noteListUiState.copy(
+                            notesList = listOfNoteItems.toPersistentList()
+                        )
+                    }
+                }
+                .launchIn(viewModelScope)
         }
     }
 
