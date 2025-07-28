@@ -5,12 +5,16 @@ import me.androidbox.user.domain.User
 
 fun UserEntity.toUser(): User {
     return User(
-        userName = this.userName
+        userName = this.userName,
+        syncInterval = this.syncInterval,
+        syncTimeStamp = this.syncTimeStamp
     )
 }
 
 fun User.toUserEntity(): UserEntity {
     return UserEntity(
-        userName = this.userName
+        userName = this.userName,
+        syncInterval = this.syncInterval,
+        syncTimeStamp = this.syncTimeStamp
     )
 }

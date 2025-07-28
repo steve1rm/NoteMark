@@ -47,22 +47,40 @@ class NotesRepositoryImp(
             return localResult
         }
 
-        /** Adds to the sync table to be either sync'ed manually or intervals */
-        val userName = fetchUserByUserNameUseCaseImp.execute()
+        /**
+         * We have saved the note to the local database
+         * Let's protect the following code from being canceled when the user
+         * navigates away from the current screen and save remotely
+         */
+        val result = applicationScope.async {
+            val networkResult = notesRemoteDataSource.createNote(noteItem.toNoteItemDto())
 
-        if(userName != null) {
-            val pendingNote = NoteMarkPendingSyncEntity(
-                noteMark = noteItem.toNoteItemEntity(),
-                userName = userName
-            )
+            when (networkResult) {
+                is Left -> {
+                    Left(Unit)
+                }
 
-            noteMarkPendingSyncDao.upsertNoteMarkPendingSyncEntity(pendingNote)
+                is Right -> {
+                    /** Adds to the sync table to be either sync'ed manually or intervals */
+                    val userName = fetchUserByUserNameUseCaseImp.execute()
 
-            return Left(Unit)
+                    if(userName != null) {
+                        val pendingNote = NoteMarkPendingSyncEntity(
+                            noteMark = noteItem.toNoteItemEntity(),
+                            userName = userName
+                        )
+
+                        noteMarkPendingSyncDao.upsertNoteMarkPendingSyncEntity(pendingNote)
+                        Left(Unit)
+                    }
+                    else {
+                        Right(DataError.Local.EMPTY)
+                    }
+                }
+            }
         }
-        else {
-            return Right(DataError.Local.EMPTY)
-        }
+
+        return result.await()
     }
 
     override suspend fun updateNote(noteItem: NoteItem): Either<Unit, DataError> {
@@ -74,22 +92,40 @@ class NotesRepositoryImp(
             return localResult
         }
 
-        /** Adds to the sync table to be either sync'ed manually or intervals */
-        val userName = fetchUserByUserNameUseCaseImp.execute()
+        /**
+         * We have saved the note to the local database
+         * Let's protect the following code from being canceled when the user
+         * navigates away from the current screen and save remotely
+         */
+        val result = applicationScope.async {
+            val networkResult = notesRemoteDataSource.createNote(noteItem.toNoteItemDto())
 
-        if(userName != null) {
-            val pendingNote = NoteMarkPendingSyncEntity(
-                noteMark = noteItem.toNoteItemEntity(),
-                userName = userName
-            )
+            when (networkResult) {
+                is Left -> {
+                    Left(Unit)
+                }
 
-            noteMarkPendingSyncDao.upsertNoteMarkPendingSyncEntity(pendingNote)
+                is Right -> {
+                    /** Adds to the sync table to be either sync'ed manually or intervals */
+                    val userName = fetchUserByUserNameUseCaseImp.execute()
 
-            return Left(Unit)
+                    if(userName != null) {
+                        val pendingNote = NoteMarkPendingSyncEntity(
+                            noteMark = noteItem.toNoteItemEntity(),
+                            userName = userName
+                        )
+
+                        noteMarkPendingSyncDao.upsertNoteMarkPendingSyncEntity(pendingNote)
+                        Left(Unit)
+                    }
+                    else {
+                        Right(DataError.Local.EMPTY)
+                    }
+                }
+            }
         }
-        else {
-            return Right(DataError.Local.EMPTY)
-        }
+
+        return result.await()
     }
 
     override suspend fun deleteNote(noteItem: NoteItem): Either<Unit, DataError> {
@@ -108,27 +144,47 @@ class NotesRepositoryImp(
         val isPendingSync =
             noteMarkPendingSyncDao.getNoteMarkPendingSyncEntity(noteItem.id)
 
-        if(isPendingSync !=null) {
+        if(isPendingSync != null) {
             noteMarkPendingSyncDao.deleteDeletedNoteMarkSyncEntity(noteItem.id)
             return Left(Unit)
         }
 
-        val userName = fetchUserByUserNameUseCaseImp.execute()
+        /**
+         * We have saved the note to the local database
+         * Let's protect the following code from being canceled when the user
+         * navigates away from the current screen and save remotely
+         */
+        val result = applicationScope.async {
+            val networkResult = notesRemoteDataSource.deleteNote(noteItem.id)
 
-        if(userName != null) {
-            val deleteItem = DeletedNoteMarkSyncEntity(
-                id = noteItem.id,
-                userId = userName
-            )
-            noteMarkPendingSyncDao.upsertDeletedNoteMarkEntity(
-                deletedNoteMarkSyncEntity = deleteItem
-            )
+            when (networkResult) {
+                is Left -> {
+                    Left(Unit)
+                }
 
-            return Left(Unit)
+                is Right -> {
+                    /** Adds to the sync table to be either sync'ed manually or intervals */
+                    val userName = fetchUserByUserNameUseCaseImp.execute()
+
+                    if(userName != null) {
+                        val deleteItem = DeletedNoteMarkSyncEntity(
+                            id = noteItem.id,
+                            userId = userName
+                        )
+                        noteMarkPendingSyncDao.upsertDeletedNoteMarkEntity(
+                            deletedNoteMarkSyncEntity = deleteItem
+                        )
+
+                        Left(Unit)
+                    }
+                    else {
+                        Right(DataError.Local.EMPTY)
+                    }
+                }
+            }
         }
-        else {
-            return Right(DataError.Local.EMPTY)
-        }
+
+        return result.await()
     }
 
     override suspend fun fetchNotes(

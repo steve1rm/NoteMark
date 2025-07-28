@@ -19,6 +19,7 @@ import me.androidbox.authentication.login.domain.use_case.LoginUseCaseV2
 import me.androidbox.core.models.DataError
 import me.androidbox.emailValid
 import me.androidbox.notes.domain.usecases.GetProfilePictureUseCase
+import me.androidbox.settings.presentation.model.SyncInterval
 import me.androidbox.user.domain.User
 import me.androidbox.user.domain.UserRepository
 import net.orandja.either.Left
@@ -89,6 +90,8 @@ class LoginViewModel(
                                 userRepository.saveUser(
                                     User(
                                         userName = result.left.username,
+                                        syncInterval = SyncInterval.MANUAL,
+                                        syncTimeStamp = 0L
                                     )
                                 )
                                 _events.send(AuthenticationEvents.OnAuthenticationSuccess(username = profileUsername))
