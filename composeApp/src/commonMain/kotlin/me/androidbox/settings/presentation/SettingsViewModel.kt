@@ -6,7 +6,12 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import me.androidbox.ConnectivityManager
 import me.androidbox.NoteMarkPreferences
@@ -20,7 +25,6 @@ import me.androidbox.notes.domain.usecases.NukeAllNotesUseCase
 import me.androidbox.settings.presentation.SettingsEvent.logoutSuccess
 import me.androidbox.settings.presentation.SettingsEvent.onShowMessage
 import me.androidbox.settings.presentation.model.SyncInterval
-import me.androidbox.user.domain.User
 import me.androidbox.user.domain.UserRepository
 import net.orandja.either.Left
 import kotlin.time.Clock
@@ -54,6 +58,8 @@ class SettingsViewModel(
     init {
         viewModelScope.launch {
             val user = userRepository.fetchUser(noteMarkPreferences.getUserName()!!)
+
+            println(user)
 
             if(user is Left) {
                 _state.update { state ->
@@ -129,11 +135,13 @@ class SettingsViewModel(
                         }
                     }
 
+                    /** We just want to update the sync interval and leave the sync data only
+                     *  when we manually click the `sync data` button */
+                    val user = userRepository.fetchUser(noteMarkPreferences.getUserName()!!)
                     userRepository.saveUser(
-                        User(
+                        user.left.copy(
                             userName = noteMarkPreferences.getUserName()!!,
-                            syncInterval = state.value.selectedSyncInterval,
-                            syncTimeStamp = Clock.System.now().toEpochMilliseconds()
+                            syncInterval = state.value.selectedSyncInterval
                         )
                     )
                 }
@@ -149,20 +157,22 @@ class SettingsViewModel(
 
                     notesRepository.syncPendingNotes()
 
-                    userRepository.saveUser(
-                        User(
-                            userName = noteMarkPreferences.getUserName()!!,
-                            syncInterval = state.value.selectedSyncInterval,
-                            syncTimeStamp = Clock.System.now().toEpochMilliseconds()
-                        )
-                    )
-
                     _state.update { uiState ->
                         uiState.copy(
                             isLoadingSync = false,
                             lastSyncTime = "Just now"
                         )
                     }
+
+                    /** We just want to update the sync interval and leave the sync data only
+                     *  when we manually click the `sync data` button */
+                    val user = userRepository.fetchUser(noteMarkPreferences.getUserName()!!)
+                    userRepository.saveUser(
+                        user.left.copy(
+                            userName = noteMarkPreferences.getUserName()!!,
+                            syncTimeStamp = Clock.System.now().toEpochMilliseconds()
+                        )
+                    )
                 }
             }
 
