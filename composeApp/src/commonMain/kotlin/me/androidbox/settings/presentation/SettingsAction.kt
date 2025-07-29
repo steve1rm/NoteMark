@@ -7,4 +7,5 @@ sealed interface SettingsAction {
     data object OnSyncIntervalOptionClicked : SettingsAction
     data class OnSyncIntervalSelected(val syncInterval: SyncInterval) : SettingsAction
     data object OnSyncDataNow : SettingsAction
+    data object OnBackClicked : SettingsAction
 }
