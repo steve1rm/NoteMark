@@ -12,7 +12,8 @@ import org.koin.compose.viewmodel.koinViewModel
 
 @Composable
 fun SettingsScreenRoot(
-    onLogoutClicked: () -> Unit
+    onLogoutClicked: () -> Unit,
+    onBackClicked: () -> Unit
 ) {
     val settingsViewModel = koinViewModel<SettingsViewModel>()
     val state by settingsViewModel.state.collectAsStateWithLifecycle()
@@ -43,7 +44,16 @@ fun SettingsScreenRoot(
 
     SettingsScreen(
         state = state,
-        onAction = settingsViewModel::action,
+        onAction = { settingsAction ->
+            when(settingsAction) {
+                SettingsAction.OnBackClicked -> {
+                    onBackClicked()
+                }
+                else -> {
+                    settingsViewModel.action(settingsAction)
+                }
+            }
+        },
         snackState = snackState
     )
 }

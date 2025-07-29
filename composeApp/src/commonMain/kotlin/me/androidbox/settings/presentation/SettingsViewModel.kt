@@ -6,18 +6,14 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.receiveAsFlow
-import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import me.androidbox.ConnectivityManager
 import me.androidbox.NoteMarkPreferences
 import me.androidbox.authentication.login.domain.model.LogoutRequest
 import me.androidbox.authentication.login.domain.use_case.LogoutUseCase
 import me.androidbox.core.domain.SyncNoteScheduler
+import me.androidbox.core.domain.SyncNoteScheduler.SyncTypes.SyncAll
 import me.androidbox.core.presentation.utils.toSyncFormattedDateTime
 import me.androidbox.notes.domain.NotesRepository
 import me.androidbox.notes.domain.usecases.NukeAllNotesUseCase
@@ -120,13 +116,13 @@ class SettingsViewModel(
                 viewModelScope.launch {
                     when(settingsAction.syncInterval) {
                         SyncInterval.MINUTES_15 -> {
-                            syncNoteScheduler.scheduleSync(syncTypes = SyncNoteScheduler.SyncTypes.SyncAll(interval = 15.minutes))
+                            syncNoteScheduler.scheduleSync(syncTypes = SyncAll(interval = 15.minutes))
                         }
                         SyncInterval.MINUTES_30 -> {
-                            syncNoteScheduler.scheduleSync(syncTypes = SyncNoteScheduler.SyncTypes.SyncAll(interval = 30.minutes))
+                            syncNoteScheduler.scheduleSync(syncTypes = SyncAll(interval = 30.minutes))
                         }
                         SyncInterval.MINUTES_60 -> {
-                            syncNoteScheduler.scheduleSync(syncTypes = SyncNoteScheduler.SyncTypes.SyncAll(interval = 60.minutes))
+                            syncNoteScheduler.scheduleSync(syncTypes = SyncAll(interval = 60.minutes))
                         }
                         SyncInterval.MANUAL -> {
                             /* no-op */
@@ -168,6 +164,10 @@ class SettingsViewModel(
                         )
                     }
                 }
+            }
+
+            SettingsAction.OnBackClicked -> {
+                /* no-op */
             }
         }
     }

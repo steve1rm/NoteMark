@@ -45,6 +45,9 @@ fun TestNavigation() {
                     navHostController.navigate(route = NavGraph.AuthenticationGraph) {
                         this.popUpTo(navHostController.graph.id)
                     }
+                },
+                onBackClicked = {
+                    navHostController.popBackStack()
                 }
             )
         }
