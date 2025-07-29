@@ -9,7 +9,6 @@ import kotlinx.datetime.TimeZone
 import kotlinx.datetime.format
 import kotlinx.datetime.format.MonthNames
 import kotlinx.datetime.format.Padding
-import kotlinx.datetime.minus
 import kotlinx.datetime.toLocalDateTime
 import kotlin.time.Clock
 import kotlin.time.Duration.Companion.hours
@@ -72,31 +71,29 @@ fun Long.toSyncFormattedDateTime(): String {
     }
     else {
         val syncDateTime = kotlin.time.Instant.fromEpochMilliseconds(this)
-            .toLocalDateTime(TimeZone.currentSystemDefault())
+        val currentDateTime = Clock.System.now()
+        val period = currentDateTime - syncDateTime
 
-        val currentDateTime = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault())
-        val period = syncDateTime.date.minus(currentDateTime.date)
-
-        if(syncDateTime.minute - currentDateTime.minute <= 5) {
+        if(period.inWholeMinutes<= 5) {
             "Just now"
         }
-        else if(period.days <= 7) {
+        else if(period.inWholeDays <= 7) {
             when  {
-                period.minutes <= 60.minutes.inWholeMinutes -> {
-                   "${period.minutes} minutes ago"
+                period.inWholeMinutes <= 60.minutes.inWholeMinutes -> {
+                   "${period.inWholeMinutes} minutes ago"
                 }
-                period.hours <= 24.hours.inWholeHours -> {
-                    "${period.hours} hours ago"
+                period.inWholeHours <= 24.hours.inWholeHours -> {
+                    "${period.inWholeHours} hours ago"
                 }
                 else -> {
-                    "${period.days} days ago"
+                    "${period.inWholeDays} days ago"
                 }
             }
         }
         else {
-            syncDateTime.format(
+            syncDateTime.toLocalDateTime(TimeZone.currentSystemDefault()).format(
                 format = LocalDateTime.Format {
-                    this.day(Padding.NONE)
+                    this.day()
                     this.chars(" ")
                     this.monthName(MonthNames.ENGLISH_ABBREVIATED)
                     this.chars(" ")
