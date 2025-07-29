@@ -1,7 +1,7 @@
 # NoteMark
 
 # In a Nutshell
-Note take app, with a twist
+Note taking app, with a twist
 
 # Libraries and tech stack
 - [x] Jetpack Compose
