@@ -98,7 +98,7 @@ class NotesRepositoryImp(
          * navigates away from the current screen and save remotely
          */
         val result = applicationScope.async {
-            val networkResult = notesRemoteDataSource.createNote(noteItem.toNoteItemDto())
+            val networkResult = notesRemoteDataSource.updateNote(noteItem.toNoteItemDto())
 
             when (networkResult) {
                 is Left -> {
