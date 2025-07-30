@@ -25,6 +25,7 @@ import me.androidbox.notes.domain.usecases.NukeAllNotesUseCase
 import me.androidbox.settings.presentation.SettingsEvent.logoutSuccess
 import me.androidbox.settings.presentation.SettingsEvent.onShowMessage
 import me.androidbox.settings.presentation.model.SyncInterval
+import me.androidbox.user.domain.User
 import me.androidbox.user.domain.UserRepository
 import net.orandja.either.Left
 import kotlin.time.Clock
@@ -138,12 +139,23 @@ class SettingsViewModel(
                     /** We just want to update the sync interval and leave the sync data only
                      *  when we manually click the `sync data` button */
                     val user = userRepository.fetchUser(noteMarkPreferences.getUserName()!!)
-                    userRepository.saveUser(
-                        user.left.copy(
-                            userName = noteMarkPreferences.getUserName()!!,
-                            syncInterval = state.value.selectedSyncInterval
+
+                    if(user is Left) {
+                        userRepository.saveUser(
+                            user.left.copy(
+                                userName = noteMarkPreferences.getUserName()!!,
+                                syncInterval = state.value.selectedSyncInterval
+                            )
                         )
-                    )
+                    }
+                    else {
+                        userRepository.saveUser(
+                            User(
+                                userName = noteMarkPreferences.getUserName()!!,
+                                syncInterval = state.value.selectedSyncInterval,
+                                syncTimeStamp = 0L
+                            ))
+                    }
                 }
             }
 
@@ -166,11 +178,11 @@ class SettingsViewModel(
 
                     /** We just want to update the sync interval and leave the sync data only
                      *  when we manually click the `sync data` button */
-                    val user = userRepository.fetchUser(noteMarkPreferences.getUserName()!!)
                     userRepository.saveUser(
-                        user.left.copy(
+                        User(
                             userName = noteMarkPreferences.getUserName()!!,
-                            syncTimeStamp = Clock.System.now().toEpochMilliseconds()
+                            syncTimeStamp = Clock.System.now().toEpochMilliseconds(),
+                            syncInterval = state.value.selectedSyncInterval
                         )
                     )
                 }
