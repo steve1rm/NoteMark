@@ -65,6 +65,9 @@ class AuthorizationRemoteDataSourceImp(
             response
         }
 
+        // QUESTION: providers is not recognized
+        // httpClient.plugin(Auth).providers
+
         return safeResult
     }
 }
