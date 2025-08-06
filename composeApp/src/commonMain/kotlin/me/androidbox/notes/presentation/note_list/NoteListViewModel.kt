@@ -40,6 +40,9 @@ class NoteListViewModel(
 
     private fun fetchNotes() {
         // QUESTION: Should we have a try..catch here?
+        // FEEDBACK: Answer: Doesn't seem so
+        // (Good example of why these use cases can make the project harder to navigate,
+        // takes me 5+ clicks to find out)
         viewModelScope.launch {
             _state.update { state ->
                 state.copy(isLoading = true)
@@ -58,6 +61,10 @@ class NoteListViewModel(
     }
 
     private fun observeChangesInDb() {
+        // FEEDBACK:
+        // 1. Outer viewModelScope.launch is unnecessary
+        // 2. Make sure to cancel the old job, otherwise you'll add another independent
+        // collector with each notes fetch
         viewModelScope.launch {
             fetchNotesUseCase.execute()
                 .onEach { listOfNoteItems ->

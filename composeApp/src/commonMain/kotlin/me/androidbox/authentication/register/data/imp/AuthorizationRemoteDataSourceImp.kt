@@ -1,6 +1,8 @@
 package me.androidbox.authentication.register.data.imp
 
 import io.ktor.client.HttpClient
+import io.ktor.client.plugins.auth.authProvider
+import io.ktor.client.plugins.auth.providers.BearerAuthProvider
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
 import me.androidbox.authentication.login.data.LoginRequestDto
@@ -66,7 +68,10 @@ class AuthorizationRemoteDataSourceImp(
         }
 
         // QUESTION: providers is not recognized
-        // httpClient.plugin(Auth).providers
+//         httpClient.plugin(Auth).providers
+
+        // FEEDBACK: Has been changed to this in Ktor 3.x
+        httpClient.authProvider<BearerAuthProvider>()?.clearToken()
 
         return safeResult
     }

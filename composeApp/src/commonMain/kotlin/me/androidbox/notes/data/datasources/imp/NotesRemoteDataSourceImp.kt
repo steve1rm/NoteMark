@@ -15,6 +15,8 @@ import net.orandja.either.Either
 class NotesRemoteDataSourceImp(
     private val httpClient: HttpClient
 ) : NotesRemoteDataSource {
+
+    // FEEDBACK: If nothing is done with a variable assignment, return it directly
     override suspend fun createNote(noteItemDto: NoteItemDto): Either<NoteItemDto, DataError.Network> {
         val safeRequest = safeApiRequest<NoteItemDto> {
             val response = httpClient

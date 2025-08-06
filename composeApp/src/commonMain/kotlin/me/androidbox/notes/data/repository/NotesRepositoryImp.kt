@@ -224,6 +224,9 @@ class NotesRepositoryImp(
 
                 applicationScope.async {
                     // QUESTION: Is it ok to clear all notes before fetching new one each time
+
+                    // FEEDBACK: Answer: Yes, that's necessary to delete notes that have been
+                    // deleted server-side only (e.g. from a different device).
                     notesLocalDataSource.nukeAllNotes()
                     notesLocalDataSource.saveAllNotes(notes)
                     Left(Unit)
@@ -237,6 +240,8 @@ class NotesRepositoryImp(
 
     override suspend fun syncPendingNotes() {
         // QUESTION: Is it ok to have this dispatcher.IO here?
+
+        // FEEDBACK: Answer: It's not necessary, since you just call suspending functions
         withContext(dispatcher.IO) {
             val userName = fetchUserByUserNameUseCaseImp.execute()
 
@@ -255,6 +260,7 @@ class NotesRepositoryImp(
                         launch {
                             val noteItem = noteMarkPendingSyncEntity.noteMark.toNoteItem()
 
+                            // FEEDBACK: Notes being pushed to remote twice here
                             if(notesRemoteDataSource.createNote(noteItem.toNoteItemDto()) is Left) {
                                 applicationScope.launch {
                                     notesRemoteDataSource.createNote(
@@ -262,6 +268,8 @@ class NotesRepositoryImp(
                                     )
 
                                     // QUESTION Is it ok to delete right after send not to remote
+
+                                    // FEEDBACK: Answer, yes but only after having checked the result
                                     noteMarkPendingSyncDao.deleteNoteMarkPendingSyncEntity(noteItem.id)
                                 }.join()
                             }
@@ -291,6 +299,10 @@ class NotesRepositoryImp(
 
                 // QUESTION: Is it ok to fetch here after syncing?
                 // Will it still suspend if the user clicks back button?
+
+                // FEEDBACK: Answer: Whether it suspends depends on the coroutine scope this
+                // suspend function is called in. If it's viewModelScope, it will be cancelled
+                // when user goes back.
                 fetchAllNotes()
             }
         }

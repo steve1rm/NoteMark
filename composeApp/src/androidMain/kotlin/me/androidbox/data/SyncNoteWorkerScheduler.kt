@@ -48,6 +48,7 @@ class SyncNoteWorkerScheduler(
             )
             .build()
 
+        // FEEDBACK: Here, applicationScope.launch doesn't change anything
         applicationScope.launch {
             workManager.enqueue(workRequest)
         }.join()

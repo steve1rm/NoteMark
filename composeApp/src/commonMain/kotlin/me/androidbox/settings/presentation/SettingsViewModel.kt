@@ -60,6 +60,7 @@ class SettingsViewModel(
         viewModelScope.launch {
             val user = userRepository.fetchUser(noteMarkPreferences.getUserName()!!)
 
+            // FEEDBACK: println all over the place, can be a security issue
             println(user)
 
             if(user is Left) {
@@ -77,6 +78,7 @@ class SettingsViewModel(
             SettingsAction.OnLogout -> {
                 viewModelScope.launch {
                     if (isConnected.value) {
+                        // FEEDBACK: All this would be very valid logic for a use case
                         val refreshToken = noteMarkPreferences.getRefreshToken()
 
                         if (refreshToken != null) {
