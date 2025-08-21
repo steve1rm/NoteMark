@@ -8,12 +8,12 @@
 
 ## ✨ Features
 
-- **Create, edit, and delete notes** with ease
-- **Sync notes** (with pending sync management)
-- **User authentication** (login/register)
-- **Adaptive UI**: Portrait, landscape, and tablet support
-- **Responsive design**: Material Design 3
-- **Fast and reactive**: Kotlin coroutines, Flows, and MVI architecture
+- **Create, edit, and delete notes** with ease  
+- **Sync notes** (with pending sync management)  
+- **User authentication** (login/register)  
+- **Adaptive UI**: Portrait, landscape, and tablet support  
+- **Responsive design**: Material Design 3  
+- **Fast and reactive**: Kotlin coroutines, Flows, and MVI architecture  
 
 ---
 
@@ -39,24 +39,63 @@
 Organized for a quick overview of the app experience:
 
 ### 1. Note List & Detail
-![Note List Screenshot](https://github.com/user-attachments/assets/d2a6285f-44a7-442c-8291-41fefb6d3655)
-![Note Detail Screenshot](https://github.com/user-attachments/assets/839766f1-5eb6-4133-8c26-f846d93dc50a)
+
+<table>
+  <tr>
+    <td align="center">
+      <img src="https://github.com/user-attachments/assets/d2a6285f-44a7-442c-8291-41fefb6d3655" alt="Note List Screenshot" width="300"/>
+    </td>
+    <td align="center">
+      <img src="https://github.com/user-attachments/assets/839766f1-5eb6-4133-8c26-f846d93dc50a" alt="Note Detail Screenshot" width="300"/>
+    </td>
+  </tr>
+  <tr>
+    <td align="center"><b>Note List</b></td>
+    <td align="center"><b>Note Detail</b></td>
+  </tr>
+</table>
 
 ### 2. Authentication & Onboarding
-![Login Screen Screenshot](https://github.com/user-attachments/assets/17b3a4cf-ee55-4155-8804-32e20e36f72b)
+
+<table>
+  <tr>
+    <td align="center">
+      <img src="https://github.com/user-attachments/assets/17b3a4cf-ee55-4155-8804-32e20e36f72b" alt="Login Screen Screenshot" width="300"/>
+    </td>
+    <td align="center">
+    </td>
+  </tr>
+  <tr>
+    <td align="center"><b>Login Screen</b></td>
+    <td align="center"></td>
+  </tr>
+</table>
 
 ### 3. Settings
-![Settings Screenshot](https://github.com/user-attachments/assets/215500ed-5e3b-4f83-a3e7-d0f618bcb7b7)
+
+<table>
+  <tr>
+    <td align="center">
+      <img src="https://github.com/user-attachments/assets/215500ed-5e3b-4f83-a3e7-d0f618bcb7b7" alt="Settings Screenshot" width="300"/>
+    </td>
+    <td align="center">
+    </td>
+  </tr>
+  <tr>
+    <td align="center"><b>Settings</b></td>
+    <td align="center"></td>
+  </tr>
+</table>
 
 ---
 
 ## 🏗️ Architecture
 
-NoteMark uses a clean, modular architecture:
-- **MVVM + MVI** for scalable state management
-- **Koin** for dependency injection
-- **Room** for local data, **Ktor** for network
-- **SOLID, DRY, KISS** design principles
+NoteMark uses a clean, modular architecture:  
+- **MVVM + MVI** for scalable state management  
+- **Koin** for dependency injection  
+- **Room** for local data, **Ktor** for network  
+- **SOLID, DRY, KISS** design principles  
 
 ---
 
