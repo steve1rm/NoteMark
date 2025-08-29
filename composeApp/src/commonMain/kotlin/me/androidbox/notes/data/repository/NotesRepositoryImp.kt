@@ -252,16 +252,15 @@ class NotesRepositoryImp(
                         launch {
                             val noteItem = noteMarkPendingSyncEntity.noteMark.toNoteItem()
 
-                            // FEEDBACK: Notes being pushed to remote twice here
-                            if(notesRemoteDataSource.createNote(noteItem.toNoteItemDto()) is Left) {
+                            val result = notesRemoteDataSource.createNote(noteItem.toNoteItemDto())
+
+                            if(result is Left) {
                                 applicationScope.launch {
                                     notesRemoteDataSource.createNote(
                                         noteItem.toNoteItemDto()
                                     )
 
-                                    // QUESTION Is it ok to delete right after send not to remote
-
-                                    // FEEDBACK: Answer, yes but only after having checked the result
+                                    /* Success to push the created note to the remote, we can safely remove it from our pending sync table */
                                     noteMarkPendingSyncDao.deleteNoteMarkPendingSyncEntity(noteItem.id)
                                 }.join()
                             }
