@@ -67,9 +67,6 @@ class AuthorizationRemoteDataSourceImp(
             response
         }
 
-        // QUESTION: providers is not recognized
-//         httpClient.plugin(Auth).providers
-
         // FEEDBACK: Has been changed to this in Ktor 3.x
         httpClient.authProvider<BearerAuthProvider>()?.clearToken()
 
