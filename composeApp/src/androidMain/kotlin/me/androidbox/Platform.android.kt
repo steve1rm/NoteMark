@@ -25,10 +25,10 @@ import com.liftric.kvault.KVault
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
-import me.androidbox.core.models.LocalPreferences.ACCESS_TOKEN_KEY
-import me.androidbox.core.models.LocalPreferences.REFRESH_TOKEN_KEY
-import me.androidbox.core.models.LocalPreferences.USER_NAME_KEY
-import me.androidbox.core.models.Orientation
+import me.androidbox.core.data.models.LocalPreferences.ACCESS_TOKEN_KEY
+import me.androidbox.core.data.models.LocalPreferences.REFRESH_TOKEN_KEY
+import me.androidbox.core.data.models.LocalPreferences.USER_NAME_KEY
+import me.androidbox.core.presentation.models.Orientation
 import java.time.Instant
 import java.time.ZoneId
 import java.time.ZonedDateTime

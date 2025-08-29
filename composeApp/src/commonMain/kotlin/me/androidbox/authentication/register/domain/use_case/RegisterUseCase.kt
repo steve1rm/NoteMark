@@ -2,7 +2,7 @@ package me.androidbox.authentication.register.domain.use_case
 
 import me.androidbox.authentication.register.data.RegisterDto
 import me.androidbox.authentication.register.domain.AuthorizationRepository
-import me.androidbox.core.models.DataError
+import me.androidbox.core.data.models.DataError
 import net.orandja.either.Either
 
 class RegisterUseCase(

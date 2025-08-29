@@ -1,12 +1,17 @@
 package me.androidbox.notes.data.datasources.imp
 
-import io.ktor.client.*
-import io.ktor.client.request.*
+import io.ktor.client.HttpClient
+import io.ktor.client.request.delete
+import io.ktor.client.request.get
+import io.ktor.client.request.parameter
+import io.ktor.client.request.post
+import io.ktor.client.request.put
+import io.ktor.client.request.setBody
 import me.androidbox.core.data.Routes
 import me.androidbox.core.data.Routes.PAGE
 import me.androidbox.core.data.Routes.SIZE
+import me.androidbox.core.data.models.DataError
 import me.androidbox.core.data.safeApiRequest
-import me.androidbox.core.models.DataError
 import me.androidbox.notes.data.datasources.NotesRemoteDataSource
 import me.androidbox.notes.data.models.NoteItemDto
 import me.androidbox.notes.data.models.NotesDto

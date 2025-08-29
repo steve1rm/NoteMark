@@ -1,4 +1,4 @@
-package me.androidbox.core.models
+package me.androidbox.core.data.models
 
 object LocalPreferences {
     const val ACCESS_TOKEN_KEY = "access_token_key"

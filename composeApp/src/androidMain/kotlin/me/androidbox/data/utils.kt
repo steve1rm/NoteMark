@@ -1,7 +1,7 @@
 package me.androidbox.data
 
 import androidx.work.ListenableWorker
-import me.androidbox.core.models.DataError
+import me.androidbox.core.data.models.DataError
 
 fun DataError.toWorkerResult(): ListenableWorker.Result {
     return when(this) {

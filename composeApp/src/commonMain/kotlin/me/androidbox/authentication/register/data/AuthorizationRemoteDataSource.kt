@@ -3,7 +3,7 @@ package me.androidbox.authentication.register.data
 import me.androidbox.authentication.login.data.LoginRequestDto
 import me.androidbox.authentication.login.data.LoginResponseDto
 import me.androidbox.authentication.login.data.LogoutRequestDto
-import me.androidbox.core.models.DataError
+import me.androidbox.core.data.models.DataError
 import net.orandja.either.Either
 
 interface AuthorizationRemoteDataSource {

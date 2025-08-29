@@ -12,7 +12,7 @@ import me.androidbox.NoteMarkPreferences
 import me.androidbox.authentication.login.domain.model.LogoutRequest
 import me.androidbox.authentication.login.domain.use_case.LogoutUseCase
 import me.androidbox.authentication.register.domain.use_case.FetchUserByUserNameUseCaseImp
-import me.androidbox.core.models.DataError
+import me.androidbox.core.data.models.DataError
 import me.androidbox.notes.data.datasources.NotesLocalDataSource
 import me.androidbox.notes.data.datasources.NotesRemoteDataSource
 import me.androidbox.notes.data.mappers.toNoteItem

@@ -1,6 +1,6 @@
 package me.androidbox.user.domain
 
-import me.androidbox.core.models.DataError
+import me.androidbox.core.data.models.DataError
 import net.orandja.either.Either
 
 interface UserRepository {

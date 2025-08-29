@@ -1,4 +1,4 @@
-package me.androidbox.core.models
+package me.androidbox.core.presentation.models
 
 enum class Orientation {
     PORTRAIT,

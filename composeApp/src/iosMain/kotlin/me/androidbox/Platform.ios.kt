@@ -2,7 +2,7 @@ package me.androidbox
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalDensity
-import me.androidbox.core.models.Orientation
+import me.androidbox.core.presentation.models.Orientation
 import platform.Foundation.NSUUID.Companion.UUID
 import platform.UIKit.UIDevice
 

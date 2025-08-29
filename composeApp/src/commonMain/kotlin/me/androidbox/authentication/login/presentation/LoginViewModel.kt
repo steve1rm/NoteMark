@@ -16,7 +16,7 @@ import me.androidbox.NoteMarkPreferences
 import me.androidbox.authentication.core.AuthenticationEvents
 import me.androidbox.authentication.login.domain.model.LoginRequest
 import me.androidbox.authentication.login.domain.use_case.LoginUseCaseV2
-import me.androidbox.core.models.DataError
+import me.androidbox.core.data.models.DataError
 import me.androidbox.emailValid
 import me.androidbox.notes.domain.usecases.GetProfilePictureUseCase
 import me.androidbox.user.domain.UserRepository

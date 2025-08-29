@@ -9,7 +9,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import me.androidbox.authentication.core.AuthenticationEvents
-import me.androidbox.core.models.Orientation
+import me.androidbox.core.presentation.models.Orientation
 import me.androidbox.core.presentation.utils.ObserveAsEvents
 import me.androidbox.getOrientation
 import org.koin.compose.viewmodel.koinViewModel

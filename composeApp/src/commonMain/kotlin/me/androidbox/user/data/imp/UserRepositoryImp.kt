@@ -1,6 +1,6 @@
 package me.androidbox.user.data.imp
 
-import me.androidbox.core.models.DataError
+import me.androidbox.core.data.models.DataError
 import me.androidbox.user.data.UserLocalDataSource
 import me.androidbox.user.data.toUser
 import me.androidbox.user.data.toUserEntity

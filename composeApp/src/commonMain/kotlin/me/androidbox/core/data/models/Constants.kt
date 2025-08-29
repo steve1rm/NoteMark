@@ -1,4 +1,4 @@
-package me.androidbox.core.models
+package me.androidbox.core.data.models
 
 object Constants {
     const val starChar = '\u002A'

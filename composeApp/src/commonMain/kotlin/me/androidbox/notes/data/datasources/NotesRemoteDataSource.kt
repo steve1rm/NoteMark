@@ -1,6 +1,6 @@
 package me.androidbox.notes.data.datasources
 
-import me.androidbox.core.models.DataError
+import me.androidbox.core.data.models.DataError
 import me.androidbox.notes.data.models.NoteItemDto
 import me.androidbox.notes.data.models.NotesDto
 import net.orandja.either.Either

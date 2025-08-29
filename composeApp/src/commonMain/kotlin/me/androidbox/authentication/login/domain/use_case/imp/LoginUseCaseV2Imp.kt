@@ -4,7 +4,7 @@ import me.androidbox.authentication.login.domain.model.LoginRequest
 import me.androidbox.authentication.login.domain.model.LoginResponse
 import me.androidbox.authentication.login.domain.use_case.LoginUseCaseV2
 import me.androidbox.authentication.register.domain.AuthorizationRepository
-import me.androidbox.core.models.DataError
+import me.androidbox.core.data.models.DataError
 import net.orandja.either.Either
 
 class LoginUseCaseV2Imp(

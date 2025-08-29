@@ -1,7 +1,7 @@
 package me.androidbox.notes.data.datasources.imp
 
 import kotlinx.coroutines.flow.Flow
-import me.androidbox.core.models.DataError
+import me.androidbox.core.data.models.DataError
 import me.androidbox.notes.data.NoteMarkDao
 import me.androidbox.notes.data.datasources.NotesLocalDataSource
 import me.androidbox.notes.data.models.NoteItemEntity

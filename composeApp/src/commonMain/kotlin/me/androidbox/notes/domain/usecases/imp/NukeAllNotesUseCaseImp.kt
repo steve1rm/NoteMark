@@ -1,6 +1,6 @@
 package me.androidbox.notes.domain.usecases.imp
 
-import me.androidbox.core.models.DataError
+import me.androidbox.core.data.models.DataError
 import me.androidbox.notes.domain.NotesRepository
 import me.androidbox.notes.domain.usecases.NukeAllNotesUseCase
 import net.orandja.either.Either

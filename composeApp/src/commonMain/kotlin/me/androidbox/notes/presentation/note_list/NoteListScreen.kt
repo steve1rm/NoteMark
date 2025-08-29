@@ -33,10 +33,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import kotlinx.coroutines.launch
-import me.androidbox.core.models.Orientation
 import me.androidbox.core.presentation.designsystem.NoteMarkLayout
 import me.androidbox.core.presentation.designsystem.buttons.GradientFAB
 import me.androidbox.core.presentation.designsystem.theming.bgGradient
+import me.androidbox.core.presentation.models.Orientation
 import me.androidbox.core.presentation.utils.ObserveAsEvents
 import me.androidbox.getOrientation
 import me.androidbox.isTablet

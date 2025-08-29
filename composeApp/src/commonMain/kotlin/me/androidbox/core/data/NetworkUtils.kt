@@ -6,7 +6,7 @@ import io.ktor.serialization.JsonConvertException
 import io.ktor.util.network.UnresolvedAddressException
 import kotlinx.coroutines.CancellationException
 import kotlinx.serialization.SerializationException
-import me.androidbox.core.models.DataError
+import me.androidbox.core.data.models.DataError
 import net.orandja.either.Either
 import net.orandja.either.Left
 import net.orandja.either.Right

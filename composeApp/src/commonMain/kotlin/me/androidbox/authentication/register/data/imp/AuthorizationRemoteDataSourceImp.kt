@@ -11,8 +11,8 @@ import me.androidbox.authentication.login.data.LogoutRequestDto
 import me.androidbox.authentication.register.data.AuthorizationRemoteDataSource
 import me.androidbox.authentication.register.data.RegisterDto
 import me.androidbox.core.data.Routes
+import me.androidbox.core.data.models.DataError
 import me.androidbox.core.data.safeApiRequest
-import me.androidbox.core.models.DataError
 import net.orandja.either.Either
 
 class AuthorizationRemoteDataSourceImp(

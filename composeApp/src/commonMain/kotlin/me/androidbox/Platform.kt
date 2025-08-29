@@ -2,7 +2,7 @@ package me.androidbox
 
 import androidx.compose.runtime.Composable
 import kotlinx.coroutines.flow.Flow
-import me.androidbox.core.models.Orientation
+import me.androidbox.core.presentation.models.Orientation
 
 interface Platform {
     val name: String

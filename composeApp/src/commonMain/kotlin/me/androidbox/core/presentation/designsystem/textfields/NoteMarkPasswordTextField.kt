@@ -32,7 +32,7 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import me.androidbox.core.models.Constants.starChar
+import me.androidbox.core.data.models.Constants.starChar
 import me.androidbox.core.presentation.designsystem.theming.eye
 import me.androidbox.core.presentation.designsystem.theming.eyeOff
 

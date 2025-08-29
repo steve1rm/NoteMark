@@ -14,7 +14,7 @@ import me.androidbox.NoteMarkPreferences
 import me.androidbox.authentication.core.AuthenticationEvents
 import me.androidbox.authentication.register.domain.use_case.RegisterUseCase
 import me.androidbox.authentication.register.presentation.model.ValidationResult
-import me.androidbox.core.models.DataError
+import me.androidbox.core.data.models.DataError
 import me.androidbox.emailValid
 import me.androidbox.settings.presentation.model.SyncInterval
 import me.androidbox.user.domain.User

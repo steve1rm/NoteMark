@@ -1,7 +1,7 @@
 package me.androidbox.notes.domain
 
 import kotlinx.coroutines.flow.Flow
-import me.androidbox.core.models.DataError
+import me.androidbox.core.data.models.DataError
 import me.androidbox.notes.domain.model.NoteItem
 import net.orandja.either.Either
 

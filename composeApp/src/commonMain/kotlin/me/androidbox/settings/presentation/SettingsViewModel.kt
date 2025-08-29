@@ -60,9 +60,6 @@ class SettingsViewModel(
         viewModelScope.launch {
             val user = userRepository.fetchUser(noteMarkPreferences.getUserName()!!)
 
-            // FEEDBACK: println all over the place, can be a security issue
-            println(user)
-
             if(user is Left) {
                 _state.update { state ->
                     state.copy(

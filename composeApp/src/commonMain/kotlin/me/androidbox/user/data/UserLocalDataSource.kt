@@ -1,7 +1,7 @@
 package me.androidbox.user.data
 
 import me.androidbox.authentication.register.data.UserEntity
-import me.androidbox.core.models.DataError
+import me.androidbox.core.data.models.DataError
 import net.orandja.either.Either
 
 interface UserLocalDataSource {

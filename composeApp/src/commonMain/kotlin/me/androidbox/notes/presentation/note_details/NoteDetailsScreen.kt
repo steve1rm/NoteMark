@@ -16,7 +16,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import co.touchlab.kermit.Logger
 import kotlinx.coroutines.launch
 import me.androidbox.OnChangeOrientation
-import me.androidbox.core.models.Orientation
+import me.androidbox.core.presentation.models.Orientation
 import me.androidbox.core.presentation.utils.ObserveAsEvents
 import me.androidbox.getOrientation
 import me.androidbox.notes.presentation.note_details.components.NoteDetailsActionButtons
