@@ -22,6 +22,7 @@ import me.androidbox.authentication.register.domain.use_case.RegisterUseCase
 import me.androidbox.authentication.register.presentation.RegisterViewModel
 import me.androidbox.core.data.NoteMarkDatabase
 import me.androidbox.core.data.imp.HttpNetworkClientImp
+import me.androidbox.core.domain.SyncNoteScheduler
 import me.androidbox.notes.data.NoteMarkDao
 import me.androidbox.notes.data.datasources.NotesLocalDataSource
 import me.androidbox.notes.data.datasources.NotesRemoteDataSource
@@ -87,7 +88,10 @@ val noteMarkModule = module {
     }.bind(LoginUseCaseV2::class)
     factory {
         LogoutUseCaseImp(
-            get<AuthorizationRepository>()
+            get<AuthorizationRepository>(),
+            get<SyncNoteScheduler>(),
+            get<NoteMarkPreferences>(),
+            get<NukeAllNotesUseCase>()
         )
     }.bind(LogoutUseCase::class)
 
@@ -124,8 +128,6 @@ val noteMarkModule = module {
             notesRemoteDataSource = get<NotesRemoteDataSource>(),
             applicationScope = get<CoroutineScope>(),
             noteMarkPendingSyncDao = get<NoteMarkPendingSyncDao>(),
-            logoutUseCase = get<LogoutUseCase>(),
-            noteMarkPreferences = get<NoteMarkPreferences>(),
             fetchUserByUserNameUseCaseImp = get<FetchUserByUserNameUseCaseImp>(),
             dispatcher = Dispatchers
         )
