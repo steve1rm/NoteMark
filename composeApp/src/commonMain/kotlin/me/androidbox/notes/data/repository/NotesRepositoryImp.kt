@@ -223,10 +223,7 @@ class NotesRepositoryImp(
                     .map { noteItem -> noteItem.toNoteItemEntity() }
 
                 applicationScope.async {
-                    // QUESTION: Is it ok to clear all notes before fetching new one each time
-
-                    // FEEDBACK: Answer: Yes, that's necessary to delete notes that have been
-                    // deleted server-side only (e.g. from a different device).
+                    // necessary to delete notes that have been deleted server-side only (e.g. from a different device).
                     notesLocalDataSource.nukeAllNotes()
                     notesLocalDataSource.saveAllNotes(notes)
                     Left(Unit)
