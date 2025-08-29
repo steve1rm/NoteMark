@@ -8,7 +8,7 @@ import me.androidbox.notes.domain.usecases.FetchNotesUseCase
 class FetchNotesUseCaseImp(
     private val notesRepository: NotesRepository
 ) : FetchNotesUseCase {
-    override suspend fun execute(): Flow<List<NoteItem>> {
+    override fun execute(): Flow<List<NoteItem>> {
         return notesRepository.fetchNotes(-1, 0)
     }
 }

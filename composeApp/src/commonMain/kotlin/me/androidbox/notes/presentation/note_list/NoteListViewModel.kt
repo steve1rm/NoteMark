@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -33,23 +34,20 @@ class NoteListViewModel(
     private val _events = Channel<NoteListEvents>()
     val events = _events.receiveAsFlow()
 
+    private var notesObserveJob: Job? = null
+
     init {
+        // Observe changes in the DB
+        observeChangesInDb()
         fetchNotes()
         fetchConnectivityStatus()
     }
 
     private fun fetchNotes() {
-        // QUESTION: Should we have a try..catch here?
-        // FEEDBACK: Answer: Doesn't seem so
-        // (Good example of why these use cases can make the project harder to navigate,
-        // takes me 5+ clicks to find out)
         viewModelScope.launch {
             _state.update { state ->
                 state.copy(isLoading = true)
             }
-
-            // Observe changes in the DB
-            observeChangesInDb()
 
             // Fetches and inserts into DB
             fetchAllNotesUseCase.execute()
@@ -61,21 +59,16 @@ class NoteListViewModel(
     }
 
     private fun observeChangesInDb() {
-        // FEEDBACK:
-        // 1. Outer viewModelScope.launch is unnecessary
-        // 2. Make sure to cancel the old job, otherwise you'll add another independent
-        // collector with each notes fetch
-        viewModelScope.launch {
-            fetchNotesUseCase.execute()
-                .onEach { listOfNoteItems ->
-                    _state.update { noteListUiState ->
-                        noteListUiState.copy(
-                            notesList = listOfNoteItems.toPersistentList()
-                        )
-                    }
+        notesObserveJob?.cancel()
+        notesObserveJob = fetchNotesUseCase.execute()
+            .onEach { listOfNoteItems ->
+                _state.update { noteListUiState ->
+                    noteListUiState.copy(
+                        notesList = listOfNoteItems.toPersistentList()
+                    )
                 }
-                .launchIn(viewModelScope)
-        }
+            }
+            .launchIn(viewModelScope)
     }
 
     private fun fetchConnectivityStatus() {

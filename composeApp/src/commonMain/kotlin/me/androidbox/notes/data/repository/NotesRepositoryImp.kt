@@ -187,7 +187,7 @@ class NotesRepositoryImp(
         return result.await()
     }
 
-    override suspend fun fetchNotes(
+    override fun fetchNotes(
         page: Int,
         size: Int
     ): Flow<List<NoteItem>> {
