@@ -68,8 +68,7 @@ class NoteListViewModel(
                     )
                 }
             }
-            .launchIn(viewModelScope)
-    }
+            .launchIn(viewModelScope)   }
 
     private fun fetchConnectivityStatus() {
         viewModelScope.launch {
